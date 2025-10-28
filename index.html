@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -26,6 +27,40 @@
             width: 100vw;
             height: 100vh;
             background: linear-gradient(135deg, #0a0e1b 0%, #1a1f3a 100%);
+        }
+        
+        /* Loading screen */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0e1b;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(78,205,196,0.2);
+            border-top-color: #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #4ecdc4;
+            margin-top: 20px;
+            font-size: 18px;
         }
         
         /* Custom marker clusters */
@@ -191,6 +226,10 @@
             box-shadow: 0 0 0 2px rgba(78,205,196,0.2);
         }
         
+        .filter-select option {
+            background: #0a0e1b;
+        }
+        
         .view-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -321,6 +360,12 @@
     </style>
 </head>
 <body>
+    <!-- Loading screen -->
+    <div id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Real Trade School Data...</div>
+    </div>
+    
     <!-- Map container -->
     <div id="map"></div>
     
@@ -340,20 +385,20 @@
             </div>
             <div class="stats-bar">
                 <div class="stat">
-                    <div class="stat-value" id="statSchools">1,032</div>
+                    <div class="stat-value" id="statSchools">0</div>
                     <div class="stat-label">Schools</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="statStates">52</div>
+                    <div class="stat-value" id="statStates">0</div>
                     <div class="stat-label">States</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="statPrograms">11</div>
+                    <div class="stat-value" id="statPrograms">0</div>
                     <div class="stat-label">Programs</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="statGaps">185</div>
-                    <div class="stat-label">Gap Areas</div>
+                    <div class="stat-value" id="statCities">0</div>
+                    <div class="stat-label">Cities</div>
                 </div>
             </div>
         </div>
@@ -367,32 +412,12 @@
             <label class="control-label">Filter by State</label>
             <select class="filter-select" id="stateFilter">
                 <option value="">All States</option>
-                <option value="CA">California (121)</option>
-                <option value="TX">Texas (70)</option>
-                <option value="OH">Ohio (63)</option>
-                <option value="FL">Florida (60)</option>
-                <option value="NC">North Carolina (48)</option>
-                <option value="PA">Pennsylvania (46)</option>
-                <option value="IL">Illinois (45)</option>
-                <option value="TN">Tennessee (34)</option>
-                <option value="OK">Oklahoma (33)</option>
-                <option value="KS">Kansas (30)</option>
             </select>
         </div>
         
         <div class="control-group">
-            <label class="control-label">Filter by Program</label>
-            <select class="filter-select" id="programFilter">
-                <option value="">All Programs</option>
-                <option value="Welding">Welding (739)</option>
-                <option value="Diesel">Diesel & Auto (593)</option>
-                <option value="HVAC">HVAC (576)</option>
-                <option value="Machine">Machine Systems (393)</option>
-                <option value="Construction">Construction (374)</option>
-                <option value="Electronics">Electronics (238)</option>
-                <option value="CAD">CAD/CAM (209)</option>
-                <option value="Plumbing">Plumbing (163)</option>
-            </select>
+            <label class="control-label">Search by City</label>
+            <input type="text" class="filter-select" id="citySearch" placeholder="Type city name..." />
         </div>
         
         <div class="control-group">
@@ -431,7 +456,7 @@
         });
         
         // Add tile layer
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '© OpenStreetMap contributors © CARTO',
             subdomains: 'abcd',
             maxZoom: 19
@@ -469,78 +494,8 @@
         let densityLayer = L.layerGroup();
         let currentView = 'clusters';
         let allSchools = [];
-        
-        // Generate comprehensive school data
-        function generateSchoolData() {
-            const states = {
-                'CA': { lat: 36.7783, lon: -119.4179, count: 121 },
-                'TX': { lat: 31.9686, lon: -99.9018, count: 70 },
-                'OH': { lat: 40.4173, lon: -82.9071, count: 63 },
-                'FL': { lat: 27.6648, lon: -81.5158, count: 60 },
-                'NC': { lat: 35.7596, lon: -79.0193, count: 48 },
-                'PA': { lat: 41.2033, lon: -77.1945, count: 46 },
-                'IL': { lat: 40.6331, lon: -89.3985, count: 45 },
-                'NY': { lat: 43.0000, lon: -75.0000, count: 42 },
-                'MI': { lat: 44.3148, lon: -85.6024, count: 38 },
-                'GA': { lat: 32.1656, lon: -82.9001, count: 35 },
-                'TN': { lat: 35.5175, lon: -86.5804, count: 34 },
-                'OK': { lat: 35.0078, lon: -97.0929, count: 33 },
-                'KS': { lat: 39.0119, lon: -98.4842, count: 30 },
-                'WA': { lat: 47.7511, lon: -120.7401, count: 30 },
-                'VA': { lat: 37.4316, lon: -78.6569, count: 28 },
-                'MO': { lat: 37.9643, lon: -91.8318, count: 25 },
-                'AL': { lat: 32.3182, lon: -86.9023, count: 23 },
-                'IN': { lat: 40.2672, lon: -86.1349, count: 22 },
-                'WI': { lat: 43.7844, lon: -88.7879, count: 20 },
-                'CO': { lat: 39.5501, lon: -105.7821, count: 18 },
-                'AZ': { lat: 34.0489, lon: -111.0937, count: 17 },
-                'MA': { lat: 42.4072, lon: -71.3824, count: 15 },
-                'NJ': { lat: 40.0583, lon: -74.4057, count: 14 },
-                'OR': { lat: 43.8041, lon: -120.5542, count: 12 },
-                'NV': { lat: 38.8026, lon: -116.4194, count: 10 },
-                'UT': { lat: 39.3210, lon: -111.0937, count: 9 },
-                'NM': { lat: 34.5199, lon: -105.8701, count: 8 },
-                'ID': { lat: 44.0682, lon: -114.7420, count: 6 },
-                'MT': { lat: 46.8797, lon: -110.3626, count: 5 },
-                'WY': { lat: 43.0760, lon: -107.2903, count: 3 },
-                'ND': { lat: 47.5515, lon: -101.0020, count: 2 }
-            };
-            
-            const programs = [
-                ["Welding", "HVAC", "Electrical"],
-                ["Diesel", "Automotive", "Machine Tool"],
-                ["Construction", "Plumbing", "Carpentry"],
-                ["Electronics", "CAD/CAM", "Robotics"],
-                ["HVAC", "Refrigeration", "Electrical"],
-                ["Welding", "Fabrication", "Machine Tool"],
-                ["Automotive", "Diesel", "Collision Repair"],
-                ["Construction", "HVAC", "Plumbing"]
-            ];
-            
-            const schools = [];
-            
-            Object.entries(states).forEach(([state, info]) => {
-                for (let i = 0; i < info.count; i++) {
-                    const lat = info.lat + (Math.random() - 0.5) * 4;
-                    const lon = info.lon + (Math.random() - 0.5) * 6;
-                    const progIndex = Math.floor(Math.random() * programs.length);
-                    
-                    schools.push({
-                        name: `${state} Technical Institute ${i + 1}`,
-                        lat: lat,
-                        lon: lon,
-                        state: state,
-                        city: `City ${i + 1}`,
-                        programs: programs[progIndex],
-                        email: `info@${state.toLowerCase()}tech${i+1}.edu`,
-                        website: `www.${state.toLowerCase()}tech${i+1}.edu`,
-                        phone: `(${Math.floor(Math.random() * 900) + 100}) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`
-                    });
-                }
-            });
-            
-            return schools;
-        }
+        let stateData = {};
+        let cityData = {};
         
         // Create custom icon
         function createCustomIcon(color = '#4ecdc4') {
@@ -549,6 +504,182 @@
                 className: 'custom-marker',
                 iconSize: [12, 12]
             });
+        }
+        
+        // Load actual geocoded data
+        function loadRealData() {
+            Papa.parse('schools/trade_schools_geocoded.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    console.log('Loaded', results.data.length, 'schools');
+                    processRealData(results.data);
+                },
+                error: function(error) {
+                    console.error('Error loading data:', error);
+                    // Fallback to matchmaking index if geocoded not available
+                    loadAlternativeData();
+                }
+            });
+        }
+        
+        // Load alternative data source
+        function loadAlternativeData() {
+            Papa.parse('schools/matchmaking_index.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    console.log('Loaded alternative data:', results.data.length, 'schools');
+                    processAlternativeData(results.data);
+                },
+                error: function(error) {
+                    console.error('Error loading alternative data:', error);
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Could not load school data. Please check the data files.');
+                }
+            });
+        }
+        
+        // Process real geocoded data
+        function processRealData(data) {
+            allSchools = [];
+            stateData = {};
+            cityData = {};
+            
+            data.forEach(row => {
+                if (row.lat && row.lon && row['Institution Name']) {
+                    const school = {
+                        name: row['Institution Name'],
+                        lat: parseFloat(row.lat),
+                        lon: parseFloat(row.lon),
+                        state: row.State || 'Unknown',
+                        city: row.City || 'Unknown',
+                        display_name: row.display_name || '',
+                        geocoded: row.geocoded === 'True'
+                    };
+                    
+                    // Only add if valid coordinates
+                    if (!isNaN(school.lat) && !isNaN(school.lon)) {
+                        allSchools.push(school);
+                        
+                        // Track state counts
+                        if (!stateData[school.state]) {
+                            stateData[school.state] = 0;
+                        }
+                        stateData[school.state]++;
+                        
+                        // Track city counts
+                        const cityKey = `${school.city}, ${school.state}`;
+                        if (!cityData[cityKey]) {
+                            cityData[cityKey] = 0;
+                        }
+                        cityData[cityKey]++;
+                    }
+                }
+            });
+            
+            console.log('Processed', allSchools.length, 'valid schools');
+            updateUI();
+            addSchoolsToMap(allSchools);
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Process alternative data (matchmaking index)
+        function processAlternativeData(data) {
+            allSchools = [];
+            stateData = {};
+            cityData = {};
+            
+            // Create approximate coordinates based on state
+            const stateCoords = {
+                'AL': [32.806671, -86.79113], 'AK': [61.370716, -152.404419],
+                'AZ': [33.729759, -111.431221], 'AR': [34.969704, -92.373123],
+                'CA': [36.116203, -119.681564], 'CO': [39.059811, -105.311104],
+                'CT': [41.597782, -72.755371], 'DE': [39.318523, -75.507141],
+                'FL': [27.766279, -81.686783], 'GA': [33.040619, -83.643074],
+                'HI': [21.094318, -157.498337], 'ID': [44.240459, -114.478828],
+                'IL': [40.349457, -88.986137], 'IN': [39.849426, -86.258278],
+                'IA': [42.011539, -93.210526], 'KS': [38.5266, -96.726486],
+                'KY': [37.66814, -84.670067], 'LA': [31.169546, -91.867805],
+                'ME': [44.693947, -69.381927], 'MD': [39.063946, -76.802101],
+                'MA': [42.230171, -71.530106], 'MI': [43.326618, -84.536095],
+                'MN': [45.694454, -93.900192], 'MS': [32.741646, -89.678696],
+                'MO': [38.456085, -92.288368], 'MT': [46.921925, -110.454353],
+                'NE': [41.12537, -98.268082], 'NV': [38.313515, -117.055374],
+                'NH': [43.452492, -71.563896], 'NJ': [40.298904, -74.521011],
+                'NM': [34.840515, -106.248482], 'NY': [42.165726, -74.948051],
+                'NC': [35.630066, -79.806419], 'ND': [47.528912, -99.784012],
+                'OH': [40.388783, -82.764915], 'OK': [35.565342, -96.928917],
+                'OR': [44.572021, -122.070938], 'PA': [40.590752, -77.209755],
+                'RI': [41.680893, -71.51178], 'SC': [33.856892, -80.945007],
+                'SD': [44.299782, -99.438828], 'TN': [35.747845, -86.692345],
+                'TX': [31.054487, -97.563461], 'UT': [40.150032, -111.862434],
+                'VT': [44.045876, -72.710686], 'VA': [37.769337, -78.169968],
+                'WA': [47.400902, -121.490494], 'WV': [38.491226, -80.954453],
+                'WI': [44.268543, -89.616508], 'WY': [42.755966, -107.30249]
+            };
+            
+            data.forEach(row => {
+                if (row['Institution Name'] && row.State) {
+                    const coords = stateCoords[row.State];
+                    if (coords) {
+                        // Add some random offset to spread schools within state
+                        const school = {
+                            name: row['Institution Name'],
+                            lat: coords[0] + (Math.random() - 0.5) * 2,
+                            lon: coords[1] + (Math.random() - 0.5) * 3,
+                            state: row.State,
+                            city: row.City || 'Unknown',
+                            address: row.Address || '',
+                            email: row['Contact Email'] || '',
+                            website: row.Website || '',
+                            programs: row.Programs ? row.Programs.split(',').map(p => p.trim()) : []
+                        };
+                        
+                        allSchools.push(school);
+                        
+                        // Track state counts
+                        if (!stateData[school.state]) {
+                            stateData[school.state] = 0;
+                        }
+                        stateData[school.state]++;
+                        
+                        // Track city counts
+                        const cityKey = `${school.city}, ${school.state}`;
+                        if (!cityData[cityKey]) {
+                            cityData[cityKey] = 0;
+                        }
+                        cityData[cityKey]++;
+                    }
+                }
+            });
+            
+            console.log('Processed', allSchools.length, 'schools from alternative data');
+            updateUI();
+            addSchoolsToMap(allSchools);
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Update UI elements
+        function updateUI() {
+            // Update stats
+            document.getElementById('statSchools').textContent = allSchools.length;
+            document.getElementById('statStates').textContent = Object.keys(stateData).length;
+            document.getElementById('statCities').textContent = Object.keys(cityData).length;
+            document.getElementById('statPrograms').textContent = '11+'; // Approximate
+            
+            // Update state filter
+            const stateFilter = document.getElementById('stateFilter');
+            stateFilter.innerHTML = '<option value="">All States</option>';
+            
+            Object.entries(stateData)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([state, count]) => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = `${state} (${count})`;
+                    stateFilter.appendChild(option);
+                });
         }
         
         // Add schools to map
@@ -563,23 +694,37 @@
                 });
                 
                 // Create popup content
-                const popupContent = `
+                let popupContent = `
                     <div class="popup-title">${school.name}</div>
-                    <div class="popup-detail">📍 ${school.city}, ${school.state}</div>
-                    <div class="popup-detail">📧 ${school.email}</div>
-                    <div class="popup-detail">🌐 ${school.website}</div>
-                    <div class="popup-detail">📞 ${school.phone}</div>
-                    <div class="popup-programs">
+                    <div class="popup-detail">📍 ${school.city}, ${school.state}</div>`;
+                
+                if (school.address) {
+                    popupContent += `<div class="popup-detail">🏢 ${school.address}</div>`;
+                }
+                if (school.email) {
+                    popupContent += `<div class="popup-detail">📧 ${school.email}</div>`;
+                }
+                if (school.website) {
+                    popupContent += `<div class="popup-detail">🌐 <a href="${school.website.startsWith('http') ? school.website : 'http://' + school.website}" target="_blank" style="color:#4ecdc4">${school.website}</a></div>`;
+                }
+                
+                if (school.programs && school.programs.length > 0) {
+                    popupContent += `<div class="popup-programs">
                         ${school.programs.map(p => `<span class="popup-program">${p}</span>`).join('')}
-                    </div>
-                `;
+                    </div>`;
+                }
                 
                 marker.bindPopup(popupContent);
                 markersLayer.addLayer(marker);
-                allMarkersLayer.addLayer(marker.clone());
+                
+                const markerCopy = L.marker([school.lat, school.lon], {
+                    icon: createCustomIcon()
+                });
+                markerCopy.bindPopup(popupContent);
+                allMarkersLayer.addLayer(markerCopy);
             });
             
-            // Create density circles for density view
+            // Create density visualization
             createDensityCircles(schools);
             
             if (currentView === 'clusters') {
@@ -608,35 +753,37 @@
             
             // Create circles for density
             Object.values(densityMap).forEach(density => {
-                const radius = Math.min(50, Math.max(10, density.count * 2));
-                const opacity = Math.min(0.8, density.count / 20);
-                
-                let color = '#4ecdc4';
-                if (density.count > 50) color = '#ff6b6b';
-                else if (density.count > 20) color = '#ffd93d';
-                else if (density.count > 10) color = '#6bcf7f';
-                
-                const circle = L.circle([density.lat, density.lon], {
-                    radius: radius * 1000, // Convert to meters
-                    color: color,
-                    weight: 2,
-                    opacity: 0.8,
-                    fillColor: color,
-                    fillOpacity: opacity
-                });
-                
-                circle.bindPopup(`
-                    <div class="popup-title">Density Area</div>
-                    <div class="popup-detail">Schools: ${density.count}</div>
-                    <div class="popup-detail">Radius: ${radius}km</div>
-                `);
-                
-                densityLayer.addLayer(circle);
+                if (density.count > 1) {
+                    const radius = Math.min(100, Math.max(20, density.count * 5));
+                    const opacity = Math.min(0.6, density.count / 30);
+                    
+                    let color = '#4ecdc4';
+                    if (density.count > 20) color = '#ff6b6b';
+                    else if (density.count > 10) color = '#ffd93d';
+                    else if (density.count > 5) color = '#6bcf7f';
+                    
+                    const circle = L.circle([density.lat, density.lon], {
+                        radius: radius * 1000,
+                        color: color,
+                        weight: 2,
+                        opacity: 0.8,
+                        fillColor: color,
+                        fillOpacity: opacity
+                    });
+                    
+                    circle.bindPopup(`
+                        <div class="popup-title">Density Area</div>
+                        <div class="popup-detail">Schools: ${density.count}</div>
+                        <div class="popup-detail">Radius: ${radius}km</div>
+                    `);
+                    
+                    densityLayer.addLayer(circle);
+                }
             });
         }
         
         // View mode switcher
-        function setView(mode) {
+        window.setView = function(mode) {
             currentView = mode;
             
             // Update button states
@@ -669,26 +816,26 @@
         
         // Show gap areas
         function showGapAreas() {
-            // Highlight states with few schools
-            const gapStates = ['ND', 'WY', 'MT', 'ID', 'VT', 'ME', 'NH'];
-            
             map.addLayer(markersLayer);
             
-            // Add red circles for gap areas
-            gapStates.forEach(state => {
-                const stateData = {
-                    'ND': { lat: 47.5515, lon: -101.0020 },
-                    'WY': { lat: 43.0760, lon: -107.2903 },
-                    'MT': { lat: 46.8797, lon: -110.3626 },
-                    'ID': { lat: 44.0682, lon: -114.7420 },
-                    'VT': { lat: 44.0459, lon: -72.7107 },
-                    'ME': { lat: 45.2538, lon: -69.4455 },
-                    'NH': { lat: 43.4525, lon: -71.5639 }
-                };
-                
-                if (stateData[state]) {
-                    const circle = L.circle([stateData[state].lat, stateData[state].lon], {
-                        radius: 200000, // 200km radius
+            // Identify states with few schools
+            const lowDensityStates = Object.entries(stateData)
+                .filter(([state, count]) => count < 5)
+                .map(([state]) => state);
+            
+            // Add gap indicators
+            const stateCoords = {
+                'ND': [47.5515, -101.0020], 'WY': [43.0760, -107.2903],
+                'MT': [46.8797, -110.3626], 'ID': [44.0682, -114.7420],
+                'VT': [44.0459, -72.7107], 'ME': [45.2538, -69.4455],
+                'NH': [43.4525, -71.5639], 'SD': [44.299782, -99.438828],
+                'AK': [61.370716, -152.404419], 'HI': [21.094318, -157.498337]
+            };
+            
+            lowDensityStates.forEach(state => {
+                if (stateCoords[state]) {
+                    const circle = L.circle([stateCoords[state][0], stateCoords[state][1]], {
+                        radius: 200000,
                         color: '#ff0000',
                         weight: 3,
                         opacity: 0.8,
@@ -699,6 +846,7 @@
                     circle.bindPopup(`
                         <div class="popup-title">⚠️ Gap Area</div>
                         <div class="popup-detail">State: ${state}</div>
+                        <div class="popup-detail">Schools: ${stateData[state] || 0}</div>
                         <div class="popup-detail">Priority: High</div>
                         <div class="popup-detail">Action: Expand training</div>
                     `);
@@ -715,16 +863,21 @@
             addSchoolsToMap(filtered);
         });
         
-        document.getElementById('programFilter').addEventListener('change', function(e) {
-            const program = e.target.value;
-            const filtered = program ? 
-                allSchools.filter(s => s.programs.some(p => p.includes(program))) : 
-                allSchools;
-            addSchoolsToMap(filtered);
+        // City search
+        document.getElementById('citySearch').addEventListener('input', function(e) {
+            const search = e.target.value.toLowerCase();
+            if (search.length > 2) {
+                const filtered = allSchools.filter(s => 
+                    s.city.toLowerCase().includes(search)
+                );
+                addSchoolsToMap(filtered);
+            } else if (search.length === 0) {
+                addSchoolsToMap(allSchools);
+            }
         });
         
         // Export data function
-        function exportData() {
+        window.exportData = function() {
             const dataStr = JSON.stringify(allSchools, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             
@@ -737,14 +890,13 @@
         }
         
         // Show embed code
-        function showEmbedCode() {
+        window.showEmbedCode = function() {
             const embedCode = `<iframe src="${window.location.href}" width="100%" height="600" frameborder="0"></iframe>`;
             alert(`Embed code:\n\n${embedCode}\n\nCopy this code to embed the map on your website.`);
         }
         
-        // Initialize
-        allSchools = generateSchoolData();
-        addSchoolsToMap(allSchools);
+        // Initialize - Load real data
+        loadRealData();
         
         // Make map responsive
         window.addEventListener('resize', function() {
