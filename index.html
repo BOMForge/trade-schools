@@ -717,17 +717,50 @@
             stateData = {};
             cityData = {};
             
-            data.forEach(row => {
-                if (row.lat && row.lon && row['Institution Name']) {
-                    const school = {
-                        name: row['Institution Name'],
-                        lat: parseFloat(row.lat),
-                        lon: parseFloat(row.lon),
-                        state: row.State || 'Unknown',
-                        city: row.City || 'Unknown',
-                        display_name: row.display_name || '',
-                        geocoded: row.geocoded === 'True'
-                    };
+            // First, let's also load matchmaking data to get programs
+            Papa.parse('schools/matchmaking_index.csv', {
+                download: true,
+                header: true,
+                complete: function(matchResults) {
+                    // Create a map of programs by institution name
+                    const programMap = {};
+                    matchResults.data.forEach(row => {
+                        const key = row['Institution Name'];
+                        if (key) {
+                            if (!programMap[key]) {
+                                programMap[key] = {
+                                    programs: [],
+                                    email: row['Contact Email'] || '',
+                                    website: row.Website || ''
+                                };
+                            }
+                            if (row.program) {
+                                programMap[key].programs.push(row.program);
+                            }
+                        }
+                    });
+                    
+                    // Deduplicate programs
+                    Object.keys(programMap).forEach(key => {
+                        programMap[key].programs = [...new Set(programMap[key].programs)];
+                    });
+                    
+                    // Now process geocoded data with programs
+                    data.forEach(row => {
+                        if (row.lat && row.lon && row['Institution Name']) {
+                            const matchData = programMap[row['Institution Name']] || {};
+                            const school = {
+                                name: row['Institution Name'],
+                                lat: parseFloat(row.lat),
+                                lon: parseFloat(row.lon),
+                                state: row.State || 'Unknown',
+                                city: row.City || 'Unknown',
+                                display_name: row.display_name || '',
+                                geocoded: row.geocoded === 'True',
+                                email: matchData.email || '',
+                                website: matchData.website || '',
+                                programs: matchData.programs || []
+                            };
                     
                     // Only add if valid coordinates
                     if (!isNaN(school.lat) && !isNaN(school.lon) && 
@@ -747,25 +780,27 @@
                             cityData[cityKey] = 0;
                         }
                         cityData[cityKey]++;
-                    }
+                            }
+                        }
+                    });
+                    
+                    // Identify gap areas (states with < 5 schools)
+                    identifyGapAreas();
+                    
+                    console.log('✅ Processed', allSchools.length, 'valid schools with programs');
+                    console.log('📊 States covered:', Object.keys(stateData).length);
+                    console.log('🏙️ Cities covered:', Object.keys(cityData).length);
+                    
+                    filteredSchools = [...allSchools];
+                    updateUI();
+                    addSchoolsToMap(allSchools);
+                    
+                    updateLoadingProgress('Map ready!');
+                    setTimeout(() => {
+                        document.getElementById('loading').style.display = 'none';
+                    }, 500);
                 }
             });
-            
-            // Identify gap areas (states with < 5 schools)
-            identifyGapAreas();
-            
-            console.log('✅ Processed', allSchools.length, 'valid schools');
-            console.log('📊 States covered:', Object.keys(stateData).length);
-            console.log('🏙️ Cities covered:', Object.keys(cityData).length);
-            
-            filteredSchools = [...allSchools];
-            updateUI();
-            addSchoolsToMap(allSchools);
-            
-            updateLoadingProgress('Map ready!');
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-            }, 500);
         }
         
         // Process alternative data (matchmaking index)
@@ -803,23 +838,42 @@
                 'WI': [44.268543, -89.616508], 'WY': [42.755966, -107.30249]
             };
             
+            // Group data by institution to aggregate programs
+            const schoolMap = {};
+            
             data.forEach(row => {
                 if (row['Institution Name'] && row.State) {
-                    const coords = stateCoords[row.State];
-                    if (coords) {
-                        const school = {
-                            name: row['Institution Name'],
-                            lat: coords[0] + (Math.random() - 0.5) * 2,
-                            lon: coords[1] + (Math.random() - 0.5) * 3,
-                            state: row.State,
-                            city: row.City || 'Unknown',
-                            address: row.Address || '',
-                            email: row['Contact Email'] || '',
-                            website: row.Website || '',
-                            programs: row.Programs ? row.Programs.split(',').map(p => p.trim()) : []
-                        };
-                        
-                        allSchools.push(school);
+                    const key = `${row['Institution Name']}_${row.State}_${row.City}`;
+                    
+                    if (!schoolMap[key]) {
+                        const coords = stateCoords[row.State];
+                        if (coords) {
+                            schoolMap[key] = {
+                                name: row['Institution Name'],
+                                lat: coords[0] + (Math.random() - 0.5) * 2,
+                                lon: coords[1] + (Math.random() - 0.5) * 3,
+                                state: row.State,
+                                city: row.City || 'Unknown',
+                                address: row.Address || '',
+                                email: row['Contact Email'] || '',
+                                website: row.Website || '',
+                                programs: []
+                            };
+                        }
+                    }
+                    
+                    // Add program to the school's program list
+                    if (schoolMap[key] && row.program) {
+                        schoolMap[key].programs.push(row.program);
+                    }
+                }
+            });
+            
+            // Convert map to array and deduplicate programs
+            Object.values(schoolMap).forEach(school => {
+                // Remove duplicate programs
+                school.programs = [...new Set(school.programs)];
+                allSchools.push(school);
                         
                         // Track state counts
                         if (!stateData[school.state]) {
