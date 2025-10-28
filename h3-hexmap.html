@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools H3 Hexagon Visualization</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            font-family: 'SF Mono', Monaco, monospace;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #main-svg {
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #001122 0%, #000000 100%);
+        }
+        
+        .hex {
+            stroke: #0ff;
+            stroke-width: 0.5;
+            fill-opacity: 0.8;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .hex:hover {
+            stroke: #fff;
+            stroke-width: 2;
+            filter: brightness(1.5);
+        }
+        
+        .state-boundary {
+            fill: none;
+            stroke: #0ff;
+            stroke-width: 0.5;
+            opacity: 0.3;
+        }
+        
+        .hex-label {
+            fill: #fff;
+            font-size: 10px;
+            text-anchor: middle;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        .hex-group:hover .hex-label {
+            opacity: 1;
+        }
+        
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #0ff;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px #0ff;
+            z-index: 10;
+        }
+        
+        #stats {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #0f0;
+            font-size: 12px;
+            text-align: right;
+            z-index: 10;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border: 1px solid #0f0;
+        }
+        
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #fff;
+            font-size: 11px;
+            z-index: 10;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border: 1px solid #0ff;
+        }
+        
+        .legend-item {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #0ff;
+        }
+        
+        #tooltip {
+            position: absolute;
+            padding: 10px;
+            background: rgba(0,0,0,0.95);
+            border: 1px solid #0ff;
+            color: #0ff;
+            font-size: 12px;
+            pointer-events: none;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 20px #0ff;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .glow {
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+        
+        #controls {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        button {
+            background: #000;
+            color: #0ff;
+            border: 1px solid #0ff;
+            padding: 8px 15px;
+            margin: 5px 0;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            font-size: 11px;
+            display: block;
+            width: 150px;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 20px #0ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">TRADE SCHOOL H3 ANALYSIS</div>
+    
+    <div id="stats">
+        <div>TOTAL SCHOOLS: <span id="total-schools">1032</span></div>
+        <div>ACTIVE HEXES: <span id="active-hexes">0</span></div>
+        <div>RESOLUTION: <span id="resolution">5</span></div>
+        <div>MAX DENSITY: <span id="max-density">0</span></div>
+    </div>
+    
+    <div id="legend">
+        <div style="color:#0ff; margin-bottom:10px;">DENSITY SCALE</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#001144;"></div>
+            <span>1-5 schools</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#0066ff;"></div>
+            <span>6-15 schools</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#00ff66;"></div>
+            <span>16-30 schools</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#ffff00;"></div>
+            <span>31-50 schools</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#ff6600;"></div>
+            <span>51-100 schools</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background:#ff0066;"></div>
+            <span>100+ schools</span>
+        </div>
+    </div>
+    
+    <div id="controls">
+        <button onclick="changeResolution(4)">RESOLUTION 4</button>
+        <button onclick="changeResolution(5)">RESOLUTION 5</button>
+        <button onclick="changeResolution(6)">RESOLUTION 6</button>
+        <button onclick="toggleAnimation()">TOGGLE PULSE</button>
+        <button onclick="showHotspots()">SHOW HOTSPOTS</button>
+    </div>
+    
+    <div id="tooltip"></div>
+    
+    <svg id="main-svg"></svg>
+
+    <script>
+        // Sample school data with coordinates
+        const schoolData = [
+            // California cluster (121 schools)
+            ...Array(121).fill().map((_, i) => ({
+                lat: 34.0522 + (Math.random() - 0.5) * 8,
+                lon: -118.2437 + (Math.random() - 0.5) * 10,
+                state: 'CA',
+                name: `CA School ${i+1}`
+            })),
+            // Texas cluster (70 schools)
+            ...Array(70).fill().map((_, i) => ({
+                lat: 31.9686 + (Math.random() - 0.5) * 6,
+                lon: -99.9018 + (Math.random() - 0.5) * 8,
+                state: 'TX',
+                name: `TX School ${i+1}`
+            })),
+            // Ohio cluster (63 schools)
+            ...Array(63).fill().map((_, i) => ({
+                lat: 40.4173 + (Math.random() - 0.5) * 3,
+                lon: -82.9071 + (Math.random() - 0.5) * 3,
+                state: 'OH',
+                name: `OH School ${i+1}`
+            })),
+            // Florida cluster (60 schools)
+            ...Array(60).fill().map((_, i) => ({
+                lat: 27.6648 + (Math.random() - 0.5) * 5,
+                lon: -81.5158 + (Math.random() - 0.5) * 4,
+                state: 'FL',
+                name: `FL School ${i+1}`
+            })),
+            // North Carolina cluster (48 schools)
+            ...Array(48).fill().map((_, i) => ({
+                lat: 35.7596 + (Math.random() - 0.5) * 3,
+                lon: -79.0193 + (Math.random() - 0.5) * 5,
+                state: 'NC',
+                name: `NC School ${i+1}`
+            })),
+            // Other states scattered
+            ...Array(670).fill().map((_, i) => ({
+                lat: 39.8283 + (Math.random() - 0.5) * 30,
+                lon: -98.5795 + (Math.random() - 0.5) * 40,
+                state: 'OTHER',
+                name: `School ${i+1}`
+            }))
+        ].filter(s => s.lat > 24 && s.lat < 50 && s.lon > -125 && s.lon < -66);
+        
+        let currentResolution = 5;
+        let hexagonData = {};
+        
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        
+        const svg = d3.select("#main-svg");
+        const g = svg.append("g");
+        
+        // Projection for US map
+        const projection = d3.geoAlbersUsa()
+            .scale(1300)
+            .translate([width / 2, height / 2]);
+        
+        // Color scale based on density
+        const colorScale = d3.scaleSequential()
+            .domain([0, 100])
+            .interpolator(t => {
+                if (t < 0.05) return '#001144';
+                if (t < 0.15) return '#0066ff';
+                if (t < 0.3) return '#00ff66';
+                if (t < 0.5) return '#ffff00';
+                if (t < 0.7) return '#ff6600';
+                return '#ff0066';
+            });
+        
+        // Process schools into H3 hexagons
+        function processSchoolsToHexagons(resolution) {
+            hexagonData = {};
+            
+            schoolData.forEach(school => {
+                const h3Index = h3.geoToH3(school.lat, school.lon, resolution);
+                if (!hexagonData[h3Index]) {
+                    hexagonData[h3Index] = {
+                        hex: h3Index,
+                        count: 0,
+                        schools: [],
+                        boundary: h3.h3ToGeoBoundary(h3Index),
+                        center: h3.h3ToGeo(h3Index)
+                    };
+                }
+                hexagonData[h3Index].count++;
+                hexagonData[h3Index].schools.push(school);
+            });
+            
+            return Object.values(hexagonData);
+        }
+        
+        // Convert H3 boundary to SVG path
+        function boundaryToPath(boundary) {
+            const points = boundary.map(coord => {
+                const projected = projection([coord[1], coord[0]]);
+                return projected ? projected : [0, 0];
+            }).filter(p => p[0] && p[1]);
+            
+            if (points.length < 3) return null;
+            
+            return "M" + points.join("L") + "Z";
+        }
+        
+        // Draw hexagons
+        function drawHexagons(resolution) {
+            currentResolution = resolution;
+            const hexData = processSchoolsToHexagons(resolution);
+            
+            // Update stats
+            document.getElementById('active-hexes').textContent = hexData.length;
+            document.getElementById('resolution').textContent = resolution;
+            const maxDensity = Math.max(...hexData.map(h => h.count));
+            document.getElementById('max-density').textContent = maxDensity;
+            
+            // Clear previous hexagons
+            g.selectAll(".hex-group").remove();
+            
+            // Draw new hexagons
+            const hexGroups = g.selectAll(".hex-group")
+                .data(hexData)
+                .enter()
+                .append("g")
+                .attr("class", "hex-group");
+            
+            hexGroups.append("path")
+                .attr("class", "hex")
+                .attr("d", d => boundaryToPath(d.boundary))
+                .style("fill", d => colorScale(d.count))
+                .on("mouseover", function(event, d) {
+                    showTooltip(event, d);
+                })
+                .on("mouseout", hideTooltip)
+                .on("click", function(event, d) {
+                    animateHex(this);
+                });
+            
+            // Add labels for high-density hexagons
+            hexGroups.filter(d => d.count > 20)
+                .append("text")
+                .attr("class", "hex-label")
+                .attr("x", d => {
+                    const proj = projection([d.center[1], d.center[0]]);
+                    return proj ? proj[0] : 0;
+                })
+                .attr("y", d => {
+                    const proj = projection([d.center[1], d.center[0]]);
+                    return proj ? proj[1] : 0;
+                })
+                .text(d => d.count);
+        }
+        
+        // Show tooltip
+        function showTooltip(event, d) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'block';
+            tooltip.style.left = event.pageX + 10 + 'px';
+            tooltip.style.top = event.pageY + 10 + 'px';
+            
+            const states = [...new Set(d.schools.map(s => s.state))];
+            tooltip.innerHTML = `
+                <div style="color:#fff; font-weight:bold;">HEX: ${d.hex.substring(0,8)}...</div>
+                <div>SCHOOLS: ${d.count}</div>
+                <div>STATES: ${states.join(', ')}</div>
+                <div>DENSITY: ${(d.count / schoolData.length * 100).toFixed(2)}%</div>
+            `;
+        }
+        
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+        
+        // Animate hexagon
+        function animateHex(element) {
+            d3.select(element)
+                .transition()
+                .duration(200)
+                .style("fill", "#fff")
+                .transition()
+                .duration(200)
+                .style("fill", d => colorScale(d.count));
+        }
+        
+        // Change resolution
+        function changeResolution(res) {
+            drawHexagons(res);
+        }
+        
+        // Toggle animation
+        let animationOn = false;
+        function toggleAnimation() {
+            animationOn = !animationOn;
+            d3.selectAll(".hex")
+                .classed("pulse", animationOn);
+        }
+        
+        // Show hotspots
+        function showHotspots() {
+            const hexData = processSchoolsToHexagons(currentResolution);
+            const hotspots = hexData.filter(h => h.count > 30);
+            
+            d3.selectAll(".hex")
+                .transition()
+                .duration(500)
+                .style("opacity", d => hotspots.includes(d) ? 1 : 0.1);
+            
+            setTimeout(() => {
+                d3.selectAll(".hex")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 1);
+            }, 2000);
+        }
+        
+        // Load US states outline
+        d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(us) {
+            g.append("path")
+                .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
+                .attr("class", "state-boundary")
+                .attr("d", d3.geoPath().projection(projection));
+            
+            // Draw initial hexagons
+            drawHexagons(5);
+        }).catch(() => {
+            // If can't load US map, just show hexagons
+            drawHexagons(5);
+        });
+        
+        // Add zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.5, 8])
+            .on("zoom", function(event) {
+                g.attr("transform", event.transform);
+            });
+        
+        svg.call(zoom);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '4') changeResolution(4);
+            if (e.key === '5') changeResolution(5);
+            if (e.key === '6') changeResolution(6);
+            if (e.key === ' ') toggleAnimation();
+            if (e.key === 'h') showHotspots();
+        });
+        
+        // Add some initial animation
+        setTimeout(() => {
+            d3.selectAll(".hex")
+                .style("opacity", 0)
+                .transition()
+                .duration(1000)
+                .delay((d, i) => i * 5)
+                .style("opacity", 1);
+        }, 100);
+    </script>
+</body>
+</html>

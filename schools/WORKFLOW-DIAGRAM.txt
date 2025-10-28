@@ -1,0 +1,293 @@
+════════════════════════════════════════════════════════════════════════════════
+TRADE SCHOOL ANALYSIS & MAPPING WORKFLOW
+════════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         YOUR CURRENT DATA                                     │
+│                  trade_schools_curated.csv (1,046 schools)                   │
+└────────────┬─────────────────────────────────────────────────────────────────┘
+             │
+             │ Has: Institution, Address, Programs, Contact Info
+             │ Missing: lat/lon, county, cleaned addresses
+             │
+             ▼
+   ┌─────────────────────────────────────────────────────────────┐
+   │                    ENRICHMENT OPTIONS                        │
+   │                  (Choose Your Path Below)                    │
+   └─────────────────────────────────────────────────────────────┘
+             │
+             ├──────────────┬──────────────┬──────────────────────┐
+             │              │              │                      │
+             ▼              ▼              ▼                      ▼
+        ┌─────────┐   ┌─────────┐   ┌──────────┐         ┌──────────┐
+        │ TIER 1  │   │ TIER 2  │   │ TIER 3   │         │ CUSTOM   │
+        │ No AI   │   │ AI Addr │   │ Full AI  │         │ Mix+Match│
+        └─────────┘   └─────────┘   └──────────┘         └──────────┘
+        FREE          $5-10         $20-30               Variable
+        20 min        2 hours       6 hours              Custom
+        85-90%        95-98%        99%+                 Custom
+             │              │              │                      │
+             └──────────────┴──────────────┴──────────────────────┘
+                                   │
+                                   ▼
+              ┌────────────────────────────────────────────────┐
+              │     GEOCODING ENGINE (Built Into Script)       │
+              │    tradeschool-analysis.py (Lines 493-650)    │
+              │                                                │
+              │  • Nominatim API (free, 1 req/sec)            │
+              │  • Caching (geocode_cache.pkl)                │
+              │  • Progress tracking                          │
+              │  • Error handling                             │
+              └────────┬───────────────────────────────────────┘
+                       │
+                       ▼
+        ┌─────────────────────────────────────────────────────┐
+        │         ANALYSIS OUTPUTS (7 Files)                  │
+        ├─────────────────────────────────────────────────────┤
+        │ 📄 supply_chain_analysis.json                       │
+        │    └─ Executive summary, key findings               │
+        │                                                      │
+        │ 📄 workforce_optimization_results.json              │
+        │    └─ Gap priorities, ROI calculations              │
+        │                                                      │
+        │ 📄 state_performance_scorecard.csv                  │
+        │    └─ Metrics by state                              │
+        │                                                      │
+        │ 📄 program_availability.csv                         │
+        │    └─ Program penetration rates                     │
+        │                                                      │
+        │ 📄 program_co_occurrence.csv                        │
+        │    └─ Which programs pair together                  │
+        │                                                      │
+        │ 📄 geographic_distribution.csv                      │
+        │    └─ Schools per state                             │
+        │                                                      │
+        │ 📄 top_partnership_candidates.csv                   │
+        │    └─ Industry-ready schools                        │
+        │                                                      │
+        │ 📄 matchmaking_index.csv                            │
+        │    └─ School × program lookup (3,414 pairs)         │
+        └─────────────────────────────────────────────────────┘
+                       │
+                       ▼
+        ┌─────────────────────────────────────────────────────┐
+        │    🗺️ MAP-READY OUTPUT (Main File)                 │
+        │                                                      │
+        │         trade_schools_geocoded.csv                  │
+        │                                                      │
+        │    Columns:                                          │
+        │    • Institution Name, Address, City, State          │
+        │    • lat, lon ← ADDED                                │
+        │    • county ← ADDED                                  │
+        │    • Programs, Program_List, Program_Count           │
+        │    • Contact Email, Website, Contact Name            │
+        │    • geocoded (True/False) ← ADDED                   │
+        │    • confidence (high/medium/failed) ← ADDED         │
+        │    • display_name (full geocoded address) ← ADDED    │
+        │                                                      │
+        │    If AI enriched, also has:                         │
+        │    • ai_cleaned_address                              │
+        │    • ai_city, ai_state, ai_zip                       │
+        │    • ai_institution_type                             │
+        │    • ai_confidence                                   │
+        └────────┬────────────────────────────────────────────┘
+                 │
+                 ├──────────────┬──────────────┬──────────────┐
+                 │              │              │              │
+                 ▼              ▼              ▼              ▼
+        ┌────────────┐  ┌────────────┐  ┌───────────┐  ┌──────────┐
+        │   MAP #1   │  │   MAP #2   │  │  MAP #3   │  │  EXPORT  │
+        │  Hex Gaps  │  │ Isochrones │  │ROI Choropleth│ │ API/App │
+        └────────────┘  └────────────┘  └───────────┘  └──────────┘
+
+
+════════════════════════════════════════════════════════════════════════════════
+MAP REQUIREMENTS CHECKLIST
+════════════════════════════════════════════════════════════════════════════════
+
+MAP #1: TALENT HEAT & GAP HEXMAP
+┌────────────────────────────────────────────────────────────┐
+│ Shows: Training supply vs. demand by geographic hex        │
+├────────────────────────────────────────────────────────────┤
+│ ✅ trade_schools_geocoded.csv (lat/lon)                    │
+│ ✅ workforce_optimization_results.json (gaps)              │
+│ ⚡ Need to add: H3 library + hex aggregation               │
+│                                                             │
+│ Next Steps:                                                 │
+│   pip install h3                                            │
+│   df['h3'] = h3.geo_to_h3(lat, lon, resolution=6)          │
+│   Aggregate supply/demand by hex → GeoJSON                 │
+└────────────────────────────────────────────────────────────┘
+
+MAP #2: COMMUTE-FRIENDLY TRAINING FINDER
+┌────────────────────────────────────────────────────────────┐
+│ Shows: Programs within worker's drive-time                 │
+├────────────────────────────────────────────────────────────┤
+│ ✅ trade_schools_geocoded.csv (lat/lon)                    │
+│ ✅ matchmaking_index.csv (school × program pairs)          │
+│ ⚡ Need to add: Valhalla or OSRM for isochrones            │
+│                                                             │
+│ Next Steps:                                                 │
+│   docker run valhalla/valhalla                              │
+│   API: POST lat/lon → GET 30min drive polygon              │
+│   Filter schools in polygon → ranked list                  │
+└────────────────────────────────────────────────────────────┘
+
+MAP #3: ROI HOTSPOTS & COLLABORATION CORRIDORS
+┌────────────────────────────────────────────────────────────┐
+│ Shows: Investment priorities + state partnerships          │
+├────────────────────────────────────────────────────────────┤
+│ ✅ workforce_optimization_results.json (ROI by state/skill)│
+│ ✅ state_performance_scorecard.csv (state metrics)         │
+│ ✅ geographic_distribution.csv (state boundaries)          │
+│ ⚡ Optional: Real economic data via AI enrichment          │
+│                                                             │
+│ Next Steps:                                                 │
+│   Load state GeoJSON (US states shapefile)                 │
+│   Join ROI data to states → choropleth                     │
+│   Add arc layer for cross-state collaboration              │
+└────────────────────────────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════════════════════════════
+QUICK COMMAND REFERENCE
+════════════════════════════════════════════════════════════════════════════════
+
+OPTION A: BASIC (No AI, Free, 20 min)
+┌────────────────────────────────────────────────────────────┐
+│ $ cd /Users/tc/workspace/TradeSchools/schools              │
+│ $ python tradeschool-analysis.py                           │
+│                                                             │
+│ Output: All CSVs + trade_schools_geocoded.csv              │
+│ Ready for: All 3 maps (85-90% geocoding success)           │
+└────────────────────────────────────────────────────────────┘
+
+OPTION B: PRODUCTION (With AI, $5-10, 2 hours)
+┌────────────────────────────────────────────────────────────┐
+│ $ export ANTHROPIC_API_KEY=sk-ant-...                      │
+│ $ pip install anthropic                                    │
+│ $ python ai-data-enrichment.py trade_schools_curated.csv   │
+│   (Wait ~2 hours)                                           │
+│ $ python tradeschool-analysis.py                           │
+│                                                             │
+│ Output: Enhanced CSVs (95-98% geocoding success)           │
+│ Ready for: Production maps, external use                   │
+└────────────────────────────────────────────────────────────┘
+
+SKIP GEOCODING (Faster, no lat/lon)
+┌────────────────────────────────────────────────────────────┐
+│ Edit tradeschool-analysis.py line 662:                     │
+│   enable_geocoding = False                                 │
+│                                                             │
+│ $ python tradeschool-analysis.py                           │
+│                                                             │
+│ Output: Analysis files only (no mapping possible)          │
+└────────────────────────────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════════════════════════════
+FILE DEPENDENCIES
+════════════════════════════════════════════════════════════════════════════════
+
+INPUT FILES:
+  trade_schools_curated.csv ← Your existing data (1,046 schools)
+
+SCRIPT FILES:
+  tradeschool-analysis.py ← Main analysis + geocoding engine
+  ai-data-enrichment.py ← Optional AI address cleaning
+  requirements.txt ← Python dependencies
+
+OUTPUT FILES (Auto-Generated):
+  Core Analysis:
+    ├─ supply_chain_analysis.json
+    ├─ workforce_optimization_results.json
+    ├─ state_performance_scorecard.csv
+    ├─ program_availability.csv
+    ├─ program_co_occurrence.csv
+    ├─ geographic_distribution.csv
+    ├─ top_partnership_candidates.csv
+    └─ matchmaking_index.csv
+  
+  Map-Ready:
+    ├─ trade_schools_geocoded.csv ⭐ MAIN OUTPUT
+    └─ geocode_cache.pkl (cache, don't delete!)
+  
+  AI Enrichment (Optional):
+    ├─ trade_schools_ai_enriched.csv
+    ├─ addresses_needing_review.csv
+    └─ ai_enrichment_progress.csv
+
+DOCUMENTATION:
+  README.md ← Setup & overview
+  MAP-READY-GUIDE.md ← Complete mapping implementation
+  QUICK-REFERENCE.md ← Cheat sheet
+  DATA-ENRICHMENT-SUMMARY.md ← AI enrichment details
+  WORKFLOW-DIAGRAM.txt ← This file
+
+
+════════════════════════════════════════════════════════════════════════════════
+TIMELINE ESTIMATES
+════════════════════════════════════════════════════════════════════════════════
+
+TODAY (0-2 hours):
+  00:00  Install dependencies (pip install -r requirements.txt)
+  00:01  Run analysis (python tradeschool-analysis.py)
+  00:20  Geocoding complete → trade_schools_geocoded.csv ready
+  01:00  Build first prototype map (copy/paste examples from docs)
+  02:00  Demo-ready hex map or isochrone finder
+
+THIS WEEK (5-8 hours):
+  Day 1: Get API key, run AI enrichment (2 hours)
+  Day 2: Review flagged addresses, re-run analysis (1 hour)
+  Day 3: Build Map #1 (Hex gaps) (2 hours)
+  Day 4: Build Map #2 (Isochrones) (2 hours)
+  Day 5: Polish UI, deploy demo (2 hours)
+
+THIS MONTH (20-40 hours):
+  Week 1: Tier 2 enrichment + basic maps
+  Week 2: Add Tier 3 enrichment (program taxonomy, economic data)
+  Week 3: Build Map #3 (ROI corridors)
+  Week 4: Build interactive dashboard, deploy production
+
+
+════════════════════════════════════════════════════════════════════════════════
+DECISION FLOWCHART
+════════════════════════════════════════════════════════════════════════════════
+
+START: Do you need maps TODAY?
+  │
+  ├─ YES → Run basic (Option A)
+  │         ├─ 85-90% success rate OK? → Build maps now
+  │         └─ Need higher quality? → Add AI enrichment next sprint
+  │
+  └─ NO → Can you wait 2 hours?
+            │
+            ├─ YES → Run with AI (Option B) → 95-98% success
+            │
+            └─ NO → Is this production/external?
+                      │
+                      ├─ YES → MUST use AI enrichment
+                      └─ NO → Basic is fine
+
+
+════════════════════════════════════════════════════════════════════════════════
+KEY TAKEAWAYS
+════════════════════════════════════════════════════════════════════════════════
+
+✅ YOUR DATA IS ALREADY MAP-READY (with built-in geocoding)
+
+✅ NO AI REQUIRED for prototypes/demos (85-90% success rate)
+
+✅ AI OPTIONAL for production quality (95-98% success rate)
+
+✅ ONE COMMAND to get started: python tradeschool-analysis.py
+
+✅ CACHING makes re-runs instant (geocode_cache.pkl)
+
+✅ FULL DOCUMENTATION in 5 markdown files
+
+✅ READY FOR ALL 3 MAPS with current output
+
+
+════════════════════════════════════════════════════════════════════════════════
+

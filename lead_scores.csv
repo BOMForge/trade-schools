@@ -1,0 +1,389 @@
+Company Name,Website,Score,Tier,Positive Signals,Negative Signals,Booth,Hall,City,State/Province,Country,Notes
+Bale Defence,https://www.baledefence.com,100,A,"cnc, ems, erp, fabrication, fabricator, inventory, itar, machining, manufacturer, manufacturing, mes, sheet metal, warehouse, welding",magazine,525,Hall ABC,,,USA,"Positive: cnc, ems, erp, fabrication, fabricator, inventory; Negative: magazine"
+Choctaw Defense,https://www.choctawdefense.com,100,A,"as9100, assembly, cnc, distribution, ems, erp, fabrication, iso 9001, itar, machining, manufacturer, manufacturing, mes",,655,Hall ABC,McAlester,OK,United States,"Positive: as9100, assembly, cnc, distribution, ems, erp"
+APEX Space & Defense Systems,https://www.apexsds.com,92,A,"as9100, assembly, cnc, composite, ems, fabrication, iso 9001, itar, machining, manufacturer, manufacturing, mes",,3703,Hall ABC,Santa Ana,CA,United States,"Positive: as9100, assembly, cnc, composite, ems, fabrication"
+AML3D Limited,https://aml3d.com/,84,A,"3d printing, additive manufacturing, distribution, ems, erp, fabrication, inventory, manufacturer, manufacturing, mes, supply chain, welding",media,525,Hall ABC,,,USA,"Positive: 3d printing, additive manufacturing, distribution, ems, erp, fabrication; Negative: media"
+Mistral Group,https://www.mistralinc.com,77,A,"assembly, ems, fabrication, fabricator, itar, kitting, manufacturing, mes, odm, oem",,3313,Hall ABC,7910 WOODMONT AVE,ST,USA,"Positive: assembly, ems, fabrication, fabricator, itar, kitting"
+Ducommun Incorporated,https://www.ducommun.com,74,A,"assembly, composite, ems, fabrication, itar, kitting, machining, manufacturer, manufacturing, mes, routing, sheet metal, supply chain, welding","college, magazine, university",3411,Hall ABC,Costa Mesa,CA,United States,"Positive: assembly, composite, ems, fabrication, itar, kitting; Negative: college, magazine, university"
+Decavo,https://www.decavo.com/,72,A,"as9100, assembly, cnc, composite, ems, fabrication, iso 9001, manufacturer, manufacturing, mes, traceability",media,3703,Hall ABC,Hood River,OR,United States,"Positive: as9100, assembly, cnc, composite, ems, fabrication; Negative: media"
+Electromet Rugged Enclosures,https://electromet.com/,70,A,"assembly, distribution, ems, fabrication, iso 9001, itar, machining, sheet metal, welding",,1667,Hall ABC,Hagerstown,MD,United States,"Positive: assembly, distribution, ems, fabrication, iso 9001, itar"
+Gevasol Octal Solutions,https://www.octalcorporation.com,65,B,"as9100, assembly, cnc, ems, fabrication, kitting, machining, manufacturing",,542,Hall ABC,Teaneck,NJ,United States,"Positive: as9100, assembly, cnc, ems, fabrication, kitting"
+Aeroservices S.A.,https://aeroservices.gr,63,B,"distribution, ems, erp, itar, manufacturer, mes, oem, warehouse",,7219,Hall DE,,,Greece,"Positive: distribution, ems, erp, itar, manufacturer, mes"
+Global Technical Systems,https://gts.us.com/,62,B,"assembly, composite, ems, erp, inventory, manufacturing, mes, supply chain",,6154,Hall DE,Virginia Beach,VA,United States,"Positive: assembly, composite, ems, erp, inventory, manufacturing"
+National Defense Corporation,https://www.nationaldefensecorp.com,62,B,"assembly, ems, inventory, iso 9001, manufacturer, manufacturing, mes, supply chain",,761,Hall ABC,Janesville,WI,United States,"Positive: assembly, ems, inventory, iso 9001, manufacturer, manufacturing"
+Integrated Procurement Technologies (IPT),https://www.iptsb.com/,61,B,"assembly, distribution, ems, erp, itar, manufacturer, manufacturing, mes, oem",media,3855,Hall ABC,Goleta,CA,United States,"Positive: assembly, distribution, ems, erp, itar, manufacturer; Negative: media"
+Northwest UAV,https://www.nwuav.com,59,B,"as9100, cnc, distribution, ems, erp, machining, manufacturer, manufacturing",consulting,3703,Hall ABC,McMinnville,OR,United States,"Positive: as9100, cnc, distribution, ems, erp, machining; Negative: consulting"
+General Dynamics Ordnance and Tactical Systems,https://www.gd-ots.com,58,B,"bom, composite, ems, fabrication, itar, manufacturer, manufacturing",,6041,Hall DE,Saint Petersburg,FL,United States,"Positive: bom, composite, ems, fabrication, itar, manufacturer"
+Axnes,https://www.axnes.com/,55,B,"as9100, ems, erp, itar, manufacturer, mes, oem",,7141,Hall DE,Arlington,VA,United States,"Positive: as9100, ems, erp, itar, manufacturer, mes"
+"Control Solutions, LLC",https://www.controls.com,55,B,"assembly, ems, erp, itar, manufacturing, mes, oem",,7717,Hall DE,Aurora,IL,United States,"Positive: assembly, ems, erp, itar, manufacturing, mes"
+NOBLE,https://www.noble.com,54,B,"distribution, ems, erp, fulfillment, itar, manufacturer, supply chain",,8315,Hall DE,,NO,USA,"Positive: distribution, ems, erp, fulfillment, itar, manufacturer"
+OSI Optoelectronics,https://www.osioptoelectronics.com,54,B,"as9100, assembly, ems, fabrication, itar, manufacturer, manufacturing, oem",foundation,8201,Hall DE,,OS,USA,"Positive: as9100, assembly, ems, fabrication, itar, manufacturer; Negative: foundation"
+Panasonic Connect,https://www.connect.na.panasonic.com/toughbook,53,B,"assembly, ems, erp, itar, manufacturer, manufacturing, warehousing, welding",media,2118,Hall ABC,Newark,NJ,United States,"Positive: assembly, ems, erp, itar, manufacturer, manufacturing; Negative: media"
+"Accurate Energetic Systems, LLC",https://www.aesys.biz,52,B,"assembly, bom, ems, erp, itar, manufacturing",,4021,Hall ABC,McEwen,TN,United States,"Positive: assembly, bom, ems, erp, itar, manufacturing"
+General Dynamics Mission Systems,https://www.gdmissionsystems.com,52,B,"distribution, ems, erp, manufacturer, manufacturing, mes",,6227,Hall DE,Chantilly,VA,United States,"Positive: distribution, ems, erp, manufacturer, manufacturing, mes"
+Airborne Systems,https://www.airborne-sys.com,51,B,"assembly, ems, erp, iso 9001, itar, manufacturer, manufacturing, mes",foundation,1311,Hall ABC,Pennsauken,NJ,United States,"Positive: assembly, ems, erp, iso 9001, itar, manufacturer; Negative: foundation"
+CEIA USA,https://www.ceia.net/groundsearch/index.aspx,51,B,"assembly, distribution, ems, iso 9001, itar, manufacturer, manufacturing, traceability",foundation,4133,Hall ABC,,CE,United States,"Positive: assembly, distribution, ems, iso 9001, itar, manufacturer; Negative: foundation"
+AM General,https://www.amgeneral.com,50,B,"ems, fulfillment, iso 9001, itar, manufacturer, manufacturing, mes, warehouse",media,6941,Hall DE,,AM,USA,"Positive: ems, fulfillment, iso 9001, itar, manufacturer, manufacturing; Negative: media"
+Amiga Engineering Pty Ltd,https://https//amigaeng.com.au/,48,B,"3d printing, as9100, cnc, ems, machining, manufacturer",,525,Hall ABC,,,United States,"Positive: 3d printing, as9100, cnc, ems, machining, manufacturer"
+Black Sky Aerospace,https://bsaero.space/,47,B,"as9100, assembly, ems, erp, manufacturing, mes",,525,Hall ABC,,,United States,"Positive: as9100, assembly, ems, erp, manufacturing, mes"
+Horstman Group,https://www.horstmangroup.com,47,B,"additive manufacturing, assembly, ems, itar, manufacturing, supply chain",,1543,Hall ABC,Sterling Heights,MI,United States,"Positive: additive manufacturing, assembly, ems, itar, manufacturing, supply chain"
+"Intellisense Systems, Inc.",https://www.intellisenseinc.com,47,B,"as9100, ems, itar, manufacturing, mes, oem",,4005,Hall ABC,Torrance,CA,United States,"Positive: as9100, ems, itar, manufacturing, mes, oem"
+Michigan Office of Defense & Aerospace Innovation,https://www.michiganbusiness.org/defense/,46,B,"assembly, distribution, erp, itar, manufacturer, manufacturing, mes, supply chain","cybersecurity, media",4145,Hall ABC,Lansing,MI,United States,"Positive: assembly, distribution, erp, itar, manufacturer, manufacturing; Negative: cybersecurity, media"
+Clear Align,https://www.clearalign.com,45,B,"as9100, assembly, ems, fabrication, itar, manufacturing, mes",foundation,640,Hall ABC,Eagleville,PA,United States,"Positive: as9100, assembly, ems, fabrication, itar, manufacturing; Negative: foundation"
+Meritec,https://www.meritec.com,45,B,"assembly, ems, iso 9001, itar, mes, oem",,7021,Hall DE,Painesvile,OH,United States,"Positive: assembly, ems, iso 9001, itar, mes, oem"
+LCR Embedded Systems,https://www.lcrembeddedsystems.com/,44,B,"ems, itar, manufacturer, manufacturing, mes",,1667,Hall ABC,,LC,USA,"Positive: ems, itar, manufacturer, manufacturing, mes"
+Equipto Electronics Corporation,https://www.equiptoelec.com/,43,B,"assembly, ems, iso 9001, itar, manufacturer, manufacturing, mes",association,1667,Hall ABC,Aurora,IL,United States,"Positive: assembly, ems, iso 9001, itar, manufacturer, manufacturing; Negative: association"
+Junghans Defence,https://www.junghans-defence.com,43,B,"bom, erp, fabrication, itar, mes",,2707,Hall ABC,,,USA,"Positive: bom, erp, fabrication, itar, mes"
+Astronics,https://www.astronics.com,41,B,"distribution, ems, itar, kitting, manufacturing, mes",it services,8401,Hall DE,East Aurora,NY,United States,"Positive: distribution, ems, itar, kitting, manufacturing, mes; Negative: it services"
+DCS Corporation,https://www.dcscorp.com,41,B,"ems, erp, itar, manufacturing, mes, sheet metal",cybersecurity,1061,Hall ABC,,DC,United States,"Positive: ems, erp, itar, manufacturing, mes, sheet metal; Negative: cybersecurity"
+LMT Defense,https://www.lmtdefense.com,41,B,"ems, itar, manufacturer, mes, mrp",,1855,Hall ABC,,LM,USA,"Positive: ems, itar, manufacturer, mes, mrp"
+Arete,https://arete.com,39,C,"distribution, ems, erp, itar, mes",,4119,Hall ABC,Northridge,CA,United States,"Positive: distribution, ems, erp, itar, mes"
+Dongin Optical,https://www.donginoptical.com,38,C,"cnc, ems, erp, iso 9001, itar",,7519,Hall DE,,,USA,"Positive: cnc, ems, erp, iso 9001, itar"
+IEE,https://www.ieeinc.com,38,C,"as9100, ems, iso 9001, itar, oem",,708,Hall ABC,Steve Motter,VP,USA,"Positive: as9100, ems, iso 9001, itar, oem"
+Integris Composites,https://www.integriscomposites.com/,38,C,"composite, ems, itar, manufacturer, manufacturing",,2717,Hall ABC,Vienna,VA,United States,"Positive: composite, ems, itar, manufacturer, manufacturing"
+Amphenol Military and Aerospace Operations,https://www.amphenolamao.com,37,C,"ems, itar, machining, manufacturing, mes, supply chain",media,3539,Hall ABC,Sidney,NY,United States,"Positive: ems, itar, machining, manufacturing, mes, supply chain; Negative: media"
+BOH Solutions,https://www.bohsolutions.com,37,C,"ems, inventory, itar, manufacturing, mes, warehouse, warehousing","foundation, media",3343,Hall ABC,,BO,USA,"Positive: ems, inventory, itar, manufacturing, mes, warehouse; Negative: foundation, media"
+Echodyne,https://www.echodyne.com/,37,C,"distribution, ems, itar, manufacturer, manufacturing, mes",foundation,147,Hall ABC,Kirkland,WA,United States,"Positive: distribution, ems, itar, manufacturer, manufacturing, mes; Negative: foundation"
+ARESIA,https://aresia.com/,36,C,"distribution, fabrication, iso 9001, mes, supply chain",,2641,Hall ABC,,,USA,"Positive: distribution, fabrication, iso 9001, mes, supply chain"
+Celestica,https://www.celestica.com,36,C,"erp, fulfillment, machining, manufacturing, mes, supply chain",media,3943,Hall ABC,Maple Grove,MN,United States,"Positive: erp, fulfillment, machining, manufacturing, mes, supply chain; Negative: media"
+Ferra,https://www.ferra-group.com,36,C,"assembly, ems, manufacturer, manufacturing, mes, supply chain",media,525,Hall ABC,,,USA,"Positive: assembly, ems, manufacturer, manufacturing, mes, supply chain; Negative: media"
+Govini,https://www.govini.com,36,C,"ems, erp, inventory, itar, manufacturing, mes, supply chain","insurance, media",6921,Hall DE,Arlington,VA,United States,"Positive: ems, erp, inventory, itar, manufacturing, mes; Negative: insurance, media"
+NIOA Group,https://www.nioa.com.au/,36,C,"ems, erp, itar, manufacturing, mes, supply chain",media,2239,Hall ABC,,,Australia,"Positive: ems, erp, itar, manufacturing, mes, supply chain; Negative: media"
+Deschamps,https://www.deschamps-systems.com/,35,C,"ems, iso 9001, itar, manufacturer",,2738,Hall ABC,,,USA,"Positive: ems, iso 9001, itar, manufacturer"
+Arkeus,https://arkeus.com/,34,C,"ems, erp, fabrication, itar, manufacturing, mes, supply chain","association, foundation",525,Hall ABC,,,USA,"Positive: ems, erp, fabrication, itar, manufacturing, mes; Negative: association, foundation"
+Armor Australia,https://www.armoraustralia.com,34,C,"assembly, composite, ems, itar, manufacturer, manufacturing",bank,525,Hall ABC,,,USA,"Positive: assembly, composite, ems, itar, manufacturer, manufacturing; Negative: bank"
+Interstate Connecting Components,https://www.connecticc.com,34,C,"assembly, distribution, inventory, itar",,1867,Hall ABC,Lumberton,NJ,United States,"Positive: assembly, distribution, inventory, itar"
+KNDS Deutschland GmbH & Co. KG,https://www.knds.com,34,C,"ems, erp, itar, manufacturer, manufacturing, mes, welding","association, media",751,Hall ABC,,,USA,"Positive: ems, erp, itar, manufacturer, manufacturing, mes; Negative: association, media"
+A.W. Bell,https://www.awbell.com.au/,33,C,"assembly, ems, machining, manufacturer",,525,Hall ABC,,,Australia,"Positive: assembly, ems, machining, manufacturer"
+"Applied Research Associates, Inc.",https://www.ara.com,33,C,"ems, erp, fabrication, manufacturing, mes",consulting,407,Hall ABC,Albuquerque,NM,United States,"Positive: ems, erp, fabrication, manufacturing, mes; Negative: consulting"
+"Glenair, Inc.",https://www.glenair.com/,33,C,"assembly, ems, iso 9001, itar, manufacturer, manufacturing, mes","college, media",547,Hall ABC,Glendale,CA,United States,"Positive: assembly, ems, iso 9001, itar, manufacturer, manufacturing; Negative: college, media"
+Bisalloy Steels,https://www.bisalloy.com.au,32,C,"fabrication, itar, manufacturer, manufacturing",,525,Hall ABC,,,Australia,"Positive: fabrication, itar, manufacturer, manufacturing"
+Carahsoft,https://www.carahsoft.com,32,C,"ems, erp, manufacturer, mes, supply chain",cybersecurity,1767,Hall ABC,Reston,VA,United States,"Positive: ems, erp, manufacturer, mes, supply chain; Negative: cybersecurity"
+Caterpillar Inc.,https://www.cat.com/defense,32,C,"ems, erp, itar, manufacturing",,2205,Hall ABC,Irving,TX,United States,"Positive: ems, erp, itar, manufacturing"
+Cyalume Light Technology,https://getcyalume.com/industries/military-chemlights,32,C,"ems, erp, itar, manufacturer",,2212,Hall ABC,West Springfield,MA,United States,"Positive: ems, erp, itar, manufacturer"
+"Fischer Connectors, Inc.",https://www.fischerconnectors.com,32,C,"assembly, ems, erp, itar",,1948,Hall ABC,Alpharetta,GA,United States,"Positive: assembly, ems, erp, itar"
+Marotta Controls,https://www.marotta.com,32,C,"assembly, ems, itar, manufacturing",,4213,Hall ABC,Montville,NJ,United States,"Positive: assembly, ems, itar, manufacturing"
+Milcots LLC & Shock Tech Inc,https://www.milcots.com,32,C,"ems, itar, manufacturer, manufacturing",,3644,Hall ABC,Mahwah,NJ,United States,"Positive: ems, itar, manufacturer, manufacturing"
+Nova Electric,https://www.novaelectric.com,32,C,"distribution, ems, itar, manufacturer",,519,Hall ABC,Howard Schrier,VP,USA,"Positive: distribution, ems, itar, manufacturer"
+"Arion Communication Co., Ltd",https://www.arionit.com,31,C,"ems, erp, itar, mes",,7519,Hall DE,,,USA,"Positive: ems, erp, itar, mes"
+"B.E. Meyers & Co., Inc.",https://www.bemeyers.com,31,C,"ems, iso 9001, itar, manufacturer, mes",systems integrator,3439,Hall ABC,Redmond,WA,United States,"Positive: ems, iso 9001, itar, manufacturer, mes; Negative: systems integrator"
+Bodd,https://www.bodd.io/,31,C,"ems, inventory, manufacturing, mes, warehouse",media,525,Hall ABC,,,United States,"Positive: ems, inventory, manufacturing, mes, warehouse; Negative: media"
+Bren-Tronics,https://www.bren-tronics.com,31,C,"ems, itar, manufacturing, mes",,2049,Hall ABC,Commack,NY,United States,"Positive: ems, itar, manufacturing, mes"
+Fischer Panda Generators,https://fischerpanda.com,31,C,"ems, itar, manufacturing, mes",,6852,Hall DE,Pompano Beach,FL,United States,"Positive: ems, itar, manufacturing, mes"
+Kord Defence Pty Ltd,https://www.kord.business,31,C,"assembly, ems, itar, mes",,525,Hall ABC,,,United States,"Positive: assembly, ems, itar, mes"
+LRAD by Genasys,https://www.genasys.com/lrad-solutions/,31,C,"ems, erp, itar, mes",,1861,Hall ABC,,LR,USA,"Positive: ems, erp, itar, mes"
+nVent,https://nvent.com/schroff,31,C,"ems, itar, mes, oem",,7114,Hall DE,Louis Park,,MN 55416,"Positive: ems, itar, mes, oem"
+One Stop Systems,https://www.onestopsystems.com,31,C,"as9100, ems, erp, iso 9001, itar, oem","magazine, media",6753,Hall DE,Escondido,CA,United States,"Positive: as9100, ems, erp, iso 9001, itar, oem; Negative: magazine, media"
+"ADS, Inc",https://adsinc.com,30,C,"ems, itar, mes, supply chain",,3125,Hall ABC,Virginia Beach,VA,United States,"Positive: ems, itar, mes, supply chain"
+"Bascom Hunter Technologies, Inc.",https://bascomhunter.com,30,C,"as9100, ems, iso 9001, manufacturing",,7806,Hall DE,Baton Rouge,LA,United States,"Positive: as9100, ems, iso 9001, manufacturing"
+Bell,https://www.bellflight.com/,30,C,"composite, ems, itar, oem",,7527,Hall DE,Fort Worth,TX,United States,"Positive: composite, ems, itar, oem"
+Dantherm Denmark A/S,https://www.danthermgroup.com,30,C,"ems, iso 9001, itar, warehouse",,1703,Hall ABC,,,USA,"Positive: ems, iso 9001, itar, warehouse"
+HIROCO,https://www.hiroco.io,30,C,"ems, erp, mes, supply chain, warehouse, warehousing","consulting, foundation",525,Hall ABC,,,United States,"Positive: ems, erp, mes, supply chain, warehouse, warehousing; Negative: consulting, foundation"
+Lynred USA,https://www.lynred-usa.com/,30,C,"ems, itar, manufacturer, manufacturing, oem",media,515,Hall ABC,Fairfield,NJ,United States,"Positive: ems, itar, manufacturer, manufacturing, oem; Negative: media"
+"Moog, Inc.",https://www.moog.com/defense,30,C,"ems, itar, manufacturer, manufacturing, oem",media,7807,Hall DE,East Aurora,NY,United States,"Positive: ems, itar, manufacturer, manufacturing, oem; Negative: media"
+Beretta Defense Technologies,https://www.berettadefensetechnologies.com,29,C,"ems, itar, manufacturer, manufacturing, mes",media,507,Hall ABC,Accokeek,MD,United States,"Positive: ems, itar, manufacturer, manufacturing, mes; Negative: media"
+L3Harris Techonologies,https://www.l3harris.com/,29,C,"ems, erp, itar, manufacturing, mes",media,2425,Hall ABC,Melbourne,FL,United States,"Positive: ems, erp, itar, manufacturing, mes; Negative: media"
+GORE-TEX Professional,https://www.goretexprofessional.com/defense-fabrics,28,C,"ems, erp, mes",,3503,Hall ABC,Newark,DE,United States,"Positive: ems, erp, mes"
+INVISIO,https://www.invisio.com,28,C,"bom, ems, itar",,1703,Hall ABC,,,USA,"Positive: bom, ems, itar"
+Pacific Northwest Defense Coalition (PNDC),https://www.pndc.us,28,C,"ems, itar, manufacturing, mes, supply chain",association,3703,Hall ABC,Lake Oswego,OR,United States,"Positive: ems, itar, manufacturing, mes, supply chain; Negative: association"
+Fluor,https://www.fluor.com,27,C,"ems, erp, fabrication, manufacturing, mes",university,1909,Hall ABC,Greenville,SC,United States,"Positive: ems, erp, fabrication, manufacturing, mes; Negative: university"
+Holmwood Highgate Pty Ltd,https://www.holmwoodhighgate.com.au,27,C,"assembly, ems, itar, manufacturer, manufacturing, mes","insurance, media",525,Hall ABC,,,Australia,"Positive: assembly, ems, itar, manufacturer, manufacturing, mes; Negative: insurance, media"
+Analysis SA,https://analysis-ltd.com.gr/,26,C,"cnc, erp, iso 9001, mes, welding",media,7219,Hall DE,,,Greece,"Positive: cnc, erp, iso 9001, mes, welding; Negative: media"
+"Nobles Worldwide, Inc.",https://www.noblesworldwide.com,26,C,"bom, ems, itar, manufacturing",magazine,3411,Hall ABC,St Croix Falls,WI,United States,"Positive: bom, ems, itar, manufacturing; Negative: magazine"
+Boeing,https://www.boeing.com/defense,25,C,"ems, itar, manufacturer, mes",cybersecurity,725,Hall ABC,Arlington,VA,United States,"Positive: ems, itar, manufacturer, mes; Negative: cybersecurity"
+HENSOLDT North America,https://www.hensoldt.net,25,C,"ems, itar, manufacturer, mes",cybersecurity,1567,Hall ABC,,HE,United States,"Positive: ems, itar, manufacturer, mes; Negative: cybersecurity"
+"Kennametal, Inc.",https://www.kennametal.com,25,C,"ems, machining, manufacturing",,8200,Hall DE,Pittsburgh,PA,United States,"Positive: ems, machining, manufacturing"
+Amerex Defense,https://www.amerex-fire.com,24,C,"assembly, ems, iso 9001, manufacturer, mes, supply chain","association, foundation",247,Hall ABC,Amerex Defense,PO,USA,"Positive: assembly, ems, iso 9001, manufacturer, mes, supply chain; Negative: association, foundation"
+Avon Protection | Team Wendy Ceradyne | Team Wendy,https://www.avon-protection.com,24,C,"assembly, ems, itar",,953,Hall ABC,Cadillac,MI,United States,"Positive: assembly, ems, itar"
+CEA Technologies Ptd Limited,https://www.cea.com.au,24,C,"ems, fabrication, manufacturer, manufacturing, mes, supply chain, warehousing","foundation, magazine, media",525,Hall ABC,,,Australia,"Positive: ems, fabrication, manufacturer, manufacturing, mes, supply chain; Negative: foundation, magazine, media"
+Colt's Manufacturing Company LLC,https://colt.com/mle,24,C,"change order, itar, manufacturing",,7247,Hall DE,West Hartford,CT,United States,"Positive: change order, itar, manufacturing"
+Continental Electronics,https://www.contelec.com,24,C,"ems, itar, manufacturing",,8201,Hall DE,Dallas,,TX 75227,"Positive: ems, itar, manufacturing"
+Critical Objectives LLC,https://www.criticalobjectives.com,24,C,"ems, itar, manufacturing",,445,Hall ABC,Grand Haven,MI,United States,"Positive: ems, itar, manufacturing"
+Custom Wheel Solutions LLC,https://www.cwswheels.com,24,C,"itar, manufacturing, oem",,4229,Hall ABC,Oak Park,MI,United States,"Positive: itar, manufacturing, oem"
+"EnerSys, Inc",https://www.hawkerbatteries.com,24,C,"ems, itar, manufacturer",,2053,Hall ABC,Columbia,SC,United States,"Positive: ems, itar, manufacturer"
+Galvion,https://www.galvion.com,24,C,"distribution, ems, itar",,643,Hall ABC,Portsmouth,NH,United States,"Positive: distribution, ems, itar"
+GE Aerospace,https://www.geaerospace.com,24,C,"ems, itar, manufacturing",,1015,Hall ABC,,GE,USA,"Positive: ems, itar, manufacturing"
+General Digital,https://www.generaldigital.com,24,C,"ems, erp, itar",,613,Hall ABC,East Hartford,CT,United States,"Positive: ems, erp, itar"
+IMMI,https://www.imminet.com,24,C,"ems, itar, manufacturing",,8527,Hall DE,,IM,USA,"Positive: ems, itar, manufacturing"
+Kearfott Corporation,https://www.kearfott.com,24,C,"as9100, assembly, ems, iso 9001, itar, manufacturing","foundation, recruiting",6313,Hall DE,Pine Brook,NJ,United States,"Positive: as9100, assembly, ems, iso 9001, itar, manufacturing; Negative: foundation, recruiting"
+Keelback,https://www.keelback.com,24,C,"ems, itar, manufacturing",,525,Hall ABC,,,USA,"Positive: ems, itar, manufacturing"
+"LiteFighter Systems, LLC",https://www.litefighter.com,24,C,"ems, erp, itar",,8341,Hall DE,Canton,GA,United States,"Positive: ems, erp, itar"
+Marvin Land Systems,https://www.marvingroup.com,24,C,"assembly, ems, itar",,343,Hall ABC,Inglewood,CA,United States,"Positive: assembly, ems, itar"
+Multicut A/S,https://multicut.dk/,24,C,"assembly, machine shop, machining, manufacturing",media,1703,Hall ABC,,,Denmark,"Positive: assembly, machine shop, machining, manufacturing; Negative: media"
+"Norotos, Inc",https://www.norotos.com,24,C,"assembly, ems, itar",,3540,Hall ABC,Santa Ana,CA,United States,"Positive: assembly, ems, itar"
+"NovAtel, Inc.",https://www.novatel.com/industries/defense,24,C,"ems, itar, manufacturing",,614,Hall ABC,Webster,TX,United States,"Positive: ems, itar, manufacturing"
+Ontime Networks,https://www.ontimenet-us.com,24,C,"ems, itar, oem",,7141,Hall DE,Latham,NY,United States,"Positive: ems, itar, oem"
+Orbit International Corp,https://www.orbitintl.com,24,C,"ems, itar, oem",,6018,Hall DE,Hauppauge,NY,United States,"Positive: ems, itar, oem"
+"Otis Products, Inc.",https://www.otisdefense.com,24,C,"ems, itar, manufacturing",,1519,Hall ABC,Lyons Falls,NY,United States,"Positive: ems, itar, manufacturing"
+Advanced Technology Systems Company,https://atscva.com,23,C,"ems, itar, mes",,155,Hall ABC,McLean,VA,United States,"Positive: ems, itar, mes"
+"Iridium Communications, Inc.",https://www.iridium.com,23,C,"ems, itar, mes",,7305,Hall DE,Mc Lean,VA,United States,"Positive: ems, itar, mes"
+"ITT Cannon, Enidine, Koni Brands",https://www.ittcannon.com,23,C,"ems, itar, mes",,6713,Hall DE,Irvine,CA,United States,"Positive: ems, itar, mes"
+Masperotech S.r.l.,https://www.maspero.it,23,C,"iso 9001, machining, manufacturing",,540,Hall ABC,,,Italy,"Positive: iso 9001, machining, manufacturing"
+"Michelin North America, Inc.",https://business.michelinman.com,23,C,"ems, itar, mes",,1807,Hall ABC,Greenville,SC,United States,"Positive: ems, itar, mes"
+Northrop Grumman,https://www.northropgrumman.com,23,C,"bom, ems, itar, manufacturing, mes","foundation, media",1325,Hall ABC,Falls Church,VA,United States,"Positive: bom, ems, itar, manufacturing, mes; Negative: foundation, media"
+"Oakley, Inc.",https://www.oakleysi.com,23,C,"ems, itar, mes",,3307,Hall ABC,Foothill Ranch,CA,United States,"Positive: ems, itar, mes"
+"Advanced Cooling Technologies, Inc.",https://www.1-act.com/,22,C,"as9100, iso 9001, itar",,3746,Hall ABC,Lancaster,PA,United States,"Positive: as9100, iso 9001, itar"
+ASRC Federal,https://www.asrcfederal.com/,22,C,"erp, mes, supply chain",,4046,Hall ABC,,AS,USA,"Positive: erp, mes, supply chain"
+"Donaldson Company, Inc.",https://www.donaldsonaerospace-defense.com/,22,C,"ems, itar, manufacturing, oem",foundation,7603,Hall DE,Minneapolis,MN,United States,"Positive: ems, itar, manufacturing, oem; Negative: foundation"
+"FAUN Trackway USA, Inc.",https://www.fauntrackway.com,22,C,"ems, erp, itar, manufacturing",media,3047,Hall ABC,Arlington,VA,United States,"Positive: ems, erp, itar, manufacturing; Negative: media"
+i3 Assembly LLC,https://www.i3technologygroup.com,22,C,"assembly, ems, itar, kitting",media,3757,Hall ABC,Binghamton,NY,United States,"Positive: assembly, ems, itar, kitting; Negative: media"
+Intracom Defense S.A. (IDE),https://www.intracomdefense.com/,22,C,"ems, mes, supply chain",,7219,Hall DE,,,USA,"Positive: ems, mes, supply chain"
+Accusonic Voice Systems,https://WWW.ACCUSONICVOICESYSTEMS.COM,21,C,"ems, odm",,3254,Hall ABC,Johanna Morales,OP,USA,"Positive: ems, odm"
+Boresight USA,https://www.boresightuas.com,21,C,"ems, itar, manufacturing, mes",media,525,Hall ABC,Oliver Price,VP,USA,"Positive: ems, itar, manufacturing, mes; Negative: media"
+Cocoon Inc,https://www.cocoon-inc.com,21,C,"ems, itar, mes, warehouse",media,8142,Hall DE,North Hampton,NH,United States,"Positive: ems, itar, mes, warehouse; Negative: media"
+DroneShield,https://www.droneshield.com,21,C,"ems, itar, manufacturing, mes",media,525,Hall ABC,Warrenton,VA,United States,"Positive: ems, itar, manufacturing, mes; Negative: media"
+DZYNE,https://www.dzyne.com,21,C,"ems, itar, manufacturing, mes",media,213,Hall ABC,,DZ,USA,"Positive: ems, itar, manufacturing, mes; Negative: media"
+Elbit America,https://www.elbitamerica.com,21,C,"ems, itar, manufacturing, supply chain",media,6441,Hall DE,Fort Worth,TX,United States,"Positive: ems, itar, manufacturing, supply chain; Negative: media"
+EM Solutions Pty Ltd,https://www.emsolutions.com.au,21,C,"ems, manufacturing",,525,Hall ABC,,,Australia,"Positive: ems, manufacturing"
+Gemstar Protective Hard Cases,https://www.gemstarmfg.com,21,C,"ems, itar",,3925,Hall ABC,Cannon Falls,MN,United States,"Positive: ems, itar"
+IT Cadre,https://www.itcadre.com,21,C,"ems, erp, itar, supply chain",media,4308,Hall ABC,,IT,USA,"Positive: ems, erp, itar, supply chain; Negative: media"
+Kentucky Trailer Specialty Vehicles,https://www.KTSV.com,21,C,"erp, itar, manufacturing, mes",insurance,7757,Hall DE,Wixom,MI,United States,"Positive: erp, itar, manufacturing, mes; Negative: insurance"
+Mountain Horse Solutions,https://mtnhorse.com/,21,C,"ems, itar, kitting, mes",media,943,Hall ABC,Colorado Springs,CO,United States,"Positive: ems, itar, kitting, mes; Negative: media"
+National Armaments Consortium,https://www.nacconsortium.org,21,C,"ems, itar, manufacturer, mes",media,3813,Hall ABC,Summerville,SC,United States,"Positive: ems, itar, manufacturer, mes; Negative: media"
+"ODU-USA, Inc.",https://www.odu-connectors.com,21,C,"assembly, ems, itar, mes",media,4033,Hall ABC,Camarillo,CA,United States,"Positive: assembly, ems, itar, mes; Negative: media"
+Acacia Systems,https://www.acres.com.au/,20,C,"bom, ems",,525,Hall ABC,,,Australia,"Positive: bom, ems"
+Brassets Group,https://www.brassetsgroup.com/security-services/,20,C,"ems, itar, manufacturer, manufacturing",bank,525,Hall ABC,Archerfield,MI,United States,"Positive: ems, itar, manufacturer, manufacturing; Negative: bank"
+Enercon,https://www.enerconpower.com,20,C,"ems, fabrication, itar, manufacturing",bank,3907,Hall ABC,East Peoria,IL,United States,"Positive: ems, fabrication, itar, manufacturing; Negative: bank"
+Nammo Defense Systems Inc.,https://www.nammo.com,20,C,"composite, ems, itar, manufacturing, mes, supply chain","accounting, hotel",3139,Hall ABC,Mesa,AZ,United States,"Positive: composite, ems, itar, manufacturing, mes, supply chain; Negative: accounting, hotel"
+Arrow Electronics,https://arrow.com,19,C,"bom, supply chain",,4254,Hall ABC,Centennial,CO,United States,"Positive: bom, supply chain"
+General Atomics,https://www.ga.com,19,C,"ems, itar, manufacturer, manufacturing, mes","foundation, media",2725,Hall ABC,Poway,CA,United States,"Positive: ems, itar, manufacturer, manufacturing, mes; Negative: foundation, media"
+IXI Technology,https://www.ixiew.com,19,C,"bom, ems, erp, itar, manufacturer, mes","magazine, media, resort",3257,Hall ABC,,IX,USA,"Positive: bom, ems, erp, itar, manufacturer, mes; Negative: magazine, media, resort"
+MicroTau,https://www.microtau.com.au/,19,C,"ems, fabrication, manufacturing, mes, oem","accounting, media",525,Hall ABC,,,Australia,"Positive: ems, fabrication, manufacturing, mes, oem; Negative: accounting, media"
+Oran Safety Glass,https://www.osg-na.com,19,C,"ems, fabricator, itar, mes",media,1661,Hall ABC,Emporia,VA,United States,"Positive: ems, fabricator, itar, mes; Negative: media"
+AMS AERO,https://www.amsaero.eu,18,C,"ems, itar, sheet metal",consulting,7219,Hall DE,,,United States,"Positive: ems, itar, sheet metal; Negative: consulting"
+Diehl Defence GmbH & Co. KG,https://www.diehl.com/defence/en/,18,C,"ems, iso 9001, mes, supply chain",media,2707,Hall ABC,Contact Info,,Anna Lena St,"Positive: ems, iso 9001, mes, supply chain; Negative: media"
+Global Military Products,https://globalmilitaryproducts.com/,18,C,"ems, itar, manufacturing",systems integrator,943,Hall ABC,Tampa,FL,United States,"Positive: ems, itar, manufacturing; Negative: systems integrator"
+Janes,https://www.janes.com,18,C,"ems, itar, manufacturer, mes, supply chain","foundation, media",4132,Hall ABC,Arlington,VA,United States,"Positive: ems, itar, manufacturer, mes, supply chain; Negative: foundation, media"
+Korea Defense Industry Corp.,https://koreadefenseindustry.com/eng/,18,C,"bom, itar, manufacturing",media,7519,Hall DE,,,USA,"Positive: bom, itar, manufacturing; Negative: media"
+Bigbear.ai,https://bigbear.ai/,17,C,"ems, erp, supply chain",cybersecurity,1613,Hall ABC,McLean,VA,United States,"Positive: ems, erp, supply chain; Negative: cybersecurity"
+FDH Aero,https://fdhaero.com,17,C,"inventory, supply chain",,6613,Hall DE,,FD,USA,"Positive: inventory, supply chain"
+J3Seven,https://www.j3seven.com,17,C,"ems, itar, mes",systems integrator,525,Hall ABC,,,USA,"Positive: ems, itar, mes; Negative: systems integrator"
+KBR,https://www.kbr.com,17,C,"ems, erp, fabrication, itar, mes","foundation, nonprofit",2217,Hall ABC,,KB,USA,"Positive: ems, erp, fabrication, itar, mes; Negative: foundation, nonprofit"
+Alaska Defense,https://www.alaskadefense.com,16,C,"ems, itar",,2839,Hall ABC,Scottsdale,AZ,United States,"Positive: ems, itar"
+American Rheinmetall Defense,https://www.rheinmetall-us.com,16,C,"ems, itar",,1339,Hall ABC,Vienna,VA,United States,"Positive: ems, itar"
+AMETEK,https://www.ametek.com,16,C,"itar, manufacturing",,6517,Hall DE,,AM,USA,"Positive: itar, manufacturing"
+"Antenna Research Associates, Inc",https://ara-inc.com/,16,C,"ems, itar",,2367,Hall ABC,8880 Gorman Rd,LA,United States,"Positive: ems, itar"
+ATI,https://www.atimaterials.com,16,C,"additive manufacturing, manufacturing",,3149,Hall ABC,,AT,USA,"Positive: additive manufacturing, manufacturing"
+"Atlantic Signal, LLC",https://atlanticsignal.com/,16,C,"manufacturer, manufacturing",,1467,Hall ABC,Topeka,KS,United States,"Positive: manufacturer, manufacturing"
+Ausco Group,https://www.auscogroup.com,16,C,"ems, manufacturing",,525,Hall ABC,,,USA,"Positive: ems, manufacturing"
+CompuLink,https://www.compulink.com,16,C,"itar, manufacturer",,8413,Hall DE,Saint Petersburg,FL,United States,"Positive: itar, manufacturer"
+Contact Corporation,https://www.contactcorp.net,16,C,"composite, ems, itar",systems integrator,6452,Hall DE,Winchester,VA,United States,"Positive: composite, ems, itar; Negative: systems integrator"
+Darley Defense,https://www.darley.com,16,C,"ems, itar",,4025,Hall ABC,Itasca,IL,United States,"Positive: ems, itar"
+EDEA Energy,https://edea.energy/,16,C,"ems, itar, manufacturer, manufacturing, mes, supply chain","foundation, insurance, media",525,Hall ABC,,,United States,"Positive: ems, itar, manufacturer, manufacturing, mes, supply chain; Negative: foundation, insurance, media"
+Elma Electronic Inc.,https://www.elma.com,16,C,"ems, manufacturing",,867,Hall ABC,Fremont,CA,United States,"Positive: ems, manufacturing"
+"ESS (Eye Safety Systems, Inc)",https://www.esseyepro.com,16,C,"ems, itar",,3307,Hall ABC,Hailey,ID,United States,"Positive: ems, itar"
+Ghost Robotics,https://www.ghostrobotics.io,16,C,"erp, itar",,4125,Hall ABC,Michael Subhan,CM,United States,"Positive: erp, itar"
+"Globe Tech, LLC",https://www.globetech-us.com,16,C,"assembly, fabrication",,2854,Hall ABC,Plymouth,MI,United States,"Positive: assembly, fabrication"
+GM Defense,https://www.gmdefensellc.com,16,C,"itar, manufacturing",,8127,Hall DE,,GM,USA,"Positive: itar, manufacturing"
+HELLENIC DEFENCE SYSTEMS SA,https://www.eas.gr,16,C,"ems, manufacturing",,7219,Hall DE,Athens,,GR 17237,"Positive: ems, manufacturing"
+IEC Infrared Systems / Precision Remotes,https://www.iecinfrared.com,16,C,"ems, itar",,861,Hall ABC,Middleburg Heights,OH,United States,"Positive: ems, itar"
+Inventus Power,https://www.inventuspower.com,16,C,"itar, manufacturing",,1952,Hall ABC,Woodridge,IL,United States,"Positive: itar, manufacturing"
+Isolation Dynamics Corporation,https://isolator.com/,16,C,"ems, itar",,1667,Hall ABC,Aurora,IL,United States,"Positive: ems, itar"
+Jonathan Group®,https://www.jonathanengr.com,16,C,"ems, manufacturing",,1667,Hall ABC,Irvine,CA,United States,"Positive: ems, manufacturing"
+LifeStraw,https://lifestraw.com,16,C,"ems, itar",,7027,Hall DE,Baltimore,,MD 21230,"Positive: ems, itar"
+LKD Aerospace,https://www.ikdaero.com,16,C,"ems, oem",,3703,Hall ABC,,LK,USA,"Positive: ems, oem"
+Lockheed Martin Corporation,https://www.lockheedmartin.com/,16,C,"ems, itar",,6013,Hall DE,Arlington,VA,United States,"Positive: ems, itar"
+Marathon Targets,https://www.marathon-targets.com,16,C,"ems, itar",,1161,Hall ABC,Huntsville,AL,United States,"Positive: ems, itar"
+New Use Energy,https://www.newuseenergy.com,16,C,"ems, itar",,3703,Hall ABC,Anacortes,WA,United States,"Positive: ems, itar"
+Norseld Photonics,https://norseld.com,16,C,"erp, manufacturing",,525,Hall ABC,,,USA,"Positive: erp, manufacturing"
+4C North America,https://www.4c-na.org,15,C,"itar, mes",,3742,Hall ABC,Orlando,FL,United States,"Positive: itar, mes"
+Advantech,https://www.advantech-e.com/military/index.html,15,C,"fulfillment, manufacturing",,1460,Hall ABC,Irvine,CA,United States,"Positive: fulfillment, manufacturing"
+Amazon Business,https://business.amazon.com,15,C,"ems, mes",,8213,Hall DE,Seattle,WA,United States,"Positive: ems, mes"
+Black6,https://www.black6.com,15,C,"ems, mes",,525,Hall ABC,6,,51 Waterway Drive,"Positive: ems, mes"
+Breaker,https://www.breakerindustries.com,15,C,"ems, mes",,525,Hall ABC,Austin,TX,United States,"Positive: ems, mes"
+"Chenega Corporation, MIOS SBU",https://chenegamios.com,15,C,"ems, erp, itar, mes","cybersecurity, media",539,Hall ABC,Lorton,VA,United States,"Positive: ems, erp, itar, mes; Negative: cybersecurity, media"
+Don Kyatt Spare Parts / Terrain Tamer,https://terraintamer.com,15,C,"manufacturing, mes",,525,Hall ABC,Stockton,CA,United States,"Positive: manufacturing, mes"
+Dr. Diesel Technologies,https://www.drdieseltech.com,15,C,"ems, mes",,548,Hall ABC,Murrieta,CA,United States,"Positive: ems, mes"
+DTC,https://www.domotactical.com,15,C,"ems, mes",,7701,Hall DE,,DT,USA,"Positive: ems, mes"
+ELIKA TEAM,https://www.elikateam.com,15,C,"itar, mes",,2641,Hall ABC,,,USA,"Positive: itar, mes"
+Exia Labs,https://www.exialabs.com,15,C,"ems, mes",,3703,Hall ABC,Seattle,WA,United States,"Positive: ems, mes"
+HDT Global,https://www.hdtglobal.com,15,C,"ems, mes",,2039,Hall ABC,Anthony Petrone,VP,USA,"Positive: ems, mes"
+Li-S Energy Limited,https://www.lis.energy,15,C,"composite, ems, itar, manufacturing, mes","media, university",525,Hall ABC,,,United States,"Positive: composite, ems, itar, manufacturing, mes; Negative: media, university"
+Macquarie University,https://www.mq.edu.au/,15,C,"ems, erp, itar, manufacturer, manufacturing, mes","college, media, university",525,Hall ABC,,,Australia,"Positive: ems, erp, itar, manufacturer, manufacturing, mes; Negative: college, media, university"
+MoTeC Pty Ltd,https://www.motec.com.au,15,C,"ems, mes",,525,Hall ABC,525,,Data Recording and St 121 Merrindale Dr,"Positive: ems, mes"
+Motorola Solutions,https://www.motorolasolutions.com/en_us/solutions/defense.html,15,C,"ems, erp, itar, mes","cybersecurity, media",6721,Hall DE,Linthicum Heights,MD,United States,"Positive: ems, erp, itar, mes; Negative: cybersecurity, media"
+Advanced Navigation,https://www.advancednavigation.com,14,C,"ems, manufacturing, oem",media,525,Hall ABC,,,USA,"Positive: ems, manufacturing, oem; Negative: media"
+AV,https://www.avinc.com,14,C,"ems, itar, manufacturer",media,3105,Hall ABC,,AV,USA,"Positive: ems, itar, manufacturer; Negative: media"
+"Barrett Firearms Manufacturing, Inc.",https://barrett.net,14,C,"ems, itar, manufacturing",media,2239,Hall ABC,Murfreesboro,TN,United States,"Positive: ems, itar, manufacturing; Negative: media"
+Cinch Connectivity Solutions,https://cinch.com,14,C,"assembly, cnc, manufacturing",media,8109,Hall DE,Lombard,IL,United States,"Positive: assembly, cnc, manufacturing; Negative: media"
+"General Micro Systems, Inc.",https://www.gms4sbc.com,14,C,"ems, itar, manufacturing",media,8407,Hall DE,Rancho Cucamonga,CA,United States,"Positive: ems, itar, manufacturing; Negative: media"
+Kitron,https://www.kitron.com,14,C,"distribution, ems, manufacturing",media,7141,Hall DE,Johnstown,PA,United States,"Positive: distribution, ems, manufacturing; Negative: media"
+Kontron,https://www.kontron.com/en/industries/defense,14,C,"ems, itar, manufacturing",media,351,Hall ABC,Jeff Berger,VP,USA,"Positive: ems, itar, manufacturing; Negative: media"
+Optical Cable Corporation,https://www.occfiber.com,14,C,"assembly, erp, itar",media,4225,Hall ABC,Roanoke,VA,United States,"Positive: assembly, erp, itar; Negative: media"
+OTTO,https://www.otto-comm.com,14,C,"ems, itar, manufacturer",media,7421,Hall DE,,OT,USA,"Positive: ems, itar, manufacturer; Negative: media"
+Anduril,https://anduril.com,13,C,"ems, itar, mes",media,3747,Hall ABC,Costa Mesa,CA,United States,"Positive: ems, itar, mes; Negative: media"
+"Codemettle, LLC",https://www.codemettle.com,13,C,"ems, erp, mes",media,7454,Hall DE,Atlanta,GA,United States,"Positive: ems, erp, mes; Negative: media"
+Falck-Schmidt corp,https://www.falck-schmidt.systems/,13,C,ems,,6554,Hall DE,,,United States,Positive: ems
+FIONSYSTEMS INC.,https://www.fionsystems.com,13,C,ems,,7519,Hall DE,,,USA,Positive: ems
+"Golight, Inc.",https://www.golight.com,13,C,"ems, itar, mes",media,2113,Hall ABC,Culbertson,NE,United States,"Positive: ems, itar, mes; Negative: media"
+Heckler & Koch Defense,https://www.hk-usa.com,13,C,"itar, manufacturer, mes",magazine,1515,Hall ABC,Columbus,GA,United States,"Positive: itar, manufacturer, mes; Negative: magazine"
+Anywise,https://www.anywise.com.au,12,C,"ems, erp, itar, mes, supply chain","consulting, foundation, media",525,Hall ABC,,,Australia,"Positive: ems, erp, itar, mes, supply chain; Negative: consulting, foundation, media"
+ASDAM,https://www.asdam.com,12,C,"assembly, ems, manufacturing",bank,525,Hall ABC,,,USA,"Positive: assembly, ems, manufacturing; Negative: bank"
+Comrod Inc,https://www.comrod.com,12,C,"assembly, composite, ems, iso 9001, itar, manufacturing","foundation, media, university",255,Hall ABC,Westlake,OH,United States,"Positive: assembly, composite, ems, iso 9001, itar, manufacturing; Negative: foundation, media, university"
+General Dynamics Information Technology,https://www.gdit.com,12,C,"ems, erp, itar, mes, supply chain","conference center, consulting, cybersecurity",6241,Hall DE,General Dynamics Information Technology,GD,USA,"Positive: ems, erp, itar, mes, supply chain; Negative: conference center, consulting, cybersecurity"
+Knight's Armament Company,https://www.knightarmco.com,12,C,"assembly, ems, erp, itar","magazine, media",7707,Hall DE,Titusville,FL,United States,"Positive: assembly, ems, erp, itar; Negative: magazine, media"
+Carnegie Mellon University Software Engineering Institute,https://www.sei.cmu.edu,11,C,"bill of materials, bom, ems, mes","cybersecurity, foundation, university",2109,Hall ABC,Pittsburgh,PA,United States,"Positive: bill of materials, bom, ems, mes; Negative: cybersecurity, foundation, university"
+Kale Jet Motorlari Sanayi A.S.,https://kalejetengines.com/,11,C,"ems, iso 9001, mes",media,413,Hall ABC,,,USA,"Positive: ems, iso 9001, mes; Negative: media"
+Pacific Defense,https://www.pacific-defense.com/,11,C,"ems, itar, mes",recruiting,8253,Hall DE,El Segundo,CA,United States,"Positive: ems, itar, mes; Negative: recruiting"
+Astronautics Corporation of America,https://astronautics.com,10,C,"ems, itar",cybersecurity,6313,Hall DE,Oak Creek,WI,United States,"Positive: ems, itar; Negative: cybersecurity"
+Cherokee Federal,https://cherokee-federal.com,10,C,"ems, manufacturing",cybersecurity,6152,Hall DE,Tulsa,OK,United States,"Positive: ems, manufacturing; Negative: cybersecurity"
+Day & Zimmermann,https://www.dayzim.com,10,C,"itar, manufacturing, mes, welding","media, staffing",2803,Hall ABC,Philadelphia,PA,United States,"Positive: itar, manufacturing, mes, welding; Negative: media, staffing"
+2Serve Together,https://www.2servetogether.org,8,C,itar,,435,Hall ABC,Philadelphia,PA,United States,Positive: itar
+Aimlock Inc.,https://www.aim-lock.com,8,C,ems,,4345,Hall ABC,Littleton,CO,United States,Positive: ems
+Aimpoint Inc,https://aimpoint.us/,8,C,itar,,1955,Hall ABC,Manassas,VA,United States,Positive: itar
+Allient Defense,https://www.allient.com,8,C,ems,,4243,Hall ABC,Amherst,NY,United States,Positive: ems
+Amprius Technologies,https://amprius.com,8,C,manufacturing,,546,Hall ABC,Fremont,CA,United States,Positive: manufacturing
+Ansys,https://www.ansys.com,8,C,ems,,3455,Hall ABC,Canonsburg,PA,United States,Positive: ems
+APPI-Technology,https://www.appi-technology.com,8,C,ems,,2641,Hall ABC,,,USA,Positive: ems
+"ARKA - Danbury Mission Technologies, LLC",https://arka.org,8,C,ems,,7814,Hall DE,Danbury,CT,United States,Positive: ems
+"Atrenne, A Celestica Company",https://www.atrenne.com/,8,C,ems,,3943,Hall ABC,Brockton,MA,United States,Positive: ems
+Avalon Action Alliance,https://www.avalonactionalliance.org/,8,C,itar,,363,Hall ABC,Atlanta,GA,United States,Positive: itar
+C.E. Niehoff & Co.,https://www.ceniehoff.com,8,C,manufacturer,,2003,Hall ABC,Evanston,IL,United States,Positive: manufacturer
+Conflux Technology Pty Ltd,https://www.confluxtechnology.com/,8,C,ems,,525,Hall ABC,,,USA,Positive: ems
+CONTROP USA INC.,https://www.contropusa.com,8,C,ems,,6915,Hall DE,Germantown,MD,United States,Positive: ems
+Crane Aerospace & Electronics,https://www.craneae.com/,8,C,itar,,2167,Hall ABC,Lynnwood,WA,United States,Positive: itar
+Cummins,https://www.cummins.com/,8,C,manufacturing,,6319,Hall DE,Columbus,IN,United States,Positive: manufacturing
+Dell Technologies,https://www.dell.com/en-us/lp/dt/industry-federal-government-it,8,C,manufacturing,,2361,Hall ABC,Chris Heuer,US,USA,Positive: manufacturing
+"DFND Technologies, Inc",https://dfndusa.com,8,C,itar,,7027,Hall DE,Hawthorne,CA,United States,Positive: itar
+DripDrop ORS,https://www.dripdrop.com/,8,C,itar,,7027,Hall DE,Oakland,CA,United States,Positive: itar
+EIZO Rugged Solutions,https://www.eizorugged.com,8,C,ems,,754,Hall ABC,,EI,USA,Positive: ems
+Emcor Enclosures,https://www.emcorenclosures.com,8,C,erp,,1667,Hall ABC,Rochester,MN,United States,Positive: erp
+GENERAL DIRECTORATE FOR DEFENSE INVESTMENTS AND ARMAMENTS (GDDIA),https://www.gdaee.mil.gr/en/,8,C,ems,,7219,Hall DE,,,Greece,Positive: ems
+General Dynamics Land Systems,https://www.gdls.com,8,C,ems,,6027,Hall DE,Sterling Heights,MI,United States,Positive: ems
+Gentex Corporation / Ops-Core,https://www.gentexcorp.com,8,C,ems,,8219,Hall DE,Carbondale,PA,United States,Positive: ems
+Gladiator Technologies,https://www.gladiatortechnologies.com,8,C,ems,,3703,Hall ABC,Snoqualmie,WA,United States,Positive: ems
+Goodyear Tire & Rubber Co.,https://www.goodyear.com/gov,8,C,itar,,8140,Hall DE,Akron,OH,United States,Positive: itar
+Hendrickson,https://www.hendrickson-intl.com,8,C,"composite, ems, manufacturer, manufacturing","media, university",8427,Hall DE,Woodridge,IL,United States,"Positive: composite, ems, manufacturer, manufacturing; Negative: media, university"
+Hewlett Packard Enterprise,https://www.hpe.com,8,C,erp,,313,Hall ABC,Reston,VA,United States,Positive: erp
+"High Impact Technology, LLC",https://www.hit-usa.com,8,C,itar,,660,Hall ABC,Salem,OR,United States,Positive: itar
+Honeywell Aerospace Technologies,https://www.aerospace.honeywell.com,8,C,itar,,7341,Hall DE,Phoenix,AZ,United States,Positive: itar
+Hutchinson Industries,https://www.hutchinsoninc.com,8,C,itar,,2503,Hall ABC,Trenton,NJ,United States,Positive: itar
+"Inertial Labs, a VIAVI Solutions Company",https://inertiallabs.com/,8,C,ems,,1362,Hall ABC,Paeonian Springs,VA,United States,Positive: ems
+ISYmap,https://www.isymap.com,8,C,ems,,2640,Hall ABC,,,USA,Positive: ems
+ITI Engineering,https://itiengineering.com/,8,C,ems,,760,Hall ABC,,IT,USA,Positive: ems
+"Kollmorgen, A Regal Rexnord Brand",https://www.kollmorgen.com,8,C,ems,,567,Hall ABC,Radford,VA,United States,Positive: ems
+Kraus Hamdani Aerospace,https://www.khaero.com,8,C,ems,,550,Hall ABC,Emeryville,CA,United States,Positive: ems
+Lumibird,https://www.lumibird.us,8,C,ems,,3703,Hall ABC,Bozeman,MT,United States,Positive: ems
+MBDA Inc.,https://www.mbdainc.com,8,C,ems,,3931,Hall ABC,Arlington,VA,United States,Positive: ems
+"MEI Micro, Inc.",https://www.mei-micro.com,8,C,ems,,449,Hall ABC,Orlando,FL,United States,Positive: ems
+Nevada Automotive Test Center,https://www.natc-ht.com,8,C,ems,,642,Hall ABC,Nevada Automotive Test Center,PO,USA,Positive: ems
+ONEIL,https://www.oneil.com,8,C,manufacturer,,1614,Hall ABC,,ON,USA,Positive: manufacturer
+PacSci EMC,https://www.psemc.com,8,C,ems,,2216,Hall ABC,Hollister,CA,United States,Positive: ems
+"Parry Labs, LLC",https://www.parrylabs.com,8,C,ems,,4339,Hall ABC,Alexandria,VA,United States,Positive: ems
+AAR Mobility Systems,https://www.aarmobilitysystems.com,7,C,"distribution, ems, itar","media, nonprofit",2415,Hall ABC,,AA,USA,"Positive: distribution, ems, itar; Negative: media, nonprofit"
+AeroGlow LLC,https://www.aeroglowinternational.com,7,C,"ems, iso 9001, itar, mes","association, nonprofit",1360,Hall ABC,Fredericksburg,VA,United States,"Positive: ems, iso 9001, itar, mes; Negative: association, nonprofit"
+Bombardier Defense,https://defense.bombardier.com/en,7,C,"bom, ems, itar, mes","media, resort, systems integrator",7801,Hall DE,Wichita,KS,United States,"Positive: bom, ems, itar, mes; Negative: media, resort, systems integrator"
+Booz Allen Hamilton,https://www.boozallen.com/,7,C,"ems, erp, mes","cybersecurity, magazine",1919,Hall ABC,McLean,VA,United States,"Positive: ems, erp, mes; Negative: cybersecurity, magazine"
+COGES,https://www.cogesevents.com,7,C,mes,,2641,Hall ABC,,,USA,Positive: mes
+Decision Lens,https://www.decisionlens.com,7,C,mes,,3454,Hall ABC,Arlington,VA,United States,Positive: mes
+"ETL Co., Ltd.",https://www.etlst.com,7,C,supply chain,,7519,Hall DE,,,USA,Positive: supply chain
+Janusnet,https://www.janusnet.com,7,C,"ems, erp, mes","cybersecurity, foundation",525,Hall ABC,,,USA,"Positive: ems, erp, mes; Negative: cybersecurity, foundation"
+DEFEA - Defence Exhibition Athens,https://www.defea.gr,6,C,"ems, itar",media,7219,Hall DE,,,Greece,"Positive: ems, itar; Negative: media"
+HGH,https://www.hgh-infrared.com/,6,C,"ems, itar",media,457,Hall ABC,,HG,USA,"Positive: ems, itar; Negative: media"
+"Laser Shot, Inc.",https://www.lasershot.com,6,C,"ems, itar",media,119,Hall ABC,Stafford,TX,United States,"Positive: ems, itar; Negative: media"
+MyDefence A/S,https://www.mydefence.com,6,C,"ems, itar",media,1703,Hall ABC,,,USA,"Positive: ems, itar; Negative: media"
+Army & Air Force Exchange Service,https://www.shopmyexchange.com/vets,5,C,"itar, mes",association,3325,Hall ABC,Dallas,TX,United States,"Positive: itar, mes; Negative: association"
+Callington,https://www.callington.com,5,C,"manufacturer, welding",association,525,Hall ABC,,,USA,"Positive: manufacturer, welding; Negative: association"
+Enterprise Greece,https://www.enterprisegreece.gov.gr/en/,5,C,"erp, mes",media,7219,Hall DE,Government Organization,,Enterprise Greece is the official investment and trade promotion agency of the Greek St 109 Vasilissis Sofias Avenue,"Positive: erp, mes; Negative: media"
+GICAT,https://gicat.com/,5,C,"itar, mes",association,2640,Hall ABC,,,USA,"Positive: itar, mes; Negative: association"
+GME Pty Ltd.,https://www.gme.net.au,5,C,"manufacturing, mes",media,525,Hall ABC,,,Australia,"Positive: manufacturing, mes; Negative: media"
+Operation Deploy Your Dress,https://operationdeployyourdress.org,5,C,"inventory, itar, mes","association, magazine",524,Hall ABC,Yvonne Coombes,CE,United States,"Positive: inventory, itar, mes; Negative: association, magazine"
+FalCom,https://falcom.net,4,C,"itar, routing",foundation,1703,Hall ABC,,,United States,"Positive: itar, routing; Negative: foundation"
+Maris Tech,https://www.maris-tech.com,4,C,"ems, itar, oem","foundation, media",2154,Hall ABC,,,USA,"Positive: ems, itar, oem; Negative: foundation, media"
+AMDA Foundation Limited,https://www.landforces.com.au,3,C,"itar, manufacturing, mes","foundation, media",525,Hall ABC,,,Australia,"Positive: itar, manufacturing, mes; Negative: foundation, media"
+American Battle Monuments Foundation,https://abmf.org/,3,C,"erp, itar, mes","foundation, media",460,Hall ABC,Denver,CO,United States,"Positive: erp, itar, mes; Negative: foundation, media"
+American Red Cross - Washington DC,https://www.redcross.org,3,C,"distribution, itar, mes","foundation, media",429,Hall ABC,Washington,DC,United States,"Positive: distribution, itar, mes; Negative: foundation, media"
+Dalfin AI,https://www.dalfin.ai,3,C,"ems, manufacturing, mes","insurance, media",525,Hall ABC,,,United States,"Positive: ems, manufacturing, mes; Negative: insurance, media"
+Kongsberg Defense & Aerospace,https://www.kongsberg.com/kda,3,C,"ems, itar, supply chain","accounting, media",1649,Hall ABC,Alexandria,VA,United States,"Positive: ems, itar, supply chain; Negative: accounting, media"
+Kymeta Corporation,https://www.kymetacorp.com,3,C,"itar, mes",bank,1367,Hall ABC,Redmond,WA,United States,"Positive: itar, mes; Negative: bank"
+NVTS Night Vision Technology Solutions Inc,https://www.nvtsglobal.com,3,C,"ems, itar, mes","association, media",966,Hall ABC,North Kingstown,,RI 02852,"Positive: ems, itar, mes; Negative: association, media"
+BlueRoom Simulations,https://blueroomxr.com,1,C,"ems, itar, mes","bank, media",525,Hall ABC,,,USA,"Positive: ems, itar, mes; Negative: bank, media"
+Cubic Defense,https://www.cubic.com/defense,1,C,"ems, erp, itar, mes","foundation, magazine, media",7117,Hall DE,San Diego,CA,United States,"Positive: ems, erp, itar, mes; Negative: foundation, magazine, media"
+Fairwinds Technologies LLC,https://www.fairwinds-tech.com/,1,C,"ems, itar, mes","media, university",3554,Hall ABC,Aberdeen Proving Ground,MD,United States,"Positive: ems, itar, mes; Negative: media, university"
+Microsoft,https://www.microsoftfederal.com,1,C,mes,cybersecurity,617,Hall ABC,Redmond,WA,United States,Positive: mes; Negative: cybersecurity
+nLIGHT,https://www.nlight.net/,1,C,"ems, manufacturer, manufacturing, welding","foundation, magazine, media",3703,Hall ABC,Camas,WA,United States,"Positive: ems, manufacturer, manufacturing, welding; Negative: foundation, magazine, media"
+Octasic Inc,https://www.octasic.com,1,C,"ems, itar, mes, oem","association, foundation, media",8500,Hall DE,,,USA,"Positive: ems, itar, mes, oem; Negative: association, foundation, media"
+Accenture Federal Services,https://www.accenturefederal.com,0,C,"erp, manufacturing, supply chain","bank, consulting, cybersecurity, insurance, media",750,Hall ABC,Arlington,VA,United States,"Positive: erp, manufacturing, supply chain; Negative: bank, consulting, cybersecurity, insurance"
+Advanced Technology International,https://www.ati.org,0,C,"erp, mes","cybersecurity, foundation, media, nonprofit, university",3819,Hall ABC,Charleston,SC,United States,"Positive: erp, mes; Negative: cybersecurity, foundation, media, nonprofit"
+ALTA ARES,https://altaares.com/,0,C,,,2641,Hall ABC,Stanislas Walch,CO,United States,
+Amazon Web Services,https://www.aws.com/defense,0,C,"ems, erp, itar","bank, consulting, cybersecurity, foundation, nonprofit",8312,Hall DE,Amazon Web Services,AW,USA,"Positive: ems, erp, itar; Negative: bank, consulting, cybersecurity, foundation"
+Amentum,https://amentum.com,0,C,,,1619,Hall ABC,Chantilly,VA,United States,
+Applied Companies,https://www.appliedcompanies.net,0,C,,,4138,Hall ABC,Valencia,CA,United States,
+ArmorWorks Enterprises,https://www.armorworks.com,0,C,,,1243,Hall ABC,Chandler,AZ,United States,
+Aurizn,https://aurizn.co/,0,C,"ems, erp, mes","consulting, cybersecurity, law firm, recruiting",525,Hall ABC,,,United States,"Positive: ems, erp, mes; Negative: consulting, cybersecurity, law firm, recruiting"
+Australian Department of Defence,https://www.defence.gov.au/business-industry/Export/team-defence-australia,0,C,,,525,Hall ABC,,,Dr,
+Avalon Holographic Inc.,https://www.avalonholographics.com,0,C,,,4209,Hall ABC,,,USA,
+Axon,https://www.tiktok.com/@tiktok.com/https://www.tiktok.com/@axon.enterprise?lang=en,0,C,,,1961,Hall ABC,Scottsdale,AZ,United States,
+Babel Street,https://www.babelstreet.com/,0,C,supply chain,foundation,1767,Hall ABC,Reston,VA,United States,Positive: supply chain; Negative: foundation
+BDSV Exhibitions e.V.,https://www.bdsv.eu,0,C,mes,association,2704,Hall ABC,,,United States,Positive: mes; Negative: association
+BERNIER Connect S.A.S,https://www.bernier.tm.fr,0,C,,,2539,Hall ABC,,,France,
+Blue Summit,https://www.bluesummitcg.com,0,C,"itar, mes","consulting, foundation",439,Hall ABC,Denise Benson,CM,USA,"Positive: itar, mes; Negative: consulting, foundation"
+Bluesky Innovations,https://www.blueskyinnovations.com,0,C,,,1939,Hall ABC,Charles Larson,VP,USA,
+"BlueWaveTel Co., Ltd.",https://www.bluewavetel.com,0,C,,,7519,Hall DE,,,USA,
+BOSTON DYNAMICS,https://bostondynamics.com/,0,C,,,961,Hall ABC,Contact Info,JP,USA,
+Carmenta Inc.,https://www.carmenta.com,0,C,ems,"association, conference center",4120,Hall ABC,Arlington,VA,United States,"Positive: ems; Negative: association, conference center"
+CDC Data Centres,https://CDC.com,0,C,,university,525,Hall ABC,,,USA,Negative: university
+CMG Networks,https://www.cmgcorp.org,0,C,,nonprofit,1167,Hall ABC,,CM,United States,Negative: nonprofit
+Concept2 Inc,https://www.concept2.com,0,C,,,7027,Hall DE,Morrisville,VT,United States,
+Conflict Kinetics,https://www.conflictkinetics.com,0,C,"ems, erp, itar, mes","insurance, magazine, media, nonprofit, recruiting, university",7027,Hall DE,Reston,,VA 20191,"Positive: ems, erp, itar, mes; Negative: insurance, magazine, media, nonprofit"
+CoVar,https://covar.com/,0,C,,,3954,Hall ABC,McLean,VA,United States,
+"Crystal Group, Inc.",https://crystalrugged.com,0,C,,,2115,Hall ABC,Hiawatha,IA,United States,
+Curtiss-Wright,https://www.curtisswrightds.com,0,C,,,1509,Hall ABC,Ashburn,VA,United States,
+CZ,https://Cz-usa.com,0,C,,,7247,Hall DE,Kansas City,KS,United States,
+D'Aniello Institute For Veterans and Military Families at Syracuse,https://ivmf.syracuse.edu,0,C,itar,university,532,Hall ABC,Syracuse,NY,United States,Positive: itar; Negative: university
+D-Fend Solutions,https://www.d-fendsolutions.com,0,C,,,7120,Hall DE,McLean,VA,United States,
+"Dabeeo, Inc",https://www.dabeeo.com,0,C,erp,hotel,7519,Hall DE,San Jose,CA,United States,Positive: erp; Negative: hotel
+Dataminr,https://www.dataminr.com,0,C,,,2153,Hall ABC,New York,NY,United States,
+Deakin University,https://www.deakin.edu.au,0,C,,university,525,Hall ABC,,,Australia,Negative: university
+Deloitte,https://www.deloitte.com,0,C,"distribution, erp, supply chain","bank, consulting, insurance, media",1603,Hall ABC,Arlington,VA,United States,"Positive: distribution, erp, supply chain; Negative: bank, consulting, insurance, media"
+Doodle Labs,https://doodlelabs.com/,0,C,,,4043,Hall ABC,Marina Del Rey,,CA 90292,
+Dynamit Nobel Defence,https://www.dn-defence.com,0,C,,,2603,Hall ABC,,,USA,
+EarlyBirds,https://earlybirds.io,0,C,mes,"association, cybersecurity, foundation",525,Hall ABC,,,United States,"Positive: mes; Negative: association, cybersecurity, foundation"
+ELMON,https://www.elmon.com,0,C,,,7219,Hall DE,,,USA,
+Enduraphin,https://www.enduraphin.com,0,C,mes,"media, university",7027,Hall DE,Orlando,FL,United States,"Positive: mes; Negative: media, university"
+Epirus,https://www.epirusinc.com,0,C,"ems, erp, itar, mes","magazine, media, university",7609,Hall DE,Torrance,CA,United States,"Positive: ems, erp, itar, mes; Negative: magazine, media, university"
+Esri,https://www.esri.com/en-us/industries/intelligence/overview,0,C,"distribution, ems, erp, itar, manufacturing, mes","consulting, foundation, hotel, insurance, media, nonprofit",3519,Hall ABC,Redlands,CA,United States,"Positive: distribution, ems, erp, itar, manufacturing, mes; Negative: consulting, foundation, hotel, insurance"
+EURENCO,https://www.eurenco.com,0,C,manufacturer,foundation,2639,Hall ABC,,,USA,Positive: manufacturer; Negative: foundation
+Fibrotex USA. Inc.,https://www.fibrotexusa.com,0,C,,,3555,Hall ABC,Stearns,KY,United States,
+Fisher Space Pen,https://www.spacepen.com,0,C,,,538,Hall ABC,Boulder City,NV,United States,
+Fivecast,https://fivecast.com,0,C,,,525,Hall ABC,Arlington,VA,United States,
+Game Ready by Avanos Medical,https://www.gameready.com,0,C,"ems, manufacturer, mes","insurance, media, university",7027,Hall DE,Alpharetta,GA,United States,"Positive: ems, manufacturer, mes; Negative: insurance, media, university"
+Genesis Systems LLC,https://www.genesisarms.com,0,C,,,3703,Hall ABC,Coeur D Alene,ID,United States,
+Georgia Tech Research Institute,https://www.gtri.gatech.edu,0,C,"ems, mes","conference center, cybersecurity, media, nonprofit, university",1261,Hall ABC,Atlanta,MD,United States,"Positive: ems, mes; Negative: conference center, cybersecurity, media, nonprofit"
+Global SOF Foundation,https://www.gsof.org,0,C,"itar, mes","foundation, media",3955,Hall ABC,Tampa,FL,United States,"Positive: itar, mes; Negative: foundation, media"
+"goTenna, Inc.",https://www.gotenna.com,0,C,"ems, itar, mes","foundation, media, university",6552,Hall DE,Jersey City,NJ,United States,"Positive: ems, itar, mes; Negative: foundation, media, university"
+Hanwha Defense USA,https://hanwhadefenseusa.com,0,C,"ems, itar, mes","association, bank, media",125,Hall ABC,McLean,VA,United States,"Positive: ems, itar, mes; Negative: association, bank, media"
+Holosun Technologies Inc,https://www.holosun.com,0,C,ems,media,2152,Hall ABC,Luis Chirino,LE,USA,Positive: ems; Negative: media
+Hyperformance Foundation,https://hyperformancefoundation.org/our-mission,0,C,itar,"foundation, nonprofit",427,Hall ABC,Duck River,ME,United States,"Positive: itar; Negative: foundation, nonprofit"
+IBM Corp,https://www.ibm.com/industries/federal,0,C,"ems, erp, itar, manufacturing, mes, supply chain","bank, consulting, cybersecurity, foundation, legal services, media",2225,Hall ABC,,IB,USA,"Positive: ems, erp, itar, manufacturing, mes, supply chain; Negative: bank, consulting, cybersecurity, foundation"
+Intercontinental Hotels Group,https://www.ihgarmyhotels.com,0,C,itar,hotel,8208,Hall DE,Intercontinental Hotels Group,IH,USA,Positive: itar; Negative: hotel
+Isodyne Inc,https://www.isodyneinc.com,0,C,,,7352,Hall DE,Wichita,KS,United States,
+Korea Defense Industry Association (KDIA),https://kdia.or.kr/resource/KDIA/html/index.html,0,C,"ems, mes","accounting, association, consulting, insurance, magazine, media",7519,Hall DE,Min Hyeon Yoon,,St,"Positive: ems, mes; Negative: accounting, association, consulting, insurance"
+"Kratos Defense & Security Solutions, Inc.",https://www.kratosdefense.com,0,C,,,3615,Hall ABC,San Diego,CA,United States,
+KRH,https://www.krhkw.com/,0,C,,staffing,2743,Hall ABC,,,USA,Negative: staffing
+Leading Technology Composites,https://www.ltc-ltc.com,0,C,,,1361,Hall ABC,Dean Richardson,VP,USA,
+Leonardo DRS,https://www.leonardodrs.com,0,C,,,703,Hall ABC,Arlington,VA,United States,
+LMI,https://lmisolutions.com,0,C,,consulting,1817,Hall ABC,,LM,USA,Negative: consulting
+"Mack Defense, LLC",https://www.mackdefense.com,0,C,,,8333,Hall DE,Allentown,PA,United States,
+MAG,https://www.magaero.com,0,C,,,7702,Hall DE,,MA,United States,
+MANTECH,https://www.mantech.com,0,C,erp,media,7541,Hall DE,Herndon,VA,United States,Positive: erp; Negative: media
+"MaxVision, Rugged Portable Computers",https://www.maxvision.com,0,C,,,2148,Hall ABC,Madison,AL,United States,
+Mercury Systems,https://www.mrcy.com,0,C,"ems, manufacturing, mes, supply chain","association, media, university",1115,Hall ABC,Andover,MA,United States,"Positive: ems, manufacturing, mes, supply chain; Negative: association, media, university"
+MilDef,https://mildef.com/,0,C,"ems, itar","association, consulting, foundation, it services, media, systems integrator",3713,Hall ABC,Brea,CA,United States,"Positive: ems, itar; Negative: association, consulting, foundation, it services"
+Military Child Education Coalition,https://www.MilitaryChild.org,0,C,itar,nonprofit,426,Hall ABC,Harker Heights,TX,United States,Positive: itar; Negative: nonprofit
+Milliken & Company,https://www.milliken.com/en-us/businesses/textile/government-and-defense,0,C,"itar, manufacturer, manufacturing","consulting, foundation, media",3419,Hall ABC,Spartanburg,SC,United States,"Positive: itar, manufacturer, manufacturing; Negative: consulting, foundation, media"
+MOORI Technologies Co.,https://mooritech.com,0,C,"iso 9001, itar","association, foundation",7519,Hall DE,,,USA,"Positive: iso 9001, itar; Negative: association, foundation"
+National Advanced Mobility Consortium (NAMC),https://www.namconsortium.org/,0,C,ems,nonprofit,4047,Hall ABC,Ann Arbor,MI,United States,Positive: ems; Negative: nonprofit
+National Defense Industrial Association (NDIA),https://www.NDIA.org,0,C,,"association, magazine, media",4019,Hall ABC,Arlington,VA,United States,"Negative: association, magazine, media"
+Navy Federal Credit Union,https://www.navyfederal.org,0,C,,"bank, college, insurance",638,Hall ABC,Vienna,VA,United States,"Negative: bank, college, insurance"
+Nexus Training Solutions,https://www.nexustrain.com,0,C,,,525,Hall ABC,Leland,NC,United States,
+Norwich University,https://www.norwich.edu,0,C,itar,"college, cybersecurity, university",8053,Hall DE,Northfield,VT,United States,"Positive: itar; Negative: college, cybersecurity, university"
+Offroad Autonomy,https://fieldai.com,0,C,"ems, mes","foundation, media",4047,Hall ABC,Mission Viejo,CA,United States,"Positive: ems, mes; Negative: foundation, media"
+Operator XR,https://operatorxr.com/,0,C,,,525,Hall ABC,Alexandria,VA,United States,
+Oshkosh Defense,https://www.oshkoshdefense.com,0,C,,,1625,Hall ABC,Oshkosh,WI,United States,
+Our Military Kids,https://www.ourmilitarykids.org,0,C,"itar, mes","college, foundation, media, nonprofit",434,Hall ABC,Oakton,VA,United States,"Positive: itar, mes; Negative: college, foundation, media, nonprofit"
+Oura,https://ouraring.com,0,C,"mes, supply chain","foundation, media",7027,Hall DE,San Francisco,,CA 94108,"Positive: mes, supply chain; Negative: foundation, media"
+Palantir Technologies,https://www.palantir.com,0,C,,foundation,1049,Hall ABC,Palo Alto,CA,United States,Negative: foundation
+Parker Hannifin Corporation,https://www.parker.com,0,C,,,1317,Hall ABC,Irvine,CA,United States,
+Parsons Corporation,https://www.parsons.com,0,C,,media,8441,Hall DE,Chantilly,VA,United States,Negative: media
+Pearson Engineering Ltd.,https://www.pearson-eng.com,0,C,,,1461,Hall ABC,,,USA,

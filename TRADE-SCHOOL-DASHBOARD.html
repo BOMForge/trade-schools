@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Trade School Workforce Analysis Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #764ba2;
+            display: block;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #map {
+            height: 500px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+        .priority-high {
+            background: #fee;
+            font-weight: bold;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .tab-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .share-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+        .share-url {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            word-break: break-all;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 US Trade School Workforce Analysis</h1>
+        <p class="subtitle">1,032 Institutions | 52 States | 11 Programs | Real-time Analysis</p>
+
+        <!-- Key Stats Grid -->
+        <div class="grid">
+            <div class="card">
+                <h2>📍 Total Coverage</h2>
+                <span class="stat-number">1,032</span>
+                <span class="stat-label">Trade Schools Analyzed</span>
+            </div>
+            <div class="card">
+                <h2>🗺️ Geographic Reach</h2>
+                <span class="stat-number">52</span>
+                <span class="stat-label">States & Territories</span>
+            </div>
+            <div class="card">
+                <h2>🔧 Training Programs</h2>
+                <span class="stat-number">3,413</span>
+                <span class="stat-label">School × Program Pairs</span>
+            </div>
+            <div class="card">
+                <h2>💰 Top ROI</h2>
+                <span class="stat-number">$57.5K</span>
+                <span class="stat-label">5-Year Net Benefit</span>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+                <div class="tab" onclick="showTab('gaps')">⚠️ Workforce Gaps</div>
+                <div class="tab" onclick="showTab('programs')">🎓 Programs</div>
+                <div class="tab" onclick="showTab('states')">📍 States</div>
+                <div class="tab" onclick="showTab('roi')">💰 ROI Analysis</div>
+                <div class="tab" onclick="showTab('map')">🗺️ Map View</div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Executive Summary</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Top 5 States by Schools</h3>
+                        <canvas id="statesChart"></canvas>
+                    </div>
+                    <div class="card">
+                        <h3>Most Common Programs</h3>
+                        <canvas id="programsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workforce Gaps Tab -->
+            <div id="gaps" class="tab-content">
+                <h2>Critical Workforce Gaps - Immediate Priorities</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Skill Gap</th>
+                            <th>Seats Needed</th>
+                            <th>Priority Score</th>
+                            <th>Investment Required</th>
+                            <th>5-Year ROI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="priority-high">
+                            <td>Illinois</td>
+                            <td>CDL Training</td>
+                            <td>37</td>
+                            <td>179.94</td>
+                            <td>$555,000</td>
+                            <td>$1,988,750</td>
+                        </tr>
+                        <tr class="priority-high">
+                            <td>North Dakota</td>
+                            <td>CDL Training</td>
+                            <td>37</td>
+                            <td>175.59</td>
+                            <td>$555,000</td>
+                            <td>$1,988,750</td>
+                        </tr>
+                        <tr class="priority-high">
+                            <td>Wisconsin</td>
+                            <td>CDL Training</td>
+                            <td>39</td>
+                            <td>168.05</td>
+                            <td>$585,000</td>
+                            <td>$2,096,250</td>
+                        </tr>
+                        <tr>
+                            <td>Utah</td>
+                            <td>CDL Training</td>
+                            <td>40</td>
+                            <td>162.07</td>
+                            <td>$600,000</td>
+                            <td>$2,150,000</td>
+                        </tr>
+                        <tr>
+                            <td>Idaho</td>
+                            <td>CDL Training</td>
+                            <td>39</td>
+                            <td>159.27</td>
+                            <td>$585,000</td>
+                            <td>$2,096,250</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 20px; color: #666;">
+                    <strong>Key Insight:</strong> CDL Training shows critical gaps across multiple states. 
+                    Average payback period: 1.1 years. These represent immediate expansion opportunities.
+                </p>
+            </div>
+
+            <!-- Programs Tab -->
+            <div id="programs" class="tab-content">
+                <h2>Program Distribution Across Schools</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Program</th>
+                            <th>Schools Offering</th>
+                            <th>Market Penetration</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Welding</strong></td>
+                            <td>739</td>
+                            <td>71.6%</td>
+                            <td>🔥 High Demand</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Diesel & Automotive Tech</strong></td>
+                            <td>593</td>
+                            <td>57.5%</td>
+                            <td>📈 Growing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HVAC</strong></td>
+                            <td>576</td>
+                            <td>55.8%</td>
+                            <td>📈 Growing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Machine & Mechanical Systems</strong></td>
+                            <td>393</td>
+                            <td>38.1%</td>
+                            <td>⚙️ Stable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Construction</strong></td>
+                            <td>374</td>
+                            <td>36.2%</td>
+                            <td>🏗️ Expanding</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Electronics</strong></td>
+                            <td>238</td>
+                            <td>23.1%</td>
+                            <td>⚡ Opportunity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CAD/CAM Drafting</strong></td>
+                            <td>209</td>
+                            <td>20.3%</td>
+                            <td>💻 Tech Growth</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Plumbing & Pipefitting</strong></td>
+                            <td>163</td>
+                            <td>15.8%</td>
+                            <td>🚰 Gap Area</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- States Tab -->
+            <div id="states" class="tab-content">
+                <h2>State Performance Scorecard</h2>
+                <div class="chart-container">
+                    <canvas id="stateDistribution"></canvas>
+                </div>
+                <table style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Schools</th>
+                            <th>Skill Coverage</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>California</strong></td>
+                            <td>121</td>
+                            <td>All Programs</td>
+                            <td>✅ Leader</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Texas</strong></td>
+                            <td>70</td>
+                            <td>All Programs</td>
+                            <td>✅ Strong</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ohio</strong></td>
+                            <td>63</td>
+                            <td>Most Programs</td>
+                            <td>✅ Strong</td>
+                        </tr>
+                        <tr>
+                            <td><strong>North Dakota</strong></td>
+                            <td>2</td>
+                            <td>Limited</td>
+                            <td>⚠️ Gap</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wyoming</strong></td>
+                            <td>3</td>
+                            <td>Limited</td>
+                            <td>⚠️ Gap</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ROI Tab -->
+            <div id="roi" class="tab-content">
+                <h2>Return on Investment Analysis</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Average Metrics</h3>
+                        <p><strong>Training Cost:</strong> $15,000 per seat</p>
+                        <p><strong>Average Salary:</strong> $52,000-$60,000</p>
+                        <p><strong>Payback Period:</strong> 1.0-1.1 years</p>
+                        <p><strong>5-Year Net Benefit:</strong> $53,750-$57,500</p>
+                    </div>
+                    <div class="card">
+                        <h3>Top ROI Programs</h3>
+                        <p>1. <strong>HVAC:</strong> $58K salary, 1.0 year payback</p>
+                        <p>2. <strong>Plumbing:</strong> $58K salary, 1.0 year payback</p>
+                        <p>3. <strong>CDL Training:</strong> $55K salary, 1.1 year payback</p>
+                        <p>4. <strong>Welding:</strong> $52K salary, 1.2 year payback</p>
+                    </div>
+                </div>
+                <canvas id="roiChart" style="margin-top: 20px;"></canvas>
+            </div>
+
+            <!-- Map Tab -->
+            <div id="map-tab" class="tab-content">
+                <h2>Geographic Distribution (Preview)</h2>
+                <div id="map"></div>
+                <p style="text-align: center; color: #666; margin-top: 10px;">
+                    ⏳ Geocoding in progress... Full map with 900+ school locations coming soon!
+                </p>
+            </div>
+        </div>
+
+        <!-- Share Section -->
+        <div class="share-section">
+            <h2>📤 Share This Dashboard</h2>
+            <p>To share this analysis:</p>
+            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="button" onclick="shareViaEmail()">📧 Email</button>
+                <button class="button" onclick="downloadData()">💾 Download Data</button>
+                <button class="button" onclick="copyShareLink()">🔗 Copy Link</button>
+                <button class="button" onclick="exportPDF()">📄 Export PDF</button>
+            </div>
+            <div class="share-url" id="shareUrl">
+                file:///Users/tc/workspace/TradeSchools/TRADE-SCHOOL-DASHBOARD.html
+            </div>
+            <p style="color: #666; margin-top: 10px;">
+                Or upload to GitHub Pages, Netlify, or Vercel for a public URL
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            if (tabName === 'map') {
+                document.getElementById('map-tab').classList.add('active');
+                initMap();
+            } else {
+                document.getElementById(tabName).classList.add('active');
+            }
+        }
+
+        // Initialize Charts
+        window.onload = function() {
+            // Top States Chart
+            const statesCtx = document.getElementById('statesChart').getContext('2d');
+            new Chart(statesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['California', 'Texas', 'Ohio', 'Florida', 'North Carolina'],
+                    datasets: [{
+                        label: 'Number of Schools',
+                        data: [121, 70, 63, 60, 48],
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Programs Chart
+            const programsCtx = document.getElementById('programsChart').getContext('2d');
+            new Chart(programsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Welding', 'Diesel/Auto', 'HVAC', 'Machine Systems', 'Construction', 'Other'],
+                    datasets: [{
+                        data: [739, 593, 576, 393, 374, 738],
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // State Distribution Chart
+            const stateDistCtx = document.getElementById('stateDistribution');
+            if (stateDistCtx) {
+                new Chart(stateDistCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['CA', 'TX', 'OH', 'FL', 'NC', 'PA', 'IL', 'TN', 'OK', 'KS'],
+                        datasets: [{
+                            label: 'School Distribution',
+                            data: [121, 70, 63, 60, 48, 46, 45, 34, 33, 30],
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            // ROI Chart
+            const roiCtx = document.getElementById('roiChart');
+            if (roiCtx) {
+                new Chart(roiCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                        datasets: [{
+                            label: 'Cumulative Net Benefit',
+                            data: [-15000, -1250, 12500, 26250, 40000],
+                            backgroundColor: function(context) {
+                                const value = context.dataset.data[context.dataIndex];
+                                return value < 0 ? 'rgba(255, 99, 132, 0.8)' : 'rgba(75, 192, 192, 0.8)';
+                            }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Training Investment Payback Timeline'
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Initialize Map
+        function initMap() {
+            if (document.getElementById('map')._leaflet_id) return;
+            
+            const map = L.map('map').setView([39.8283, -98.5795], 4);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add sample markers for top states
+            const topStates = [
+                {name: 'California', lat: 36.7783, lon: -119.4179, schools: 121},
+                {name: 'Texas', lat: 31.9686, lon: -99.9018, schools: 70},
+                {name: 'Ohio', lat: 40.4173, lon: -82.9071, schools: 63},
+                {name: 'Florida', lat: 27.6648, lon: -81.5158, schools: 60},
+                {name: 'North Carolina', lat: 35.7596, lon: -79.0193, schools: 48}
+            ];
+
+            topStates.forEach(state => {
+                const marker = L.circleMarker([state.lat, state.lon], {
+                    radius: Math.sqrt(state.schools) * 3,
+                    fillColor: '#667eea',
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+                
+                marker.bindPopup(`<strong>${state.name}</strong><br>${state.schools} schools`);
+            });
+        }
+
+        // Share functions
+        function shareViaEmail() {
+            const subject = 'Trade School Workforce Analysis Dashboard';
+            const body = 'Check out this analysis of 1,032 US trade schools: ' + window.location.href;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        function downloadData() {
+            alert('Data files available:\n\n• matchmaking_index.csv (3,413 rows)\n• supply_chain_analysis.json\n• workforce_optimization_results.json\n\nFind them in: /Users/tc/workspace/TradeSchools/schools/');
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link copied to clipboard!');
+        }
+
+        function exportPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

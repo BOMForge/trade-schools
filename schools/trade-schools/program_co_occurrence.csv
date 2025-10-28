@@ -1,0 +1,46 @@
+program_1,program_2,co_occurrence_count,strength_pct
+Diesel & Automotive Tech,Welding,484,46.9
+HVAC,Welding,443,42.93
+Diesel & Automotive Tech,HVAC,354,34.3
+Machine & Mechanical Systems,Welding,326,31.59
+Diesel & Automotive Tech,Machine & Mechanical Systems,272,26.36
+Construction,Welding,270,26.16
+Construction,Diesel & Automotive Tech,243,23.55
+HVAC,Machine & Mechanical Systems,228,22.09
+Construction,HVAC,222,21.51
+Electronics,Welding,186,18.02
+Construction,Machine & Mechanical Systems,166,16.09
+CAD/CAM Drafting,Welding,163,15.79
+Diesel & Automotive Tech,Electronics,158,15.31
+CAD/CAM Drafting,Diesel & Automotive Tech,152,14.73
+Electronics,HVAC,151,14.63
+HVAC,Plumbing & Pipefitting,132,12.79
+Plumbing & Pipefitting,Welding,132,12.79
+Electronics,Machine & Mechanical Systems,128,12.4
+CAD/CAM Drafting,HVAC,123,11.92
+CAD/CAM Drafting,Machine & Mechanical Systems,117,11.34
+Diesel & Automotive Tech,Plumbing & Pipefitting,106,10.27
+Welding,Woodworking & Carpentry,101,9.79
+Construction,Electronics,94,9.11
+Construction,Plumbing & Pipefitting,93,9.01
+Diesel & Automotive Tech,Woodworking & Carpentry,90,8.72
+CAD/CAM Drafting,Construction,87,8.43
+Machine & Mechanical Systems,Plumbing & Pipefitting,83,8.04
+HVAC,Woodworking & Carpentry,81,7.85
+CAD/CAM Drafting,Electronics,75,7.27
+Machine & Mechanical Systems,Woodworking & Carpentry,60,5.81
+Construction,Woodworking & Carpentry,60,5.81
+Electronics,Plumbing & Pipefitting,50,4.84
+Plumbing & Pipefitting,Woodworking & Carpentry,45,4.36
+CAD/CAM Drafting,Plumbing & Pipefitting,39,3.78
+Electronics,Woodworking & Carpentry,38,3.68
+CAD/CAM Drafting,Woodworking & Carpentry,26,2.52
+Diesel & Automotive Tech,Machining,2,0.19
+HVAC,Machining,2,0.19
+Machining,Welding,2,0.19
+Construction,Electrical,1,0.1
+Construction,Machining,1,0.1
+Diesel & Automotive Tech,Electrical,1,0.1
+Electrical,HVAC,1,0.1
+Electrical,Machining,1,0.1
+Electrical,Welding,1,0.1

@@ -1,0 +1,17 @@
+# Core data analysis
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Geocoding
+requests>=2.31.0
+
+# Optional: AI enrichment (only needed for ai-data-enrichment.py)
+anthropic>=0.18.0
+
+# Optional: H3 hexagons for hex map (Map #1)
+h3>=3.7.6
+
+# Optional: GeoJSON/spatial operations
+geojson>=3.0.0
+shapely>=2.0.0
+
