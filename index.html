@@ -761,25 +761,25 @@
                                 website: matchData.website || '',
                                 programs: matchData.programs || []
                             };
-                    
-                    // Only add if valid coordinates
-                    if (!isNaN(school.lat) && !isNaN(school.lon) && 
-                        school.lat >= -90 && school.lat <= 90 &&
-                        school.lon >= -180 && school.lon <= 180) {
-                        allSchools.push(school);
-                        
-                        // Track state counts
-                        if (!stateData[school.state]) {
-                            stateData[school.state] = 0;
-                        }
-                        stateData[school.state]++;
-                        
-                        // Track city counts
-                        const cityKey = `${school.city}, ${school.state}`;
-                        if (!cityData[cityKey]) {
-                            cityData[cityKey] = 0;
-                        }
-                        cityData[cityKey]++;
+                            
+                            // Only add if valid coordinates
+                            if (!isNaN(school.lat) && !isNaN(school.lon) && 
+                                school.lat >= -90 && school.lat <= 90 &&
+                                school.lon >= -180 && school.lon <= 180) {
+                                allSchools.push(school);
+                                
+                                // Track state counts
+                                if (!stateData[school.state]) {
+                                    stateData[school.state] = 0;
+                                }
+                                stateData[school.state]++;
+                                
+                                // Track city counts
+                                const cityKey = `${school.city}, ${school.state}`;
+                                if (!cityData[cityKey]) {
+                                    cityData[cityKey] = 0;
+                                }
+                                cityData[cityKey]++;
                             }
                         }
                     });
