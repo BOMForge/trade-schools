@@ -1,6 +1,6 @@
-name = "trade-schools-map"
+name = "trade-schools"
 compatibility_date = "2024-01-01"
-pages_build_output_dir = "."
+pages_build_output_dir = "src"
 
 # D1 Database binding (commented out until database is created)
 # [[d1_databases]]

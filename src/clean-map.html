@@ -1482,24 +1482,6 @@
         </div>
     </div>
     
-    <!-- Floating Submit Button -->
-    <a href="submit-school.html" class="floating-submit" id="floatingSubmit">
-        <span>+</span>
-        <span>Submit a School or Program</span>
-    </a>
-    
-    <!-- Program Legend -->
-    <div class="legend-toggle" id="legendToggle" onclick="toggleLegend()">
-        🎨 Show Legend
-    </div>
-    <div class="program-legend" id="programLegend">
-        <div class="legend-title">
-            <span>🎨</span>
-            <span>Program Colors</span>
-        </div>
-        <div class="legend-items" id="legendItems"></div>
-    </div>
-    
     <div id="sidebar" class="collapsed">
         <div class="filters" style="padding: 20px;">
             <h2 style="color: #e1e8ed; margin-bottom: 20px; font-size: 1.2em;">Filters</h2>
@@ -3041,59 +3023,7 @@
             }
         }
         
-        // Handle school submission
-        document.getElementById('schoolSubmissionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.textContent;
-            
-            // Disable button and show loading
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            
-            // Collect form data
-            const schoolCity = document.getElementById('schoolCity').value;
-            const schoolState = document.getElementById('schoolState').value;
-            const formData = {
-                schoolName: document.getElementById('schoolName').value,
-                schoolCity: schoolCity,
-                schoolState: schoolState,
-                schoolLocation: `${schoolCity}, ${schoolState}`,
-                schoolWebsite: document.getElementById('schoolWebsite').value,
-                schoolPrograms: document.getElementById('schoolPrograms').value,
-                submitterEmail: document.getElementById('submitterEmail').value,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent
-            };
-            
-            // Send email using mailto link
-            const subject = `New Trade School Submission: ${formData.schoolName}`;
-            const body = `New trade school submission:\n\n` +
-                        `School Name: ${formData.schoolName}\n` +
-                        `City: ${formData.schoolCity}\n` +
-                        `State: ${formData.schoolState}\n` +
-                        `Location: ${formData.schoolLocation}\n` +
-                        `Website: ${formData.schoolWebsite || 'Not provided'}\n` +
-                        `Programs: ${formData.schoolPrograms || 'Not provided'}\n` +
-                        `Submitted by: ${formData.submitterEmail || 'Anonymous'}\n` +
-                        `Submitted at: ${formData.timestamp}\n` +
-                        `User Agent: ${formData.userAgent}`;
-            
-            // Create mailto link
-            const mailtoLink = `mailto:tom@bomforge.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            // Open email client
-            window.location.href = mailtoLink;
-            
-            // Reset form after a delay
-            setTimeout(() => {
-                document.getElementById('schoolSubmissionForm').reset();
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                alert('Thank you! Your email client should open with the submission details. Please send the email to complete the submission.');
-            }, 1000);
-        });
+        // Form submission handler removed - no inline form in this version
         
         // Helper: filter schools to current map bounds
         function getSchoolsInBounds() {
