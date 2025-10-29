@@ -1,0 +1,19 @@
+{
+  "name": "trade-schools",
+  "version": "1.0.0",
+  "description": "Trade Schools Directory Map",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev src/ --d1 DB=trade-schools-db --port 8080",
+    "deploy": "wrangler pages deploy src/ --project-name=trade-schools",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
+
