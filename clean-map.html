@@ -17,12 +17,35 @@
             box-sizing: border-box;
         }
         
+        .demo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #1d9bf0, #ff6b6b, #6bcf7f);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0f1419;
             color: #e1e8ed;
             height: 100vh;
             display: flex;
+            padding-top: 40px;
         }
         
         #map {
@@ -413,6 +436,10 @@
     </style>
 </head>
 <body>
+    <div class="demo-banner">
+        🚀 DEMO IN PROGRESS - Trade Schools Map with 899 Schools Mapped | Interactive Search, Heatmap & Hex Grid | Submit New Schools
+    </div>
+    
     <div id="map"></div>
     
     <div id="sidebar">
@@ -444,6 +471,9 @@
                 <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')">Heat Map</button>
                 <button class="view-btn" id="hexgridBtn" onclick="setView('hexgrid')">Hex Grid</button>
             </div>
+            <div class="view-controls">
+                <button class="view-btn" id="viewportToggle" onclick="toggleViewportFiltering()">🎯 Viewport Only</button>
+            </div>
             <div class="filter-group">
                 <label class="filter-label">Filter by State</label>
                 <select class="filter-select" id="stateFilter">
@@ -459,7 +489,7 @@
         </div>
         
         <div class="chart-container">
-            <div class="chart-title">📊 Program Distribution</div>
+            <div class="chart-title" id="chartTitle">📊 Program Distribution</div>
             <canvas id="programChart" class="chart-canvas"></canvas>
         </div>
         
@@ -517,12 +547,14 @@
         // Data storage
         let allSchools = [];
         let filteredSchools = [];
+        let viewportSchools = []; // Schools visible in current viewport
         let schoolMarkers = {};
         let markersLayer = L.layerGroup().addTo(map);
         let heatmapLayer = null;
         let hexLayer = L.layerGroup();
         let selectedMarker = null;
         let currentView = 'markers';
+        let viewportFiltering = false; // Whether to filter by viewport
         
         // Load geocoded data
         function loadGeocodedData() {
@@ -531,7 +563,7 @@
                 download: true,
                 header: true,
                 complete: function(geoResults) {
-                    console.log('Geocoded data loaded:', geoResults.data.length, 'rows');
+                    console.log('Fixed geocoded data loaded:', geoResults.data.length, 'rows');
                     // Load matchmaking data for programs
                     Papa.parse('schools/matchmaking_index.csv', {
                         download: true,
@@ -547,8 +579,26 @@
                     });
                 },
                 error: function(error) {
-                    console.error('Error loading geocoded data:', error);
-                    document.getElementById('schoolList').innerHTML = '<div class="no-results">Error loading geocoded data. Please check the console.</div>';
+                    console.log('Fixed file not found, trying original...');
+                    // Fallback to original file
+                    Papa.parse('schools/trade_schools_geocoded.csv', {
+                        download: true,
+                        header: true,
+                        complete: function(geoResults) {
+                            console.log('Original geocoded data loaded:', geoResults.data.length, 'rows');
+                            Papa.parse('schools/matchmaking_index.csv', {
+                                download: true,
+                                header: true,
+                                complete: function(matchResults) {
+                                    processData(geoResults.data, matchResults.data);
+                                }
+                            });
+                        },
+                        error: function(error2) {
+                            console.error('Error loading both geocoded files:', error2);
+                            document.getElementById('schoolList').innerHTML = '<div class="no-results">Error loading geocoded data.</div>';
+                        }
+                    });
                 }
             });
         }
@@ -602,11 +652,16 @@
             console.log(`Loaded ${allSchools.length} schools with coordinates`);
             console.log(`Note: ${geoData.filter(r => r.geocoded === 'False').length} schools failed geocoding and are not displayed`);
             
-            // Show warning about missing schools
-            if (geoData.filter(r => r.geocoded === 'False').length > 0) {
-                const missingCount = geoData.filter(r => r.geocoded === 'False').length;
-                const totalCount = geoData.length - 1; // minus header
-                alert(`⚠️ Data Status:\n\n✅ ${allSchools.length} schools successfully mapped\n❌ ${missingCount} schools missing coordinates\n📊 Total: ${totalCount} schools in database\n\nThe ${missingCount} schools without coordinates cannot be displayed on the map.`);
+            // Show data status
+            const totalInFile = geoData.length - 1; // minus any empty rows
+            const mappedCount = allSchools.length;
+            const missingCount = totalInFile - mappedCount;
+            
+            console.log(`📊 Data Status: ${mappedCount}/${totalInFile} schools mapped`);
+            
+            // Only show alert if significant number missing
+            if (missingCount > 50) {
+                alert(`📊 Data Status:\n\n✅ ${mappedCount} schools successfully mapped\n⚠️ ${missingCount} schools still missing coordinates\n📊 Total: ${totalInFile} schools in database\n\nWe've recovered many schools but some still need manual geocoding.`);
             }
             
             // Initialize UI
@@ -661,22 +716,29 @@
         
         // Update statistics
         function updateStats() {
+            const schoolsToShow = getViewportSchools();
             const stateCount = new Set(allSchools.map(s => s.state)).size;
+            const viewportStateCount = new Set(schoolsToShow.map(s => s.state)).size;
+            
             document.getElementById('totalSchools').textContent = allSchools.length;
-            document.getElementById('totalStates').textContent = stateCount;
-            document.getElementById('visibleCount').textContent = filteredSchools.length;
+            document.getElementById('totalStates').textContent = viewportFiltering ? viewportStateCount : stateCount;
+            document.getElementById('visibleCount').textContent = schoolsToShow.length;
         }
         
         // Display schools in sidebar
         function displaySchools() {
             const container = document.getElementById('schoolList');
+            const schoolsToShow = getViewportSchools();
             
-            if (filteredSchools.length === 0) {
-                container.innerHTML = '<div class="no-results">No schools found matching your filters</div>';
+            if (schoolsToShow.length === 0) {
+                const message = viewportFiltering ? 
+                    'No schools visible in current map view' : 
+                    'No schools found matching your filters';
+                container.innerHTML = `<div class="no-results">${message}</div>`;
                 return;
             }
             
-            container.innerHTML = filteredSchools.map(school => {
+            container.innerHTML = schoolsToShow.map(school => {
                 const websiteUrl = school.website ? 
                     (school.website.startsWith('http') ? school.website : `https://${school.website}`) : '';
                 
@@ -753,7 +815,7 @@
         
         // Select school
         function selectSchool(schoolName) {
-            const school = filteredSchools.find(s => s.name === schoolName);
+            const school = getViewportSchools().find(s => s.name === schoolName);
             if (!school) return;
             
             // Update marker styles
@@ -949,9 +1011,10 @@
                 programChart.destroy();
             }
             
-            // Count programs
+            // Count programs from schools in current viewport
+            const schoolsToShow = getViewportSchools();
             const programCounts = {};
-            filteredSchools.forEach(school => {
+            schoolsToShow.forEach(school => {
                 school.programs.forEach(program => {
                     programCounts[program] = (programCounts[program] || 0) + 1;
                 });
@@ -964,6 +1027,12 @@
             
             const labels = sortedPrograms.map(([program]) => program.length > 20 ? program.substring(0, 17) + '...' : program);
             const data = sortedPrograms.map(([, count]) => count);
+            
+            // Update chart title
+            const chartTitle = document.getElementById('chartTitle');
+            chartTitle.textContent = viewportFiltering ? 
+                `📊 Program Distribution (Viewport: ${schoolsToShow.length} schools)` : 
+                '📊 Program Distribution';
             
             // Create chart
             const ctx = document.getElementById('programChart').getContext('2d');
@@ -1034,7 +1103,7 @@
         
         // Show all programs for a school
         function showAllPrograms(schoolName) {
-            const school = filteredSchools.find(s => s.name === schoolName);
+            const school = getViewportSchools().find(s => s.name === schoolName);
             if (school) {
                 alert(`All programs at ${schoolName}:\n\n${school.programs.join(', ')}`);
             }
@@ -1088,8 +1157,45 @@
             }, 1000);
         });
         
+        // Get schools visible in current viewport
+        function getViewportSchools() {
+            if (!viewportFiltering) {
+                return filteredSchools;
+            }
+            
+            const bounds = map.getBounds();
+            return filteredSchools.filter(school => {
+                return bounds.contains([school.lat, school.lon]);
+            });
+        }
+        
+        // Update viewport-based filtering
+        function updateViewportFiltering() {
+            viewportSchools = getViewportSchools();
+            updateStats();
+            displaySchools();
+            updateProgramChart();
+        }
+        
+        // Toggle viewport filtering
+        function toggleViewportFiltering() {
+            viewportFiltering = !viewportFiltering;
+            updateViewportFiltering();
+            
+            // Update button text
+            const btn = document.getElementById('viewportToggle');
+            if (btn) {
+                btn.textContent = viewportFiltering ? '🌍 Show All' : '🎯 Viewport Only';
+                btn.classList.toggle('active', viewportFiltering);
+            }
+        }
+        
         // Initialize
         loadGeocodedData();
+        
+        // Add viewport change listeners
+        map.on('moveend', updateViewportFiltering);
+        map.on('zoomend', updateViewportFiltering);
     </script>
 </body>
 </html>
