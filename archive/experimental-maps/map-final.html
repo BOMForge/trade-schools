@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools Map | Complete Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/h3-js@4.1.0"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1419;
+            color: #e1e8ed;
+            height: 100vh;
+            display: flex;
+        }
+        
+        #map {
+            flex: 1;
+            height: 100vh;
+            background: #1a1f2e;
+        }
+        
+        #sidebar {
+            width: 400px;
+            background: #192734;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #38444d;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 20px;
+            background: linear-gradient(135deg, #15202b 0%, #1a2937 100%);
+            border-bottom: 1px solid #38444d;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1d9bf0 0%, #4ea3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            background: #253341;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1d9bf0;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: #8899a6;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        
+        .controls {
+            padding: 15px 20px;
+            background: #1a2632;
+            border-bottom: 1px solid #38444d;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            color: #e1e8ed;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .filter-select {
+            flex: 1;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 13px;
+        }
+        
+        .view-modes {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #8899a6;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .mode-btn:hover {
+            background: #2d3c4d;
+            color: #e1e8ed;
+        }
+        
+        .mode-btn.active {
+            background: #1d9bf0;
+            color: white;
+            border-color: #1d9bf0;
+        }
+        
+        .mode-icon {
+            font-size: 14px;
+        }
+        
+        .schools-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .school-card {
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .school-card:hover {
+            background: #2d3c4d;
+            transform: translateX(4px);
+            border-color: #1d9bf0;
+        }
+        
+        .school-card.selected {
+            background: #2d3c4d;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 1px #1d9bf0;
+        }
+        
+        .school-name {
+            font-weight: 600;
+            color: #e1e8ed;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        
+        .school-location {
+            font-size: 12px;
+            color: #8899a6;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .school-website {
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .school-website a {
+            color: #1d9bf0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .school-website a:hover {
+            text-decoration: underline;
+        }
+        
+        .program-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .program-tag {
+            padding: 3px 8px;
+            background: #1d9bf0;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* Custom Leaflet styles */
+        .leaflet-popup-content-wrapper {
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .leaflet-popup-content {
+            margin: 12px;
+            color: #e1e8ed;
+            min-width: 250px;
+        }
+        
+        .leaflet-popup-tip {
+            background: #15202b;
+            border: 1px solid #38444d;
+        }
+        
+        .popup-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d9bf0;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #38444d;
+        }
+        
+        .popup-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        
+        .popup-icon {
+            font-size: 14px;
+        }
+        
+        .popup-website {
+            color: #1d9bf0;
+            text-decoration: none;
+        }
+        
+        .popup-website:hover {
+            text-decoration: underline;
+        }
+        
+        .popup-programs {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #38444d;
+        }
+        
+        .popup-programs-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8899a6;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        
+        .popup-program-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .popup-program {
+            padding: 2px 6px;
+            background: rgba(29, 155, 240, 0.2);
+            border: 1px solid #1d9bf0;
+            color: #1d9bf0;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #8899a6;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #8899a6;
+            padding: 40px 20px;
+        }
+        
+        .spinner {
+            border: 3px solid #38444d;
+            border-top: 3px solid #1d9bf0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Marker cluster styles */
+        .marker-cluster-small {
+            background-color: rgba(29, 155, 240, 0.6);
+        }
+        .marker-cluster-small div {
+            background-color: rgba(29, 155, 240, 0.8);
+        }
+        .marker-cluster-medium {
+            background-color: rgba(255, 165, 0, 0.6);
+        }
+        .marker-cluster-medium div {
+            background-color: rgba(255, 165, 0, 0.8);
+        }
+        .marker-cluster-large {
+            background-color: rgba(255, 69, 0, 0.6);
+        }
+        .marker-cluster-large div {
+            background-color: rgba(255, 69, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div id="sidebar">
+        <div class="header">
+            <h1>🎓 Trade Schools Map</h1>
+            <div class="stats">
+                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
+                    <div class="stat-value" id="totalSchools">0</div>
+                    <div class="stat-label">Total Schools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="visibleSchools">0</div>
+                    <div class="stat-label">Visible</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="programCount">0</div>
+                    <div class="stat-label">Programs</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search schools...">
+            <div class="filter-group">
+                <select class="filter-select" id="stateFilter">
+                    <option value="">All States</option>
+                </select>
+                <select class="filter-select" id="programFilter">
+                    <option value="">All Programs</option>
+                </select>
+            </div>
+            <div class="view-modes">
+                <div class="mode-btn active" id="clustersMode" onclick="setViewMode('clusters')">
+                    <span class="mode-icon">🔗</span>
+                    <span>Clusters</span>
+                </div>
+                <div class="mode-btn" id="heatmapMode" onclick="setViewMode('heatmap')">
+                    <span class="mode-icon">🌡️</span>
+                    <span>Heatmap</span>
+                </div>
+                <div class="mode-btn" id="hexgridMode" onclick="setViewMode('hexgrid')">
+                    <span class="mode-icon">🔷</span>
+                    <span>Hex Grid</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="schools-list" id="schoolsList">
+            <div class="loading">
+                <div class="spinner"></div>
+                <div>Loading schools data...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize map
+        const map = L.map('map', {
+            center: [39.8283, -98.5795],
+            zoom: 5,
+            minZoom: 3,
+            maxZoom: 18
+        });
+        
+        // Add dark tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Data storage
+        let allSchools = [];
+        let filteredSchools = [];
+        let schoolMarkers = {};
+        let markerCluster;
+        let heatmapLayer;
+        let hexLayer;
+        let currentViewMode = 'clusters';
+        
+        // Program colors
+        const programColors = {
+            'Welding': '#ff5959',
+            'HVAC': '#4ea3ff',
+            'Construction': '#ffa84d',
+            'Diesel & Automotive Tech': '#3cb371',
+            'Electronics': '#f7e35b',
+            'CAD/CAM Drafting': '#b084f7',
+            'Plumbing & Pipefitting': '#00CED1',
+            'Woodworking & Carpentry': '#8B4513',
+            'Machine & Mechanical Systems': '#9370DB'
+        };
+        
+        // Get program color
+        function getProgramColor(program) {
+            if (!program) return '#666666';
+            
+            for (const [key, color] of Object.entries(programColors)) {
+                if (program.toLowerCase().includes(key.toLowerCase()) || 
+                    key.toLowerCase().includes(program.toLowerCase())) {
+                    return color;
+                }
+            }
+            return '#666666';
+        }
+        
+        // Load all data
+        async function loadData() {
+            try {
+                // First load geocoded data
+                const geoResponse = await fetch('schools/trade_schools_geocoded_fixed.csv');
+                const geoText = await geoResponse.text();
+                const geoData = Papa.parse(geoText, { header: true }).data;
+                
+                // Then load matchmaking data for programs and websites
+                const matchResponse = await fetch('schools/matchmaking_index.csv');
+                const matchText = await matchResponse.text();
+                const matchData = Papa.parse(matchText, { header: true }).data;
+                
+                // Also try to load curated data for additional info
+                const curatedResponse = await fetch('schools/trade_schools_curated.csv');
+                const curatedText = await curatedResponse.text();
+                const curatedData = Papa.parse(curatedText, { header: true }).data;
+                
+                processData(geoData, matchData, curatedData);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('schoolsList').innerHTML = 
+                    '<div class="no-results">Error loading data. Please check console.</div>';
+            }
+        }
+        
+        // Process and merge data
+        function processData(geoData, matchData, curatedData) {
+            // Create lookup for programs and websites from matchmaking data
+            const schoolInfo = {};
+            matchData.forEach(row => {
+                if (!row['Institution Name']) return;
+                
+                const key = `${row['Institution Name']}_${row.State}_${row.City}`;
+                if (!schoolInfo[key]) {
+                    schoolInfo[key] = {
+                        programs: new Set(),
+                        website: row.Website || '',
+                        email: row['Contact Email'] || ''
+                    };
+                }
+                if (row.program) {
+                    schoolInfo[key].programs.add(row.program);
+                }
+            });
+            
+            // Create lookup for curated data
+            const curatedInfo = {};
+            curatedData.forEach(row => {
+                if (!row.institution_name) return;
+                
+                const state = row['location_parsed.state'] || '';
+                const city = row['location_parsed.city'] || '';
+                const key = `${row.institution_name}_${state}_${city}`;
+                
+                curatedInfo[key] = {
+                    website: row.website || '',
+                    phone: row.phone || '',
+                    programs: row.programs ? row.programs.split('|').map(p => p.trim()) : []
+                };
+            });
+            
+            // Process geocoded schools
+            allSchools = [];
+            geoData.forEach(row => {
+                if (row.geocoded === 'True' && row.lat && row.lon) {
+                    const name = row['Institution Name'];
+                    const state = row.State;
+                    const city = row.City;
+                    const key = `${name}_${state}_${city}`;
+                    
+                    // Get info from matchmaking data
+                    const matchInfo = schoolInfo[key] || { programs: new Set(), website: '', email: '' };
+                    
+                    // Get info from curated data
+                    const curatedKey = `${name}_${state}_${city}`;
+                    const cInfo = curatedInfo[curatedKey] || {};
+                    
+                    // Combine programs from both sources
+                    let programs = Array.from(matchInfo.programs);
+                    if (cInfo.programs && cInfo.programs.length > 0) {
+                        programs = [...new Set([...programs, ...cInfo.programs])];
+                    }
+                    
+                    // Use website from either source (prefer curated if available)
+                    let website = cInfo.website || matchInfo.website || '';
+                    
+                    // Clean up website URL
+                    if (website) {
+                        website = website.replace(/\/$/, ''); // Remove trailing slash
+                        if (!website.startsWith('http') && website.length > 0) {
+                            website = 'https://' + website;
+                        }
+                    }
+                    
+                    allSchools.push({
+                        name: name,
+                        state: state,
+                        city: city,
+                        lat: parseFloat(row.lat),
+                        lon: parseFloat(row.lon),
+                        programs: programs,
+                        website: website,
+                        email: matchInfo.email,
+                        phone: cInfo.phone || ''
+                    });
+                }
+            });
+            
+            console.log(`Loaded ${allSchools.length} schools with data`);
+            
+            // Initialize
+            filteredSchools = [...allSchools];
+            populateFilters();
+            updateStats();
+            displayMarkers();
+            displaySchoolsList();
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            const states = new Set();
+            const programs = new Set();
+            
+            allSchools.forEach(school => {
+                states.add(school.state);
+                school.programs.forEach(p => programs.add(p));
+            });
+            
+            // State filter
+            const stateFilter = document.getElementById('stateFilter');
+            Array.from(states).sort().forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateFilter.appendChild(option);
+            });
+            
+            // Program filter
+            const programFilter = document.getElementById('programFilter');
+            Array.from(programs).sort().forEach(program => {
+                const option = document.createElement('option');
+                option.value = program;
+                option.textContent = program;
+                programFilter.appendChild(option);
+            });
+            
+            // Update program count
+            document.getElementById('programCount').textContent = programs.size;
+        }
+        
+        // Set view mode
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            
+            // Update UI
+            document.getElementById('clustersMode').classList.toggle('active', mode === 'clusters');
+            document.getElementById('heatmapMode').classList.toggle('active', mode === 'heatmap');
+            document.getElementById('hexgridMode').classList.toggle('active', mode === 'hexgrid');
+            
+            displayMarkers();
+        }
+        
+        // Display markers on map based on current view mode
+        function displayMarkers() {
+            // Clear existing layers
+            if (markerCluster) map.removeLayer(markerCluster);
+            if (heatmapLayer) map.removeLayer(heatmapLayer);
+            if (hexLayer) map.removeLayer(hexLayer);
+            
+            switch(currentViewMode) {
+                case 'clusters':
+                    renderClusters();
+                    break;
+                case 'heatmap':
+                    renderHeatmap();
+                    break;
+                case 'hexgrid':
+                    renderHexgrid();
+                    break;
+            }
+        }
+        
+        // Render clusters view
+        function renderClusters() {
+            // Create marker cluster group
+            markerCluster = L.markerClusterGroup({
+                chunkedLoading: true,
+                showCoverageOnHover: false,
+                maxClusterRadius: 50
+            });
+            
+            // Add markers
+            filteredSchools.forEach(school => {
+                const marker = L.circleMarker([school.lat, school.lon], {
+                    radius: 6,
+                    fillColor: getProgramColor(school.programs[0]),
+                    color: 'white',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+                
+                // Format website for display
+                let websiteDisplay = '';
+                if (school.website) {
+                    const cleanUrl = school.website.replace(/^https?:\/\//, '');
+                    websiteDisplay = `
+                        <div class="popup-row">
+                            <span class="popup-icon">🌐</span>
+                            <a href="${school.website}" target="_blank" class="popup-website">${cleanUrl}</a>
+                        </div>
+                    `;
+                }
+                
+                // Format programs
+                let programsHtml = '';
+                if (school.programs.length > 0) {
+                    programsHtml = `
+                        <div class="popup-programs">
+                            <div class="popup-programs-title">Programs</div>
+                            <div class="popup-program-list">
+                                ${school.programs.map(p => 
+                                    `<span class="popup-program">${p}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Create popup content
+                const popupContent = `
+                    <div class="popup-header">${school.name}</div>
+                    <div class="popup-row">
+                        <span class="popup-icon">📍</span>
+                        <span>${school.city}, ${school.state}</span>
+                    </div>
+                    ${websiteDisplay}
+                    ${school.phone ? `
+                        <div class="popup-row">
+                            <span class="popup-icon">📞</span>
+                            <span>${school.phone}</span>
+                        </div>
+                    ` : ''}
+                    ${programsHtml}
+                `;
+                
+                marker.bindPopup(popupContent);
+                
+                marker.on('click', function() {
+                    selectSchool(school);
+                });
+                
+                schoolMarkers[school.name] = marker;
+                markerCluster.addLayer(marker);
+            });
+            
+            map.addLayer(markerCluster);
+        }
+        
+        // Render heatmap view with program-based colors
+        function renderHeatmap() {
+            heatmapLayer = L.layerGroup();
+            
+            // Group schools by primary program
+            const programGroups = {};
+            filteredSchools.forEach(school => {
+                const primaryProgram = school.programs[0] || 'Default';
+                if (!programGroups[primaryProgram]) {
+                    programGroups[primaryProgram] = [];
+                }
+                programGroups[primaryProgram].push(school);
+            });
+            
+            // Create a heatmap layer for each program with its color
+            Object.entries(programGroups).forEach(([program, schools]) => {
+                const color = getProgramColor(program);
+                const heatPoints = schools.map(school => [school.lat, school.lon, 0.8]);
+                
+                // Create gradient based on program color
+                const gradient = createProgramGradient(color);
+                
+                const programHeatLayer = L.heatLayer(heatPoints, {
+                    radius: 35,
+                    blur: 25,
+                    maxZoom: 12,
+                    max: 1.0,
+                    gradient: gradient
+                });
+                
+                heatmapLayer.addLayer(programHeatLayer);
+            });
+            
+            map.addLayer(heatmapLayer);
+        }
+        
+        // Create gradient from program color
+        function createProgramGradient(color) {
+            // Convert hex to RGB for gradient creation
+            const r = parseInt(color.slice(1, 3), 16);
+            const g = parseInt(color.slice(3, 5), 16);
+            const b = parseInt(color.slice(5, 7), 16);
+            
+            return {
+                0.0: `rgba(${r}, ${g}, ${b}, 0)`,
+                0.2: `rgba(${r}, ${g}, ${b}, 0.2)`,
+                0.4: `rgba(${r}, ${g}, ${b}, 0.4)`,
+                0.6: `rgba(${r}, ${g}, ${b}, 0.6)`,
+                0.8: `rgba(${r}, ${g}, ${b}, 0.8)`,
+                1.0: `rgba(${r}, ${g}, ${b}, 1.0)`
+            };
+        }
+        
+        // Render hexgrid view using H3
+        function renderHexgrid() {
+            hexLayer = L.layerGroup();
+            
+            // Use H3 resolution 5 for good balance
+            const resolution = 5;
+            const hexBins = {};
+            
+            // Aggregate schools into H3 hexagons
+            filteredSchools.forEach(school => {
+                try {
+                    const hex = h3.latLngToCell(school.lat, school.lon, resolution);
+                    
+                    if (!hexBins[hex]) {
+                        hexBins[hex] = {
+                            count: 0,
+                            schools: [],
+                            programs: {}
+                        };
+                    }
+                    
+                    hexBins[hex].count++;
+                    hexBins[hex].schools.push(school);
+                    
+                    school.programs.forEach(program => {
+                        hexBins[hex].programs[program] = (hexBins[hex].programs[program] || 0) + 1;
+                    });
+                } catch (e) {
+                    console.warn('Failed to process school:', school.name, e);
+                }
+            });
+            
+            // Render hexagons
+            Object.entries(hexBins).forEach(([hex, data]) => {
+                try {
+                    const boundary = h3.cellToBoundary(hex, true);
+                    
+                    // Get dominant program
+                    let dominantProgram = '';
+                    let maxCount = 0;
+                    Object.entries(data.programs).forEach(([program, count]) => {
+                        if (count > maxCount) {
+                            maxCount = count;
+                            dominantProgram = program;
+                        }
+                    });
+                    
+                    const polygon = L.polygon(boundary, {
+                        fillColor: getProgramColor(dominantProgram),
+                        fillOpacity: 0.7,
+                        color: getProgramColor(dominantProgram),
+                        weight: 1.5,
+                        opacity: 0.9
+                    });
+                    
+                    // Create popup
+                    const topPrograms = Object.entries(data.programs)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3);
+                    
+                    polygon.bindPopup(`
+                        <div style="padding: 12px;">
+                            <strong style="color: #1d9bf0; font-size: 14px;">${data.count} Schools</strong><br>
+                            <div style="margin-top: 8px;">
+                                <strong style="font-size: 12px;">Top Programs:</strong><br>
+                                ${topPrograms.map(([prog, count]) => 
+                                    `<span style="display: inline-block; padding: 2px 6px; background: ${getProgramColor(prog)}; 
+                                    color: white; border-radius: 10px; font-size: 10px; margin: 2px;">
+                                    ${prog} (${count})</span>`
+                                ).join('')}
+                            </div>
+                            <div style="margin-top: 8px;">
+                                <strong style="font-size: 11px;">Schools:</strong><br>
+                                <span style="font-size: 10px; color: #8899a6;">
+                                    ${data.schools.slice(0, 3).map(s => s.name).join(', ')}
+                                    ${data.schools.length > 3 ? ` +${data.schools.length - 3} more` : ''}
+                                </span>
+                            </div>
+                        </div>
+                    `);
+                    
+                    hexLayer.addLayer(polygon);
+                } catch (e) {
+                    console.warn('Failed to render hex:', hex, e);
+                }
+            });
+            
+            map.addLayer(hexLayer);
+        }
+        
+        // Display schools list
+        function displaySchoolsList() {
+            const container = document.getElementById('schoolsList');
+            
+            if (filteredSchools.length === 0) {
+                container.innerHTML = '<div class="no-results">No schools found matching your criteria</div>';
+                return;
+            }
+            
+            container.innerHTML = filteredSchools.map(school => {
+                // Format website for display
+                let websiteHtml = '';
+                if (school.website) {
+                    const cleanUrl = school.website.replace(/^https?:\/\//, '');
+                    websiteHtml = `
+                        <div class="school-website">
+                            <a href="${school.website}" target="_blank">
+                                <span>🌐</span>
+                                <span>${cleanUrl}</span>
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="school-card" data-name="${school.name}" onclick="selectSchool('${school.name}')">
+                        <div class="school-name">${school.name}</div>
+                        <div class="school-location">
+                            <span>📍</span>
+                            <span>${school.city}, ${school.state}</span>
+                        </div>
+                        ${websiteHtml}
+                        ${school.programs.length > 0 ? `
+                            <div class="program-tags">
+                                ${school.programs.slice(0, 5).map(p => 
+                                    `<span class="program-tag" style="background: ${getProgramColor(p)};">${p}</span>`
+                                ).join('')}
+                                ${school.programs.length > 5 ? 
+                                    `<span class="program-tag" style="background: #666;">+${school.programs.length - 5}</span>` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Select school
+        function selectSchool(schoolName) {
+            // If schoolName is an object, extract the name
+            const name = typeof schoolName === 'string' ? schoolName : schoolName.name;
+            
+            const school = filteredSchools.find(s => s.name === name);
+            if (!school) return;
+            
+            // Update selected state in sidebar
+            document.querySelectorAll('.school-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const card = document.querySelector(`[data-name="${name}"]`);
+            if (card) {
+                card.classList.add('selected');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Center map on school
+            map.setView([school.lat, school.lon], 12);
+            
+            // Open popup
+            if (schoolMarkers[name]) {
+                schoolMarkers[name].openPopup();
+            }
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalSchools').textContent = allSchools.length;
+            document.getElementById('visibleSchools').textContent = filteredSchools.length;
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const stateFilter = document.getElementById('stateFilter').value;
+            const programFilter = document.getElementById('programFilter').value;
+            
+            filteredSchools = allSchools.filter(school => {
+                // Search filter
+                if (searchTerm && !school.name.toLowerCase().includes(searchTerm) && 
+                    !school.city.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                // State filter
+                if (stateFilter && school.state !== stateFilter) {
+                    return false;
+                }
+                
+                // Program filter
+                if (programFilter && !school.programs.includes(programFilter)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            updateStats();
+            displayMarkers();
+            displaySchoolsList();
+            
+            // Auto-center map to show filtered schools
+            if (filteredSchools.length > 0) {
+                const bounds = L.latLngBounds(filteredSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+        
+        // Zoom to full map view
+        function zoomToFullMap() {
+            if (allSchools.length > 0) {
+                const bounds = L.latLngBounds(allSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('searchBox').addEventListener('input', applyFilters);
+        document.getElementById('stateFilter').addEventListener('change', applyFilters);
+        document.getElementById('programFilter').addEventListener('change', applyFilters);
+        
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

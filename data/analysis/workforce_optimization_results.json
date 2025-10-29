@@ -1,0 +1,601 @@
+{
+  "timestamp": "2025-10-28T09:41:43.855050",
+  "top_gaps": [
+    {
+      "state": "IL",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 37,
+      "gap_size": 37,
+      "priority_score": 179.94338106674618
+    },
+    {
+      "state": "ND",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 37,
+      "gap_size": 37,
+      "priority_score": 175.59106362159588
+    },
+    {
+      "state": "WI",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 39,
+      "gap_size": 39,
+      "priority_score": 168.04653297686662
+    },
+    {
+      "state": "UT",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 40,
+      "gap_size": 40,
+      "priority_score": 162.06769053441482
+    },
+    {
+      "state": "ID",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 39,
+      "gap_size": 39,
+      "priority_score": 159.26941930654075
+    },
+    {
+      "state": "ND",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 4,
+      "estimated_demand": 37,
+      "gap_size": 33,
+      "priority_score": 156.6082459327747
+    },
+    {
+      "state": "NY",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 34,
+      "gap_size": 34,
+      "priority_score": 151.75189807340593
+    },
+    {
+      "state": "NJ",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 39,
+      "gap_size": 39,
+      "priority_score": 151.36120037565738
+    },
+    {
+      "state": "ND",
+      "skill": "HVAC",
+      "current_capacity": 1,
+      "estimated_demand": 35,
+      "gap_size": 34,
+      "priority_score": 150.59702033131464
+    },
+    {
+      "state": "ND",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 1,
+      "estimated_demand": 35,
+      "gap_size": 34,
+      "priority_score": 150.59702033131464
+    },
+    {
+      "state": "FL",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 41,
+      "gap_size": 41,
+      "priority_score": 146.60355004770304
+    },
+    {
+      "state": "WI",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 5,
+      "estimated_demand": 39,
+      "gap_size": 34,
+      "priority_score": 146.50210567214012
+    },
+    {
+      "state": "ND",
+      "skill": "Construction",
+      "current_capacity": 2,
+      "estimated_demand": 35,
+      "gap_size": 33,
+      "priority_score": 146.16769620392304
+    },
+    {
+      "state": "WI",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 1,
+      "estimated_demand": 37,
+      "gap_size": 36,
+      "priority_score": 144.778551487762
+    },
+    {
+      "state": "MT",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 32,
+      "gap_size": 32,
+      "priority_score": 143.22358910885484
+    },
+    {
+      "state": "ID",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 4,
+      "estimated_demand": 39,
+      "gap_size": 35,
+      "priority_score": 142.93409424945966
+    },
+    {
+      "state": "WI",
+      "skill": "Construction",
+      "current_capacity": 2,
+      "estimated_demand": 37,
+      "gap_size": 35,
+      "priority_score": 140.7569250575464
+    },
+    {
+      "state": "WI",
+      "skill": "HVAC",
+      "current_capacity": 2,
+      "estimated_demand": 37,
+      "gap_size": 35,
+      "priority_score": 140.7569250575464
+    },
+    {
+      "state": "IL",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 4,
+      "estimated_demand": 35,
+      "gap_size": 31,
+      "priority_score": 140.71248177111323
+    },
+    {
+      "state": "ID",
+      "skill": "Construction",
+      "current_capacity": 1,
+      "estimated_demand": 37,
+      "gap_size": 36,
+      "priority_score": 137.21673047948127
+    },
+    {
+      "state": "ID",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 1,
+      "estimated_demand": 37,
+      "gap_size": 36,
+      "priority_score": 137.21673047948127
+    },
+    {
+      "state": "NE",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 35,
+      "gap_size": 35,
+      "priority_score": 136.39588201056313
+    },
+    {
+      "state": "UT",
+      "skill": "HVAC",
+      "current_capacity": 2,
+      "estimated_demand": 38,
+      "gap_size": 36,
+      "priority_score": 136.13686004890843
+    },
+    {
+      "state": "ND",
+      "skill": "CAD/CAM Drafting",
+      "current_capacity": 0,
+      "estimated_demand": 33,
+      "gap_size": 33,
+      "priority_score": 135.7271464750714
+    },
+    {
+      "state": "WV",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 30,
+      "gap_size": 30,
+      "priority_score": 133.72205313876034
+    },
+    {
+      "state": "NY",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 0,
+      "estimated_demand": 32,
+      "gap_size": 32,
+      "priority_score": 133.3036281115409
+    },
+    {
+      "state": "UT",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 3,
+      "estimated_demand": 38,
+      "gap_size": 35,
+      "priority_score": 132.35528060310543
+    },
+    {
+      "state": "AR",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 29,
+      "gap_size": 29,
+      "priority_score": 132.18631240532912
+    },
+    {
+      "state": "WI",
+      "skill": "CAD/CAM Drafting",
+      "current_capacity": 0,
+      "estimated_demand": 35,
+      "gap_size": 35,
+      "priority_score": 130.70285898200737
+    },
+    {
+      "state": "NJ",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 6,
+      "estimated_demand": 39,
+      "gap_size": 33,
+      "priority_score": 128.07486185632547
+    },
+    {
+      "state": "ND",
+      "skill": "Machine & Mechanical Systems",
+      "current_capacity": 2,
+      "estimated_demand": 33,
+      "gap_size": 31,
+      "priority_score": 127.50125880991558
+    },
+    {
+      "state": "ID",
+      "skill": "HVAC",
+      "current_capacity": 4,
+      "estimated_demand": 37,
+      "gap_size": 33,
+      "priority_score": 125.78200293952449
+    },
+    {
+      "state": "UT",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 9,
+      "estimated_demand": 40,
+      "gap_size": 31,
+      "priority_score": 125.60246016417149
+    },
+    {
+      "state": "VT",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 29,
+      "gap_size": 29,
+      "priority_score": 125.27227978614661
+    },
+    {
+      "state": "PW",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 30,
+      "gap_size": 30,
+      "priority_score": 124.07450966915879
+    },
+    {
+      "state": "MN",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 33,
+      "gap_size": 33,
+      "priority_score": 123.7471227532814
+    },
+    {
+      "state": "MH",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 0,
+      "estimated_demand": 35,
+      "gap_size": 35,
+      "priority_score": 122.92173165666597
+    },
+    {
+      "state": "MH",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 35,
+      "gap_size": 35,
+      "priority_score": 122.92173165666597
+    },
+    {
+      "state": "AK",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 35,
+      "gap_size": 35,
+      "priority_score": 122.73208358007139
+    },
+    {
+      "state": "MI",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 28,
+      "gap_size": 28,
+      "priority_score": 122.14914163927668
+    },
+    {
+      "state": "VT",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 1,
+      "estimated_demand": 29,
+      "gap_size": 28,
+      "priority_score": 120.95254600041741
+    },
+    {
+      "state": "MA",
+      "skill": "CDL Training",
+      "current_capacity": 0,
+      "estimated_demand": 36,
+      "gap_size": 36,
+      "priority_score": 120.15149736363826
+    },
+    {
+      "state": "PW",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 1,
+      "estimated_demand": 30,
+      "gap_size": 29,
+      "priority_score": 119.93869268018682
+    },
+    {
+      "state": "NJ",
+      "skill": "Construction",
+      "current_capacity": 4,
+      "estimated_demand": 37,
+      "gap_size": 33,
+      "priority_score": 119.53653773257042
+    },
+    {
+      "state": "NJ",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 4,
+      "estimated_demand": 37,
+      "gap_size": 33,
+      "priority_score": 119.53653773257042
+    },
+    {
+      "state": "UT",
+      "skill": "CAD/CAM Drafting",
+      "current_capacity": 2,
+      "estimated_demand": 36,
+      "gap_size": 34,
+      "priority_score": 119.38986536035226
+    },
+    {
+      "state": "AK",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 1,
+      "estimated_demand": 35,
+      "gap_size": 34,
+      "priority_score": 119.22545262064078
+    },
+    {
+      "state": "MT",
+      "skill": "Plumbing & Pipefitting",
+      "current_capacity": 2,
+      "estimated_demand": 30,
+      "gap_size": 28,
+      "priority_score": 116.96593110556478
+    },
+    {
+      "state": "NE",
+      "skill": "Diesel & Automotive Tech",
+      "current_capacity": 5,
+      "estimated_demand": 35,
+      "gap_size": 30,
+      "priority_score": 116.91075600905411
+    },
+    {
+      "state": "ID",
+      "skill": "CAD/CAM Drafting",
+      "current_capacity": 2,
+      "estimated_demand": 35,
+      "gap_size": 33,
+      "priority_score": 116.79757415812989
+    }
+  ],
+  "investment_recommendations": {
+    "immediate_priorities": [
+      {
+        "state": "IL",
+        "skill": "CDL Training",
+        "gap_size": 37,
+        "priority_score": 179.94,
+        "action": "Expand CDL Training training by 37 seats",
+        "estimated_cost": 555000
+      },
+      {
+        "state": "ND",
+        "skill": "CDL Training",
+        "gap_size": 37,
+        "priority_score": 175.59,
+        "action": "Expand CDL Training training by 37 seats",
+        "estimated_cost": 555000
+      },
+      {
+        "state": "WI",
+        "skill": "CDL Training",
+        "gap_size": 39,
+        "priority_score": 168.05,
+        "action": "Expand CDL Training training by 39 seats",
+        "estimated_cost": 585000
+      },
+      {
+        "state": "UT",
+        "skill": "CDL Training",
+        "gap_size": 40,
+        "priority_score": 162.07,
+        "action": "Expand CDL Training training by 40 seats",
+        "estimated_cost": 600000
+      },
+      {
+        "state": "ID",
+        "skill": "CDL Training",
+        "gap_size": 39,
+        "priority_score": 159.27,
+        "action": "Expand CDL Training training by 39 seats",
+        "estimated_cost": 585000
+      },
+      {
+        "state": "ND",
+        "skill": "Diesel & Automotive Tech",
+        "gap_size": 33,
+        "priority_score": 156.61,
+        "action": "Expand Diesel & Automotive Tech training by 33 seats",
+        "estimated_cost": 495000
+      },
+      {
+        "state": "NY",
+        "skill": "CDL Training",
+        "gap_size": 34,
+        "priority_score": 151.75,
+        "action": "Expand CDL Training training by 34 seats",
+        "estimated_cost": 510000
+      },
+      {
+        "state": "NJ",
+        "skill": "CDL Training",
+        "gap_size": 39,
+        "priority_score": 151.36,
+        "action": "Expand CDL Training training by 39 seats",
+        "estimated_cost": 585000
+      },
+      {
+        "state": "ND",
+        "skill": "HVAC",
+        "gap_size": 34,
+        "priority_score": 150.6,
+        "action": "Expand HVAC training by 34 seats",
+        "estimated_cost": 510000
+      },
+      {
+        "state": "ND",
+        "skill": "Plumbing & Pipefitting",
+        "gap_size": 34,
+        "priority_score": 150.6,
+        "action": "Expand Plumbing & Pipefitting training by 34 seats",
+        "estimated_cost": 510000
+      },
+      {
+        "state": "FL",
+        "skill": "CDL Training",
+        "gap_size": 41,
+        "priority_score": 146.6,
+        "action": "Expand CDL Training training by 41 seats",
+        "estimated_cost": 615000
+      },
+      {
+        "state": "WI",
+        "skill": "Diesel & Automotive Tech",
+        "gap_size": 34,
+        "priority_score": 146.5,
+        "action": "Expand Diesel & Automotive Tech training by 34 seats",
+        "estimated_cost": 510000
+      },
+      {
+        "state": "ND",
+        "skill": "Construction",
+        "gap_size": 33,
+        "priority_score": 146.17,
+        "action": "Expand Construction training by 33 seats",
+        "estimated_cost": 495000
+      },
+      {
+        "state": "WI",
+        "skill": "Plumbing & Pipefitting",
+        "gap_size": 36,
+        "priority_score": 144.78,
+        "action": "Expand Plumbing & Pipefitting training by 36 seats",
+        "estimated_cost": 540000
+      },
+      {
+        "state": "MT",
+        "skill": "CDL Training",
+        "gap_size": 32,
+        "priority_score": 143.22,
+        "action": "Expand CDL Training training by 32 seats",
+        "estimated_cost": 480000
+      }
+    ],
+    "estimated_roi": {
+      "IL:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "ND:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "WI:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "UT:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "ID:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "ND:Diesel & Automotive Tech": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "NY:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "NJ:CDL Training": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 55000,
+        "estimated_annual_tax_revenue": 13750.0,
+        "roi_payback_period_years": 1.1,
+        "five_year_net_benefit": 53750
+      },
+      "ND:HVAC": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 58000,
+        "estimated_annual_tax_revenue": 14500.0,
+        "roi_payback_period_years": 1.0,
+        "five_year_net_benefit": 57500
+      },
+      "ND:Plumbing & Pipefitting": {
+        "training_cost_per_person": 15000,
+        "average_post_training_salary": 58000,
+        "estimated_annual_tax_revenue": 14500.0,
+        "roi_payback_period_years": 1.0,
+        "five_year_net_benefit": 57500
+      }
+    }
+  }
+}

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools Map - Embeddable Widget</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/h3-js@4.1.0"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1419;
+            color: #e1e8ed;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+            background: #1a1f2e;
+        }
+
+        /* Compact legend for embed */
+        .embed-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 10px;
+            background: rgba(21, 32, 43, 0.95);
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            padding: 12px;
+            max-width: 200px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .embed-legend-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e1e8ed;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #38444d;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* Compact view controls */
+        .embed-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 4px;
+        }
+
+        .embed-btn {
+            background: rgba(21, 32, 43, 0.95);
+            border: 1px solid #38444d;
+            color: #8899a6;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .embed-btn:hover {
+            background: #15202b;
+            border-color: #1d9bf0;
+            color: #1d9bf0;
+        }
+
+        .embed-btn.active {
+            background: #1d9bf0;
+            border-color: #1d9bf0;
+            color: white;
+        }
+
+        /* Attribution */
+        .embed-attribution {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 10px;
+            color: #8899a6;
+            background: rgba(21, 32, 43, 0.9);
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+
+        .embed-attribution a {
+            color: #1d9bf0;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <!-- Compact Controls (only show if sidebar=false) -->
+    <div class="embed-controls" id="embedControls" style="display: none;">
+        <button class="embed-btn active" id="markersBtn" onclick="setView('markers')">📍</button>
+        <button class="embed-btn" id="heatmapBtn" onclick="setView('heatmap')">🌡️</button>
+        <button class="embed-btn" id="hexgridBtn" onclick="setView('hexgrid')">⬡</button>
+    </div>
+
+    <!-- Compact Legend -->
+    <div class="embed-legend" id="embedLegend">
+        <div class="embed-legend-title">Top Programs</div>
+        <div id="legendItems"></div>
+    </div>
+
+    <!-- Attribution -->
+    <div class="embed-attribution">
+        <a href="https://bomforge.com" target="_blank">BOMForge Trade Schools Map</a>
+    </div>
+
+    <script>
+        // Program color mapping
+        const PROGRAM_COLORS = {
+            'Welding': '#ff5959',
+            'HVAC': '#4ea3ff',
+            'HVAC (Heating, Ventilation, and Air Conditioning)': '#4ea3ff',
+            'Construction': '#ff9b42',
+            'Construction & Building Technology': '#ff9b42',
+            'CAD/CAM Drafting': '#d49f68',
+            'CAD/CAM Drafting & Design': '#d49f68',
+            'Woodworking & Carpentry': '#4db6ac',
+            'Mechatronics': '#a17fff',
+            'Diesel & Automotive Tech': '#35b276',
+            'Diesel & Automotive Technology': '#35b276',
+            'Machine & Mechanical Systems': '#a17fff',
+            'Machine Tool Technology & Mechanical Systems': '#a17fff',
+            'Electronics': '#f7e35b',
+            'Electronics Technology': '#f7e35b',
+            'Plumbing & Pipefitting': '#aaaaaa',
+            'Machining': '#da70d6',
+            'Machining & CNC': '#da70d6',
+            'Electrical Technology': '#ffa07a',
+            'Industrial Maintenance': '#87ceeb',
+            'Robotics & Automation': '#ff69b4',
+            'Manufacturing Technology': '#20b2aa',
+            'default': '#8899a6'
+        };
+
+        function getProgramColor(program) {
+            if (!program) return PROGRAM_COLORS['default'];
+            if (PROGRAM_COLORS[program]) return PROGRAM_COLORS[program];
+
+            const programLower = program.toLowerCase();
+            for (const [key, color] of Object.entries(PROGRAM_COLORS)) {
+                if (key === 'default') continue;
+                const keyLower = key.toLowerCase();
+
+                if (programLower.includes(keyLower) || keyLower.includes(programLower)) {
+                    return color;
+                }
+
+                const programWords = programLower.split(/[\s&/,]+/);
+                const keyWords = keyLower.split(/[\s&/,()]+/);
+                const matchingWords = programWords.filter(word =>
+                    keyWords.some(keyWord => keyWord === word || word.includes(keyWord))
+                );
+
+                if (matchingWords.length >= 2 ||
+                    (matchingWords.length === 1 && matchingWords[0].length > 4)) {
+                    return color;
+                }
+            }
+
+            return PROGRAM_COLORS['default'];
+        }
+
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const config = {
+            state: urlParams.get('state') || null,
+            program: urlParams.get('program') || null,
+            view: urlParams.get('view') || 'markers',
+            zoom: parseInt(urlParams.get('zoom')) || 4,
+            lat: parseFloat(urlParams.get('lat')) || 39.8283,
+            lng: parseFloat(urlParams.get('lng')) || -98.5795,
+            sidebar: urlParams.get('sidebar') !== 'false',
+            legend: urlParams.get('legend') !== 'false',
+            controls: urlParams.get('controls') !== 'false'
+        };
+
+        // Show controls if sidebar is hidden
+        if (!config.sidebar && config.controls) {
+            document.getElementById('embedControls').style.display = 'flex';
+        }
+
+        // Hide legend if requested
+        if (!config.legend) {
+            document.getElementById('embedLegend').style.display = 'none';
+        }
+
+        // Initialize map
+        const map = L.map('map', {
+            zoomControl: true,
+            attributionControl: true
+        }).setView([config.lat, config.lng], config.zoom);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // Data storage
+        let allSchools = [];
+        let filteredSchools = [];
+        let markersLayer = L.layerGroup().addTo(map);
+        let heatmapLayer = null;
+        let hexLayer = L.layerGroup();
+        let currentView = config.view;
+
+        // Update active button
+        document.getElementById('markersBtn').classList.toggle('active', currentView === 'markers');
+        document.getElementById('heatmapBtn').classList.toggle('active', currentView === 'heatmap');
+        document.getElementById('hexgridBtn').classList.toggle('active', currentView === 'hexgrid');
+
+        // Load data
+        function loadGeocodedData() {
+            const csvPaths = [
+                'schools/trade_schools_geocoded_fixed.csv',
+                './schools/trade_schools_geocoded_fixed.csv',
+                'trade_schools_geocoded_fixed.csv',
+                'data/production/trade_schools_geocoded_fixed.csv'
+            ];
+
+            let csvIndex = 0;
+
+            function tryLoadCSV() {
+                if (csvIndex >= csvPaths.length) {
+                    console.error('Failed to load data from all paths');
+                    return;
+                }
+
+                Papa.parse(csvPaths[csvIndex], {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        console.log('Data loaded successfully:', results.data.length, 'schools');
+
+                        allSchools = results.data
+                            .filter(row => row.lat && row.lon && !isNaN(parseFloat(row.lat)))
+                            .map(row => ({
+                                name: row.name || row.school_name || 'Unknown School',
+                                city: row.city || '',
+                                state: row.state || '',
+                                lat: parseFloat(row.lat),
+                                lon: parseFloat(row.lon),
+                                programs: (row.programs || row.program || '').split(',').map(p => p.trim()).filter(p => p),
+                                website: row.website || ''
+                            }));
+
+                        // Apply URL filters
+                        filteredSchools = allSchools;
+                        if (config.state) {
+                            filteredSchools = filteredSchools.filter(s => s.state === config.state);
+                        }
+                        if (config.program) {
+                            filteredSchools = filteredSchools.filter(s =>
+                                s.programs.some(p => p.toLowerCase().includes(config.program.toLowerCase()))
+                            );
+                        }
+
+                        updateMapView();
+                        initializeLegend();
+                    },
+                    error: function(error) {
+                        console.warn(`Failed to load ${csvPaths[csvIndex]}:`, error);
+                        csvIndex++;
+                        tryLoadCSV();
+                    }
+                });
+            }
+
+            tryLoadCSV();
+        }
+
+        // Initialize legend
+        function initializeLegend() {
+            const programCounts = {};
+            filteredSchools.forEach(school => {
+                school.programs.forEach(program => {
+                    programCounts[program] = (programCounts[program] || 0) + 1;
+                });
+            });
+
+            const topPrograms = Object.entries(programCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            const legendItems = document.getElementById('legendItems');
+            legendItems.innerHTML = topPrograms.map(([program, count]) => {
+                const shortName = program.length > 15 ? program.substring(0, 12) + '...' : program;
+                return `
+                    <div class="legend-item" title="${program} (${count})">
+                        <div class="legend-color" style="background: ${getProgramColor(program)}"></div>
+                        <span>${shortName}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // View mode switching
+        function setView(view) {
+            currentView = view;
+            document.getElementById('markersBtn').classList.toggle('active', view === 'markers');
+            document.getElementById('heatmapBtn').classList.toggle('active', view === 'heatmap');
+            document.getElementById('hexgridBtn').classList.toggle('active', view === 'hexgrid');
+            updateMapView();
+        }
+
+        // Update map view
+        function updateMapView() {
+            // Clear existing layers
+            markersLayer.clearLayers();
+            if (heatmapLayer) {
+                map.removeLayer(heatmapLayer);
+                heatmapLayer = null;
+            }
+            if (hexLayer) {
+                map.removeLayer(hexLayer);
+            }
+
+            if (currentView === 'markers') {
+                addMarkersToMap();
+            } else if (currentView === 'heatmap') {
+                addHeatmapToMap();
+            } else if (currentView === 'hexgrid') {
+                addHexGridToMap();
+            }
+        }
+
+        // Add markers
+        function addMarkersToMap() {
+            filteredSchools.forEach(school => {
+                const programColor = school.programs[0] ? getProgramColor(school.programs[0]) : '#8899a6';
+
+                const marker = L.circleMarker([school.lat, school.lon], {
+                    radius: 6,
+                    fillColor: programColor,
+                    color: '#fff',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+
+                marker.bindPopup(`
+                    <div style="font-family: sans-serif;">
+                        <strong style="color: #1d9bf0; font-size: 14px;">${school.name}</strong><br>
+                        <span style="color: #666;">📍 ${school.city}, ${school.state}</span><br>
+                        ${school.programs.length > 0 ? `<span style="color: #666;">🎓 ${school.programs.slice(0, 3).join(', ')}</span>` : ''}
+                        ${school.website ? `<br><a href="${school.website}" target="_blank" style="color: #1d9bf0;">🌐 Visit Website</a>` : ''}
+                    </div>
+                `);
+
+                markersLayer.addLayer(marker);
+            });
+        }
+
+        // Add heatmap
+        function addHeatmapToMap() {
+            const heatData = filteredSchools.map(school => [school.lat, school.lon, 1]);
+            heatmapLayer = L.heatLayer(heatData, {
+                radius: 25,
+                blur: 35,
+                maxZoom: 10,
+                max: 1.0,
+                gradient: {
+                    0.0: '#0d47a1',
+                    0.2: '#1976d2',
+                    0.4: '#2196f3',
+                    0.6: '#64b5f6',
+                    0.8: '#90caf9',
+                    1.0: '#bbdefb'
+                }
+            }).addTo(map);
+        }
+
+        // Add hex grid
+        function addHexGridToMap() {
+            hexLayer.clearLayers();
+            const resolution = getH3Resolution();
+            const hexData = {};
+
+            filteredSchools.forEach(school => {
+                const h3Index = h3.latLngToCell(school.lat, school.lon, resolution);
+                if (!hexData[h3Index]) {
+                    hexData[h3Index] = {
+                        count: 0,
+                        programs: {},
+                        schools: []
+                    };
+                }
+                hexData[h3Index].count++;
+                hexData[h3Index].schools.push(school);
+                school.programs.forEach(program => {
+                    hexData[h3Index].programs[program] = (hexData[h3Index].programs[program] || 0) + 1;
+                });
+            });
+
+            Object.keys(hexData).forEach(h3Index => {
+                try {
+                    const data = hexData[h3Index];
+                    const boundary = h3.cellToBoundary(h3Index, true);
+
+                    const topProgram = Object.entries(data.programs)
+                        .sort((a, b) => b[1] - a[1])[0];
+
+                    const fillColor = topProgram ? getProgramColor(topProgram[0]) : '#8899a6';
+                    const opacity = Math.min(0.4 + (data.count / 20), 0.7);
+
+                    const polygon = L.polygon(boundary, {
+                        color: fillColor,
+                        weight: 2,
+                        opacity: 0.8,
+                        fillColor: fillColor,
+                        fillOpacity: opacity
+                    });
+
+                    polygon.bindPopup(`
+                        <div style="font-family: sans-serif;">
+                            <strong style="color: #1d9bf0;">${data.count} Schools</strong><br>
+                            ${topProgram ? `<span style="color: #666;">🎓 Top: ${topProgram[0]}</span>` : ''}
+                        </div>
+                    `);
+
+                    hexLayer.addLayer(polygon);
+                } catch (e) {
+                    console.warn('Failed to create hex cell:', h3Index, e);
+                }
+            });
+
+            map.addLayer(hexLayer);
+        }
+
+        function getH3Resolution() {
+            const zoom = map.getZoom();
+            if (zoom <= 3) return 2;
+            if (zoom <= 5) return 3;
+            if (zoom <= 7) return 4;
+            if (zoom <= 9) return 5;
+            if (zoom <= 11) return 6;
+            return 7;
+        }
+
+        // Load data on startup
+        loadGeocodedData();
+    </script>
+</body>
+</html>

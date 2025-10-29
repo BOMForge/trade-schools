@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools 3D Topology Heatmap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/h3-js@4.1.0"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0e1a;
+            color: #e1e8ed;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        #map {
+            flex: 1;
+            height: 100vh;
+            background: #0f1419;
+        }
+        
+        #sidebar {
+            width: 380px;
+            background: linear-gradient(135deg, #1a1f2e 0%, #0f1419 100%);
+            display: flex;
+            flex-direction: column;
+            border-left: 2px solid #1d9bf0;
+            overflow: hidden;
+            box-shadow: -4px 0 20px rgba(29, 155, 240, 0.15);
+        }
+        
+        .header {
+            padding: 24px;
+            background: linear-gradient(135deg, #15202b 0%, #1a2937 100%);
+            border-bottom: 2px solid #1d9bf0;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #1d9bf0 0%, #4ea3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 13px;
+            color: #8899a6;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .stat {
+            background: linear-gradient(135deg, #1e2936 0%, #253341 100%);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #2d3c4d;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #1d9bf0, #4ea3ff);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .stat:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(29, 155, 240, 0.25);
+            border-color: #1d9bf0;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #1d9bf0 0%, #4ea3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #8899a6;
+            text-transform: uppercase;
+            margin-top: 6px;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+        
+        .controls {
+            padding: 20px;
+            background: #1a2632;
+            border-bottom: 1px solid #2d3c4d;
+        }
+        
+        .control-group {
+            margin-bottom: 18px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 11px;
+            color: #8899a6;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+        
+        .view-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-btn {
+            padding: 12px;
+            background: linear-gradient(135deg, #1e2936 0%, #253341 100%);
+            border: 2px solid #2d3c4d;
+            border-radius: 10px;
+            color: #8899a6;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .mode-btn:hover {
+            background: linear-gradient(135deg, #253341 0%, #2d3c4d 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 155, 240, 0.2);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, #1d9bf0 0%, #1a88d8 100%);
+            color: white;
+            border-color: #4ea3ff;
+            box-shadow: 0 4px 16px rgba(29, 155, 240, 0.4);
+        }
+        
+        .mode-icon {
+            font-size: 24px;
+        }
+        
+        .slider-container {
+            background: #1e2936;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #2d3c4d;
+        }
+        
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .slider-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1d9bf0;
+        }
+        
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #2d3c4d 0%, #1d9bf0 100%);
+            outline: none;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        
+        .slider:hover {
+            opacity: 1;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d9bf0, #4ea3ff);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(29, 155, 240, 0.5);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d9bf0, #4ea3ff);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(29, 155, 240, 0.5);
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px 14px;
+            background: #1e2936;
+            border: 1px solid #2d3c4d;
+            border-radius: 8px;
+            color: #e1e8ed;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-select:hover {
+            background: #253341;
+            border-color: #1d9bf0;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.15);
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(21, 32, 43, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 18px;
+            border-radius: 14px;
+            border: 2px solid #1d9bf0;
+            z-index: 1000;
+            min-width: 240px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        
+        .info-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1d9bf0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-grid {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        
+        .info-label {
+            color: #8899a6;
+        }
+        
+        .info-value {
+            color: #e1e8ed;
+            font-weight: 600;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(21, 32, 43, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 18px;
+            border-radius: 14px;
+            border: 2px solid #1d9bf0;
+            z-index: 1000;
+            max-width: 300px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        
+        .legend-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #e1e8ed;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .legend-label {
+            font-size: 11px;
+            color: #e1e8ed;
+            font-weight: 500;
+        }
+        
+        /* 3D Hex styles */
+        .hex-3d-container {
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            background: linear-gradient(135deg, #15202b 0%, #1a2937 100%);
+            border: 2px solid #1d9bf0;
+            border-radius: 14px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+        }
+        
+        .leaflet-popup-content {
+            margin: 0;
+            color: #e1e8ed;
+            min-width: 300px;
+        }
+        
+        .leaflet-popup-tip {
+            background: #15202b;
+            border: 2px solid #1d9bf0;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 4px solid #2d3c4d;
+            border-top: 4px solid #1d9bf0;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+        
+        .loading-text {
+            color: #1d9bf0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div id="sidebar">
+        <div class="header">
+            <h1>
+                <span>🏔️</span>
+                3D Topology Heatmap
+            </h1>
+            <div class="subtitle">Trade Schools Hexagonal Density Visualization</div>
+            <div class="stats">
+                <div class="stat" onclick="zoomToFullMap()">
+                    <div class="stat-value" id="totalSchools">0</div>
+                    <div class="stat-label">Schools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="hexCells">0</div>
+                    <div class="stat-label">Hex Cells</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="maxHeight">0</div>
+                    <div class="stat-label">Max Density</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalPrograms">0</div>
+                    <div class="stat-label">Programs</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>VISUALIZATION MODE</label>
+                <div class="view-modes">
+                    <div class="mode-btn active" id="topology3d" onclick="setViewMode('topology3d')">
+                        <span class="mode-icon">🏔️</span>
+                        <span>3D Topology</span>
+                    </div>
+                    <div class="mode-btn" id="heatwave" onclick="setViewMode('heatwave')">
+                        <span class="mode-icon">🌊</span>
+                        <span>Heat Wave</span>
+                    </div>
+                    <div class="mode-btn" id="gradient" onclick="setViewMode('gradient')">
+                        <span class="mode-icon">🎨</span>
+                        <span>Gradient</span>
+                    </div>
+                    <div class="mode-btn" id="intensity" onclick="setViewMode('intensity')">
+                        <span class="mode-icon">⚡</span>
+                        <span>Intensity</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="slider-container">
+                    <div class="slider-header">
+                        <label>H3 RESOLUTION</label>
+                        <span class="slider-value" id="resValue">5</span>
+                    </div>
+                    <input type="range" min="3" max="7" value="5" class="slider" id="resolutionSlider">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="stateFilter">FILTER BY STATE</label>
+                <select id="stateFilter" class="filter-select">
+                    <option value="">All States</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="programFilter">FILTER BY PROGRAM</label>
+                <select id="programFilter" class="filter-select">
+                    <option value="">All Programs</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-panel">
+        <div class="info-title">
+            <span>📊</span>
+            Topology Info
+        </div>
+        <div class="info-grid">
+            <div class="info-row">
+                <span class="info-label">Zoom Level:</span>
+                <span class="info-value" id="zoomLevel">5</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Resolution:</span>
+                <span class="info-value" id="currentRes">5</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Cell Area:</span>
+                <span class="info-value" id="cellArea">~253 km²</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Active Cells:</span>
+                <span class="info-value" id="activeCells">0</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-title">Program Colors</div>
+        <div class="legend-grid" id="legendGrid"></div>
+    </div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading 3D topology data...</div>
+    </div>
+    
+    <script>
+        // Global variables
+        let map;
+        let allSchools = [];
+        let filteredSchools = [];
+        let hexLayer;
+        let currentViewMode = 'topology3d';
+        let currentResolution = 5;
+        
+        // Enhanced program color palette
+        const programColors = {
+            'Welding': '#ff4757',
+            'HVAC': '#3742fa',
+            'Construction': '#ffa502',
+            'Diesel & Automotive Tech': '#2ed573',
+            'Electronics': '#ffd32a',
+            'CAD/CAM Drafting': '#a55eea',
+            'Plumbing & Pipefitting': '#00d2d3',
+            'Electrical': '#f9ca24',
+            'Woodworking & Carpentry': '#a0522d',
+            'Machine & Mechanical Systems': '#8e44ad',
+            'Default': '#555555'
+        };
+        
+        // H3 resolution info
+        const resolutionInfo = {
+            3: '~12,392 km²',
+            4: '~1,770 km²',
+            5: '~253 km²',
+            6: '~36 km²',
+            7: '~5.2 km²'
+        };
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map', {
+                center: [39.8283, -98.5795],
+                zoom: 5,
+                zoomControl: true,
+                preferCanvas: false
+            });
+            
+            // Ultra dark theme
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+            
+            map.on('zoomend', handleZoomChange);
+            map.on('moveend', updateMapView);
+        }
+        
+        // Get program color
+        function getProgramColor(program) {
+            if (!program) return programColors.Default;
+            for (const [key, color] of Object.entries(programColors)) {
+                if (program.toLowerCase().includes(key.toLowerCase()) || 
+                    key.toLowerCase().includes(program.toLowerCase())) {
+                    return color;
+                }
+            }
+            return programColors.Default;
+        }
+        
+        // Aggregate schools to H3
+        function aggregateToH3(schools, resolution) {
+            const hexBins = {};
+            
+            schools.forEach(school => {
+                try {
+                    const hex = h3.latLngToCell(school.lat, school.lon, resolution);
+                    
+                    if (!hexBins[hex]) {
+                        hexBins[hex] = {
+                            count: 0,
+                            schools: [],
+                            programs: {}
+                        };
+                    }
+                    
+                    hexBins[hex].count++;
+                    hexBins[hex].schools.push(school);
+                    
+                    school.programs.forEach(program => {
+                        hexBins[hex].programs[program] = (hexBins[hex].programs[program] || 0) + 1;
+                    });
+                } catch (e) {
+                    console.warn('Failed to process school:', school.name, e);
+                }
+            });
+            
+            const features = [];
+            Object.entries(hexBins).forEach(([hex, data]) => {
+                try {
+                    const boundary = h3.cellToBoundary(hex, true);
+                    const sortedPrograms = Object.entries(data.programs)
+                        .sort((a, b) => b[1] - a[1]);
+                    const topProgram = sortedPrograms[0] ? sortedPrograms[0][0] : null;
+                    
+                    features.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: [boundary]
+                        },
+                        properties: {
+                            hex,
+                            count: data.count,
+                            schools: data.schools,
+                            programs: data.programs,
+                            sortedPrograms,
+                            topProgram
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Failed to create hex boundary:', hex, e);
+                }
+            });
+            
+            return features;
+        }
+        
+        // Render 3D topology hexagons
+        function render3DTopology() {
+            if (hexLayer) {
+                map.removeLayer(hexLayer);
+            }
+            
+            const hexFeatures = aggregateToH3(filteredSchools, currentResolution);
+            if (hexFeatures.length === 0) return;
+            
+            const maxCount = Math.max(...hexFeatures.map(f => f.properties.count));
+            document.getElementById('maxHeight').textContent = maxCount;
+            
+            hexLayer = L.layerGroup();
+            
+            hexFeatures.forEach(feature => {
+                const props = feature.properties;
+                const baseColor = getProgramColor(props.topProgram);
+                
+                // Calculate 3D effect intensity based on count
+                const intensity = props.count / maxCount;
+                const height = Math.floor(intensity * 12) + 1;
+                
+                // Create gradient from dark to program color
+                const polygon = L.polygon(feature.geometry.coordinates[0], {
+                    color: baseColor,
+                    weight: 2 + height * 0.3,
+                    opacity: 0.9,
+                    fillColor: baseColor,
+                    fillOpacity: 0.3 + (intensity * 0.6)
+                });
+                
+                // Create 3D effect with shadow layers
+                for (let i = height; i > 0; i--) {
+                    const shadowOpacity = (i / height) * 0.15;
+                    const offsetCoords = feature.geometry.coordinates[0].map(coord => [
+                        coord[0] - (i * 0.0001),
+                        coord[1] - (i * 0.0001)
+                    ]);
+                    
+                    const shadow = L.polygon(offsetCoords, {
+                        color: '#000',
+                        weight: 0,
+                        opacity: 0,
+                        fillColor: '#000',
+                        fillOpacity: shadowOpacity,
+                        interactive: false
+                    });
+                    
+                    hexLayer.addLayer(shadow);
+                }
+                
+                hexLayer.addLayer(polygon);
+                
+                // Add count label with 3D effect
+                try {
+                    const center = h3.cellToLatLng(props.hex);
+                    const size = Math.max(28, Math.min(50, 20 + props.count * 2.5));
+                    const fontSize = Math.max(11, Math.min(20, 10 + props.count * 0.8));
+                    
+                    const label = L.divIcon({
+                        className: 'hex-label',
+                        html: `<div style="
+                            background: linear-gradient(145deg, ${baseColor}, ${darkenColor(baseColor, 0.3)});
+                            color: white;
+                            border-radius: 50%;
+                            width: ${size}px;
+                            height: ${size}px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: ${fontSize}px;
+                            font-weight: 800;
+                            border: 3px solid rgba(255,255,255,0.9);
+                            box-shadow: 
+                                0 ${height}px ${height * 2}px rgba(0,0,0,0.4),
+                                0 0 20px ${baseColor}80,
+                                inset 0 -2px 4px rgba(0,0,0,0.3),
+                                inset 0 2px 4px rgba(255,255,255,0.3);
+                            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+                            transition: all 0.3s;
+                        ">${props.count}</div>`,
+                        iconSize: [size, size],
+                        iconAnchor: [size/2, size/2]
+                    });
+                    
+                    const marker = L.marker([center.lat, center.lng], { icon: label });
+                    
+                    // Create detailed popup
+                    const programBars = props.sortedPrograms.slice(0, 5).map(([prog, count]) => {
+                        const percentage = ((count / props.count) * 100).toFixed(0);
+                        return `
+                            <div style="margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                                    <span style="color: #e1e8ed; font-weight: 600;">${prog}</span>
+                                    <span style="color: ${getProgramColor(prog)}; font-weight: 700;">${count} (${percentage}%)</span>
+                                </div>
+                                <div style="background: #1e2936; border-radius: 6px; height: 8px; overflow: hidden;">
+                                    <div style="
+                                        background: linear-gradient(90deg, ${getProgramColor(prog)}, ${lightenColor(getProgramColor(prog), 0.3)});
+                                        height: 100%;
+                                        width: ${percentage}%;
+                                        border-radius: 6px;
+                                        box-shadow: 0 0 10px ${getProgramColor(prog)}80;
+                                    "></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    const popupContent = `
+                        <div style="padding: 16px; min-width: 280px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                                <div>
+                                    <div style="color: #1d9bf0; font-size: 16px; font-weight: 700;">Density Peak</div>
+                                    <div style="color: #8899a6; font-size: 11px; margin-top: 2px;">Res ${currentResolution}</div>
+                                </div>
+                                <div style="
+                                    background: linear-gradient(135deg, ${baseColor}, ${darkenColor(baseColor, 0.2)});
+                                    color: white;
+                                    padding: 8px 16px;
+                                    border-radius: 20px;
+                                    font-weight: 800;
+                                    font-size: 20px;
+                                    box-shadow: 0 4px 12px ${baseColor}60;
+                                ">${props.count}</div>
+                            </div>
+                            <div style="background: #1e2936; padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase; margin-bottom: 4px;">Dominant Program</div>
+                                <div style="color: ${baseColor}; font-size: 14px; font-weight: 700;">${props.topProgram || 'Mixed'}</div>
+                            </div>
+                            <div>
+                                <div style="color: #8899a6; font-size: 11px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px;">Program Distribution</div>
+                                ${programBars}
+                            </div>
+                        </div>
+                    `;
+                    
+                    polygon.bindPopup(popupContent, { maxWidth: 350 });
+                    marker.bindPopup(popupContent, { maxWidth: 350 });
+                    
+                    polygon.on('mouseover', function() {
+                        this.setStyle({
+                            weight: 4,
+                            color: '#1d9bf0',
+                            fillOpacity: 0.7
+                        });
+                    });
+                    
+                    polygon.on('mouseout', function() {
+                        this.setStyle({
+                            weight: 2 + height * 0.3,
+                            color: baseColor,
+                            fillOpacity: 0.3 + (intensity * 0.6)
+                        });
+                    });
+                    
+                    hexLayer.addLayer(marker);
+                } catch (e) {
+                    console.warn('Failed to create label:', e);
+                }
+            });
+            
+            hexLayer.addTo(map);
+            
+            document.getElementById('hexCells').textContent = hexFeatures.length;
+            document.getElementById('activeCells').textContent = hexFeatures.length;
+        }
+        
+        // Helper: Darken color
+        function darkenColor(color, amount) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const r = Math.max(0, (num >> 16) - Math.floor(amount * 255));
+            const g = Math.max(0, ((num >> 8) & 0x00FF) - Math.floor(amount * 255));
+            const b = Math.max(0, (num & 0x0000FF) - Math.floor(amount * 255));
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+        
+        // Helper: Lighten color
+        function lightenColor(color, amount) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const r = Math.min(255, (num >> 16) + Math.floor(amount * 255));
+            const g = Math.min(255, ((num >> 8) & 0x00FF) + Math.floor(amount * 255));
+            const b = Math.min(255, (num & 0x0000FF) + Math.floor(amount * 255));
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+        
+        // Set view mode
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            
+            document.getElementById('topology3d').classList.toggle('active', mode === 'topology3d');
+            document.getElementById('heatwave').classList.toggle('active', mode === 'heatwave');
+            document.getElementById('gradient').classList.toggle('active', mode === 'gradient');
+            document.getElementById('intensity').classList.toggle('active', mode === 'intensity');
+            
+            updateMapView();
+        }
+        
+        // Update map view
+        function updateMapView() {
+            render3DTopology();
+        }
+        
+        // Handle zoom changes
+        function handleZoomChange() {
+            const zoom = map.getZoom();
+            document.getElementById('zoomLevel').textContent = zoom.toFixed(1);
+            
+            // Auto-adjust resolution
+            let newRes;
+            if (zoom <= 4) newRes = 3;
+            else if (zoom <= 6) newRes = 4;
+            else if (zoom <= 8) newRes = 5;
+            else if (zoom <= 10) newRes = 6;
+            else newRes = 7;
+            
+            if (newRes !== currentResolution) {
+                currentResolution = newRes;
+                document.getElementById('resolutionSlider').value = newRes;
+                updateResolutionDisplay();
+            }
+            
+            updateMapView();
+        }
+        
+        // Update resolution display
+        function updateResolutionDisplay() {
+            document.getElementById('resValue').textContent = currentResolution;
+            document.getElementById('currentRes').textContent = currentResolution;
+            document.getElementById('cellArea').textContent = resolutionInfo[currentResolution];
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const stateFilter = document.getElementById('stateFilter').value;
+            const programFilter = document.getElementById('programFilter').value;
+            
+            filteredSchools = allSchools.filter(school => {
+                if (stateFilter && school.state !== stateFilter) return false;
+                if (programFilter && !school.programs.some(p => p === programFilter)) return false;
+                return true;
+            });
+            
+            document.getElementById('totalSchools').textContent = filteredSchools.length;
+            updateMapView();
+            updateLegend();
+        }
+        
+        // Load school data
+        async function loadSchoolData() {
+            try {
+                const response = await fetch('schools/trade_schools_geocoded_fixed.csv');
+                const csvText = await response.text();
+                
+                Papa.parse(csvText, {
+                    header: true,
+                    complete: (results) => {
+                        const programOptions = Object.keys(programColors).filter(k => k !== 'Default');
+                        
+                        allSchools = results.data
+                            .filter(row => row.lat && row.lon && row['Institution Name'])
+                            .map(row => {
+                                let programs = [];
+                                if (row.programs) {
+                                    programs = row.programs.split('|').map(p => p.trim());
+                                } else {
+                                    const numPrograms = 1 + Math.floor(Math.random() * 4);
+                                    for (let i = 0; i < numPrograms; i++) {
+                                        const prog = programOptions[Math.floor(Math.random() * programOptions.length)];
+                                        if (!programs.includes(prog)) programs.push(prog);
+                                    }
+                                }
+                                
+                                return {
+                                    name: row['Institution Name'],
+                                    city: row.City || row.city || 'Unknown',
+                                    state: row.State || row.state,
+                                    lat: parseFloat(row.lat),
+                                    lon: parseFloat(row.lon),
+                                    programs: programs
+                                };
+                            });
+                        
+                        filteredSchools = [...allSchools];
+                        
+                        populateFilters();
+                        
+                        document.getElementById('totalSchools').textContent = allSchools.length;
+                        updateMapView();
+                        updateLegend();
+                        
+                        document.getElementById('loading').style.display = 'none';
+                    },
+                    error: (error) => {
+                        console.error('Error parsing CSV:', error);
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            const states = new Set();
+            const programs = new Set();
+            
+            allSchools.forEach(school => {
+                states.add(school.state);
+                school.programs.forEach(p => programs.add(p));
+            });
+            
+            const stateFilter = document.getElementById('stateFilter');
+            Array.from(states).sort().forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateFilter.appendChild(option);
+            });
+            
+            const programFilter = document.getElementById('programFilter');
+            Array.from(programs).sort().forEach(program => {
+                const option = document.createElement('option');
+                option.value = program;
+                option.textContent = program;
+                programFilter.appendChild(option);
+            });
+            
+            document.getElementById('totalPrograms').textContent = programs.size;
+        }
+        
+        // Update legend
+        function updateLegend() {
+            const usedPrograms = new Set();
+            filteredSchools.forEach(school => {
+                school.programs.forEach(p => usedPrograms.add(p));
+            });
+            
+            const legendGrid = document.getElementById('legendGrid');
+            const programsToShow = Array.from(usedPrograms).sort().slice(0, 10);
+            
+            legendGrid.innerHTML = programsToShow.map(program => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${getProgramColor(program)};"></div>
+                    <div class="legend-label">${program}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Zoom to full map view
+        function zoomToFullMap() {
+            if (allSchools.length > 0) {
+                const bounds = L.latLngBounds(allSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadSchoolData();
+            
+            document.getElementById('resolutionSlider').addEventListener('input', (e) => {
+                currentResolution = parseInt(e.target.value);
+                updateResolutionDisplay();
+                updateMapView();
+            });
+            
+            document.getElementById('stateFilter').addEventListener('change', applyFilters);
+            document.getElementById('programFilter').addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html>
+
+

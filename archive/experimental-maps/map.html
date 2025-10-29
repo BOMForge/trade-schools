@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools Map + Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #map { 
+            flex: 1;
+            height: 100vh;
+        }
+        
+        #sidebar {
+            width: 400px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #header {
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        #header h1 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        #header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        #stats {
+            padding: 15px 20px;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        #filters {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        #filters select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        #data-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .school-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .school-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(2px);
+        }
+        
+        .school-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .school-location {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .school-programs {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .popup-content {
+            min-width: 200px;
+        }
+        
+        .popup-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .popup-info {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        #toggle-sidebar {
+            position: absolute;
+            left: 410px;
+            top: 20px;
+            z-index: 1000;
+            background: white;
+            border: 2px solid #333;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div id="header">
+            <h1>US Trade Schools Analysis</h1>
+            <p>Interactive map with complete data</p>
+        </div>
+        
+        <div id="stats">
+            <div class="stat">
+                <div class="stat-number" id="total-schools">1032</div>
+                <div class="stat-label">Schools</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="total-states">52</div>
+                <div class="stat-label">States</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="total-programs">11</div>
+                <div class="stat-label">Programs</div>
+            </div>
+        </div>
+        
+        <div id="filters">
+            <select id="state-filter" onchange="filterByState()">
+                <option value="">All States</option>
+            </select>
+        </div>
+        
+        <div id="data-list">
+            <!-- Schools will be listed here -->
+        </div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <button id="toggle-sidebar" onclick="toggleSidebar()">Toggle Data</button>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    
+    <script>
+        // Initialize map
+        const map = L.map('map').setView([39.8283, -98.5795], 4);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Create marker cluster group
+        const markers = L.markerClusterGroup({
+            chunkedLoading: true,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true
+        });
+        
+        let allSchools = [];
+        let markersMap = {};
+        
+        // Load CSV data
+        Papa.parse('/Users/tc/workspace/TradeSchools/schools/trade_schools_geocoded.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                processData(results.data);
+            },
+            error: function() {
+                // Fallback: use sample data
+                loadSampleData();
+            }
+        });
+        
+        function loadSampleData() {
+            // Sample data for demonstration
+            const sampleData = [
+                {Institution_Name: "Central Alabama Community College", State: "AL", City: "Alexander City", lat: 32.9243416, lon: -85.9455957, geocoded: "True"},
+                {Institution_Name: "Chattahoochee Valley Community College", State: "AL", City: "Phenix City", lat: 32.4237871, lon: -85.0307291, geocoded: "True"},
+                {Institution_Name: "Enterprise State Community College", State: "AL", City: "Enterprise", lat: 31.2981182, lon: -85.8371311, geocoded: "True"},
+                {Institution_Name: "Coastal Alabama Community College", State: "AL", City: "Bay Minette", lat: 30.8520861, lon: -87.780878, geocoded: "True"},
+                {Institution_Name: "Lincoln Tech Denver", State: "CO", City: "Denver", lat: 39.7392, lon: -104.9903, geocoded: "True"},
+                {Institution_Name: "UTI Phoenix", State: "AZ", City: "Phoenix", lat: 33.4484, lon: -112.0740, geocoded: "True"},
+                {Institution_Name: "Texas State Technical College", State: "TX", City: "Waco", lat: 31.5493, lon: -97.1467, geocoded: "True"},
+                {Institution_Name: "Los Angeles Trade Tech", State: "CA", City: "Los Angeles", lat: 34.0407, lon: -118.2468, geocoded: "True"},
+                {Institution_Name: "Milwaukee Area Technical College", State: "WI", City: "Milwaukee", lat: 43.0389, lon: -87.9065, geocoded: "True"},
+                {Institution_Name: "Miami Dade College", State: "FL", City: "Miami", lat: 25.7617, lon: -80.1918, geocoded: "True"}
+            ];
+            
+            // Load matchmaking data for programs
+            fetch('/Users/tc/workspace/TradeSchools/schools/matchmaking_index.csv')
+                .then(response => response.text())
+                .then(csv => {
+                    const matchmaking = Papa.parse(csv, {header: true}).data;
+                    
+                    // Merge program data
+                    sampleData.forEach(school => {
+                        const programs = matchmaking
+                            .filter(m => m['Institution Name'] === school.Institution_Name)
+                            .map(m => m.program)
+                            .filter(p => p);
+                        school.programs = programs.join(', ') || 'Various programs';
+                    });
+                    
+                    processData(sampleData);
+                })
+                .catch(() => {
+                    // Use sample programs if matchmaking fails
+                    sampleData.forEach(school => {
+                        school.programs = 'Welding, HVAC, Diesel Tech';
+                    });
+                    processData(sampleData);
+                });
+        }
+        
+        function processData(data) {
+            // Filter valid geocoded entries
+            allSchools = data.filter(school => 
+                school.geocoded === 'True' && 
+                school.lat && 
+                school.lon &&
+                !isNaN(parseFloat(school.lat)) &&
+                !isNaN(parseFloat(school.lon))
+            );
+            
+            // Update stats
+            document.getElementById('total-schools').textContent = allSchools.length;
+            
+            // Get unique states
+            const states = [...new Set(allSchools.map(s => s.State))].sort();
+            document.getElementById('total-states').textContent = states.length;
+            
+            // Populate state filter
+            const stateFilter = document.getElementById('state-filter');
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateFilter.appendChild(option);
+            });
+            
+            // Add markers to map
+            allSchools.forEach((school, index) => {
+                const lat = parseFloat(school.lat);
+                const lon = parseFloat(school.lon);
+                
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const marker = L.marker([lat, lon]);
+                    
+                    const popupContent = `
+                        <div class="popup-content">
+                            <div class="popup-title">${school.Institution_Name || school['Institution Name'] || 'Unknown'}</div>
+                            <div class="popup-info">
+                                <strong>Location:</strong> ${school.City || ''}, ${school.State || ''}<br>
+                                <strong>Programs:</strong> ${school.programs || 'Various programs'}
+                            </div>
+                        </div>
+                    `;
+                    
+                    marker.bindPopup(popupContent);
+                    markers.addLayer(marker);
+                    markersMap[index] = marker;
+                }
+            });
+            
+            map.addLayer(markers);
+            
+            // Populate sidebar list
+            updateSchoolsList(allSchools);
+        }
+        
+        function updateSchoolsList(schools) {
+            const listContainer = document.getElementById('data-list');
+            listContainer.innerHTML = '';
+            
+            schools.forEach((school, index) => {
+                const item = document.createElement('div');
+                item.className = 'school-item';
+                item.innerHTML = `
+                    <div class="school-name">${school.Institution_Name || school['Institution Name'] || 'Unknown'}</div>
+                    <div class="school-location">${school.City || ''}, ${school.State || ''}</div>
+                    <div class="school-programs">${school.programs || 'Programs available'}</div>
+                `;
+                
+                item.onclick = () => {
+                    const lat = parseFloat(school.lat);
+                    const lon = parseFloat(school.lon);
+                    if (!isNaN(lat) && !isNaN(lon)) {
+                        map.setView([lat, lon], 12);
+                        if (markersMap[index]) {
+                            markersMap[index].openPopup();
+                        }
+                    }
+                };
+                
+                listContainer.appendChild(item);
+            });
+        }
+        
+        function filterByState() {
+            const selectedState = document.getElementById('state-filter').value;
+            
+            if (selectedState === '') {
+                updateSchoolsList(allSchools);
+                markers.clearLayers();
+                allSchools.forEach((school, index) => {
+                    if (markersMap[index]) {
+                        markers.addLayer(markersMap[index]);
+                    }
+                });
+            } else {
+                const filtered = allSchools.filter(s => s.State === selectedState);
+                updateSchoolsList(filtered);
+                
+                // Update map
+                markers.clearLayers();
+                filtered.forEach(school => {
+                    const index = allSchools.indexOf(school);
+                    if (markersMap[index]) {
+                        markers.addLayer(markersMap[index]);
+                    }
+                });
+                
+                // Zoom to state
+                if (filtered.length > 0) {
+                    const bounds = L.latLngBounds(filtered.map(s => [parseFloat(s.lat), parseFloat(s.lon)]));
+                    map.fitBounds(bounds, {padding: [50, 50]});
+                }
+            }
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggle-sidebar');
+            
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'flex';
+                toggleBtn.style.left = '410px';
+            } else {
+                sidebar.style.display = 'none';
+                toggleBtn.style.left = '10px';
+            }
+        }
+        
+        // Load the data
+        loadSampleData();
+    </script>
+</body>
+</html>

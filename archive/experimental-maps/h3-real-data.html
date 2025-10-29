@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools H3 Hexagon Analysis - Real Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            color: #fff;
+        }
+        
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #00ffff;
+            z-index: 100;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+            to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+        }
+        
+        #stats {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            border: 1px solid #00ffff;
+            box-shadow: 0 0 30px #00ffff;
+            z-index: 100;
+            min-width: 250px;
+        }
+        
+        .stat-row {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stat-label {
+            color: #00ffff;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        #controls {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            border: 1px solid #ff00ff;
+            box-shadow: 0 0 30px #ff00ff;
+            z-index: 100;
+        }
+        
+        button {
+            display: block;
+            width: 180px;
+            margin: 8px 0;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 20px #00ffff;
+            transform: translateX(5px);
+        }
+        
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.9);
+            padding: 15px;
+            border: 1px solid #00ffff;
+            z-index: 100;
+        }
+        
+        .legend-title {
+            color: #00ffff;
+            font-size: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 11px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 15px;
+            margin-right: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        #tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.95);
+            border: 1px solid #00ffff;
+            padding: 15px;
+            color: #fff;
+            font-size: 12px;
+            pointer-events: none;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 30px #00ffff;
+            max-width: 300px;
+        }
+        
+        #load-file {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .load-button {
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px #00ffff; }
+            50% { box-shadow: 0 0 40px #ff00ff; }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+        
+        <div id="header">
+            <h1>US TRADE SCHOOLS H3 HEXAGON ANALYSIS</h1>
+        </div>
+        
+        <div id="stats">
+            <div class="stat-row">
+                <span class="stat-label">Total Schools:</span>
+                <span class="stat-value" id="total-schools">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Mapped Schools:</span>
+                <span class="stat-value" id="mapped-schools">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Active Hexagons:</span>
+                <span class="stat-value" id="active-hexes">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">H3 Resolution:</span>
+                <span class="stat-value" id="resolution">5</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Max Density:</span>
+                <span class="stat-value" id="max-density">0</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Coverage Area:</span>
+                <span class="stat-value" id="coverage">0 km²</span>
+            </div>
+        </div>
+        
+        <div id="controls">
+            <button onclick="setResolution(4)">◆ RESOLUTION 4 (LARGE)</button>
+            <button onclick="setResolution(5)">◆ RESOLUTION 5 (MEDIUM)</button>
+            <button onclick="setResolution(6)">◆ RESOLUTION 6 (SMALL)</button>
+            <button onclick="toggleHeatmap()">🔥 TOGGLE HEATMAP</button>
+            <button onclick="showGaps()">⚠️ SHOW GAP AREAS</button>
+            <button onclick="animateBuildup()">▶ ANIMATE BUILDUP</button>
+            <button onclick="exportSVG()">💾 EXPORT AS SVG</button>
+        </div>
+        
+        <div id="legend">
+            <div class="legend-title">Density Scale</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #001a33;"></div>
+                <span>1-2 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #004080;"></div>
+                <span>3-5 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #0066cc;"></div>
+                <span>6-10 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #00ccff;"></div>
+                <span>11-20 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #00ff99;"></div>
+                <span>21-40 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffff00;"></div>
+                <span>41-80 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6600;"></div>
+                <span>81-150 schools</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff0066;"></div>
+                <span>150+ schools</span>
+            </div>
+        </div>
+        
+        <div id="load-file">
+            <button class="load-button" onclick="document.getElementById('file-input').click()">
+                LOAD GEOCODED DATA
+            </button>
+            <input type="file" id="file-input" accept=".csv" onchange="loadCSV(event)">
+        </div>
+        
+        <div id="tooltip"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let schoolData = [];
+        let hexagonData = {};
+        let currentResolution = 5;
+        let heatmapMode = false;
+        
+        // US map center and scale
+        const mapCenter = { lat: 39.8283, lon: -98.5795 };
+        const scale = 4;
+        
+        // Color function based on density
+        function getColor(count) {
+            if (count <= 2) return '#001a33';
+            if (count <= 5) return '#004080';
+            if (count <= 10) return '#0066cc';
+            if (count <= 20) return '#00ccff';
+            if (count <= 40) return '#00ff99';
+            if (count <= 80) return '#ffff00';
+            if (count <= 150) return '#ff6600';
+            return '#ff0066';
+        }
+        
+        // Convert lat/lon to canvas coordinates
+        function projectToCanvas(lat, lon) {
+            const x = (lon - mapCenter.lon) * scale + canvas.width / 2;
+            const y = -(lat - mapCenter.lat) * scale + canvas.height / 2;
+            return { x, y };
+        }
+        
+        // Draw hexagon on canvas
+        function drawHexagon(centerLat, centerLon, radius, color, alpha = 0.8) {
+            const boundary = h3.h3ToGeoBoundary(h3.geoToH3(centerLat, centerLon, currentResolution));
+            
+            ctx.beginPath();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.strokeStyle = heatmapMode ? color : '#00ffff';
+            ctx.lineWidth = 1;
+            
+            boundary.forEach((coord, i) => {
+                const point = projectToCanvas(coord[0], coord[1]);
+                if (i === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+            });
+            
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+        }
+        
+        // Process schools into H3 hexagons
+        function processToHexagons(resolution) {
+            hexagonData = {};
+            
+            schoolData.forEach(school => {
+                if (school.lat && school.lon && !isNaN(school.lat) && !isNaN(school.lon)) {
+                    const h3Index = h3.geoToH3(school.lat, school.lon, resolution);
+                    
+                    if (!hexagonData[h3Index]) {
+                        hexagonData[h3Index] = {
+                            hex: h3Index,
+                            count: 0,
+                            schools: [],
+                            center: h3.h3ToGeo(h3Index)
+                        };
+                    }
+                    
+                    hexagonData[h3Index].count++;
+                    hexagonData[h3Index].schools.push(school);
+                }
+            });
+            
+            return Object.values(hexagonData);
+        }
+        
+        // Render all hexagons
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw gradient background
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, canvas.width / 2
+            );
+            gradient.addColorStop(0, 'rgba(0,20,40,0.5)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0.9)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Process and draw hexagons
+            const hexData = processToHexagons(currentResolution);
+            
+            // Update stats
+            document.getElementById('active-hexes').textContent = hexData.length;
+            document.getElementById('resolution').textContent = currentResolution;
+            const maxDensity = Math.max(...hexData.map(h => h.count), 0);
+            document.getElementById('max-density').textContent = maxDensity;
+            
+            // Sort by density for proper layering
+            hexData.sort((a, b) => a.count - b.count);
+            
+            // Draw hexagons
+            hexData.forEach(hex => {
+                const color = getColor(hex.count);
+                const alpha = heatmapMode ? Math.min(0.3 + (hex.count / maxDensity) * 0.7, 1) : 0.8;
+                drawHexagon(hex.center[0], hex.center[1], 10, color, alpha);
+            });
+            
+            // Draw hotspot indicators for high-density areas
+            if (!heatmapMode) {
+                hexData.filter(h => h.count > 50).forEach(hex => {
+                    const point = projectToCanvas(hex.center[0], hex.center[1]);
+                    
+                    // Pulsing circle
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, 20, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#ff00ff';
+                    ctx.lineWidth = 2;
+                    ctx.globalAlpha = 0.5 + Math.sin(Date.now() / 500) * 0.3;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                    
+                    // Count label
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 12px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(hex.count, point.x, point.y + 4);
+                });
+            }
+        }
+        
+        // Load CSV file
+        function loadCSV(event) {
+            const file = event.target.files[0];
+            if (file) {
+                Papa.parse(file, {
+                    header: true,
+                    complete: function(results) {
+                        schoolData = results.data.map(row => ({
+                            name: row['Institution Name'] || row.Institution_Name,
+                            state: row.State,
+                            city: row.City,
+                            lat: parseFloat(row.lat),
+                            lon: parseFloat(row.lon),
+                            geocoded: row.geocoded === 'True'
+                        })).filter(s => s.geocoded && !isNaN(s.lat) && !isNaN(s.lon));
+                        
+                        document.getElementById('total-schools').textContent = results.data.length;
+                        document.getElementById('mapped-schools').textContent = schoolData.length;
+                        
+                        render();
+                        
+                        // Auto animate on load
+                        setTimeout(animateBuildup, 500);
+                    }
+                });
+            }
+        }
+        
+        // Load sample data for demo
+        function loadSampleData() {
+            // California cluster
+            for (let i = 0; i < 121; i++) {
+                schoolData.push({
+                    name: `CA School ${i+1}`,
+                    state: 'CA',
+                    lat: 34.0522 + (Math.random() - 0.5) * 8,
+                    lon: -118.2437 + (Math.random() - 0.5) * 10
+                });
+            }
+            
+            // Texas cluster
+            for (let i = 0; i < 70; i++) {
+                schoolData.push({
+                    name: `TX School ${i+1}`,
+                    state: 'TX',
+                    lat: 31.9686 + (Math.random() - 0.5) * 6,
+                    lon: -99.9018 + (Math.random() - 0.5) * 8
+                });
+            }
+            
+            // Ohio cluster
+            for (let i = 0; i < 63; i++) {
+                schoolData.push({
+                    name: `OH School ${i+1}`,
+                    state: 'OH',
+                    lat: 40.4173 + (Math.random() - 0.5) * 3,
+                    lon: -82.9071 + (Math.random() - 0.5) * 3
+                });
+            }
+            
+            // Florida cluster
+            for (let i = 0; i < 60; i++) {
+                schoolData.push({
+                    name: `FL School ${i+1}`,
+                    state: 'FL',
+                    lat: 27.6648 + (Math.random() - 0.5) * 5,
+                    lon: -81.5158 + (Math.random() - 0.5) * 4
+                });
+            }
+            
+            document.getElementById('total-schools').textContent = schoolData.length;
+            document.getElementById('mapped-schools').textContent = schoolData.length;
+            
+            render();
+        }
+        
+        // Control functions
+        function setResolution(res) {
+            currentResolution = res;
+            render();
+        }
+        
+        function toggleHeatmap() {
+            heatmapMode = !heatmapMode;
+            render();
+        }
+        
+        function showGaps() {
+            // Highlight areas with few schools
+            const hexData = processToHexagons(currentResolution);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            hexData.forEach(hex => {
+                const alpha = hex.count < 5 ? 0.9 : 0.1;
+                const color = hex.count < 5 ? '#ff0000' : '#004080';
+                drawHexagon(hex.center[0], hex.center[1], 10, color, alpha);
+            });
+            
+            setTimeout(render, 3000);
+        }
+        
+        function animateBuildup() {
+            let index = 0;
+            const hexData = processToHexagons(currentResolution);
+            const sorted = hexData.sort((a, b) => b.count - a.count);
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const interval = setInterval(() => {
+                if (index < sorted.length) {
+                    const hex = sorted[index];
+                    const color = getColor(hex.count);
+                    drawHexagon(hex.center[0], hex.center[1], 10, color, 0.8);
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 10);
+        }
+        
+        function exportSVG() {
+            alert('SVG export would generate a downloadable vector file of the current visualization');
+        }
+        
+        // Mouse interaction
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Convert back to lat/lon
+            const lon = (x - canvas.width / 2) / scale + mapCenter.lon;
+            const lat = -(y - canvas.height / 2) / scale + mapCenter.lat;
+            
+            // Find hex at this position
+            const h3Index = h3.geoToH3(lat, lon, currentResolution);
+            const hex = hexagonData[h3Index];
+            
+            if (hex && hex.count > 0) {
+                const tooltip = document.getElementById('tooltip');
+                tooltip.style.display = 'block';
+                tooltip.style.left = e.clientX + 10 + 'px';
+                tooltip.style.top = e.clientY + 10 + 'px';
+                
+                const states = [...new Set(hex.schools.map(s => s.state))];
+                tooltip.innerHTML = `
+                    <div style="color:#00ffff; font-weight:bold; margin-bottom:5px;">HEXAGON DATA</div>
+                    <div>Schools: ${hex.count}</div>
+                    <div>States: ${states.join(', ')}</div>
+                    <div>H3 Index: ${h3Index.substring(0,10)}...</div>
+                    <div>Center: ${hex.center[0].toFixed(4)}, ${hex.center[1].toFixed(4)}</div>
+                `;
+            } else {
+                document.getElementById('tooltip').style.display = 'none';
+            }
+        });
+        
+        // Initialize with sample data
+        loadSampleData();
+        
+        // Animation loop for pulsing effects
+        function animate() {
+            if (document.querySelector('.load-button')) {
+                render();
+            }
+            requestAnimationFrame(animate);
+        }
+        
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+{
+  "overview": {
+    "total_institutions": 1032,
+    "states_covered": 52,
+    "unique_programs": 11,
+    "total_training_capacity_proxy": 3413
+  },
+  "key_findings": {
+    "most_common_programs": {
+      "Welding": 739,
+      "Diesel & Automotive Tech": 593,
+      "HVAC": 576,
+      "Machine & Mechanical Systems": 393,
+      "Construction": 374,
+      "Electronics": 238,
+      "CAD/CAM Drafting": 209,
+      "Plumbing & Pipefitting": 163,
+      "Woodworking & Carpentry": 125,
+      "Machining": 2
+    },
+    "highest_concentration_states": {
+      "CA": 121,
+      "TX": 70,
+      "OH": 63,
+      "FL": 60,
+      "NC": 48
+    },
+    "critical_skill_clusters": {
+      "Transportation": {
+        "total_schools": 593,
+        "top_states": {
+          "CA": 64,
+          "TX": 37,
+          "FL": 35,
+          "IL": 31,
+          "NC": 29,
+          "PA": 28,
+          "TN": 24,
+          "WA": 23,
+          "OH": 20,
+          "KS": 19
+        },
+        "geographic_concentration_index": 0.04
+      },
+      "Manufacturing": {
+        "total_schools": 567,
+        "top_states": {
+          "CA": 59,
+          "TX": 38,
+          "OH": 32,
+          "FL": 28,
+          "IL": 27,
+          "TN": 27,
+          "PA": 25,
+          "NC": 25,
+          "AL": 22,
+          "WA": 22
+        },
+        "geographic_concentration_index": 0.0402
+      },
+      "Construction": {
+        "total_schools": 494,
+        "top_states": {
+          "CA": 46,
+          "FL": 33,
+          "PA": 27,
+          "TX": 26,
+          "NC": 23,
+          "OH": 22,
+          "KS": 21,
+          "TN": 20,
+          "MO": 16,
+          "OK": 15
+        },
+        "geographic_concentration_index": 0.0374
+      },
+      "Skilled Trades": {
+        "total_schools": 881,
+        "top_states": {
+          "CA": 96,
+          "TX": 63,
+          "FL": 55,
+          "OH": 50,
+          "NC": 46,
+          "IL": 41,
+          "PA": 33,
+          "OK": 27,
+          "KS": 26,
+          "TN": 26
+        },
+        "geographic_concentration_index": 0.0409
+      },
+      "Advanced Manufacturing": {
+        "total_schools": 565,
+        "top_states": {
+          "CA": 57,
+          "TX": 38,
+          "OH": 32,
+          "FL": 28,
+          "IL": 27,
+          "TN": 27,
+          "PA": 25,
+          "NC": 25,
+          "AL": 22,
+          "WA": 22
+        },
+        "geographic_concentration_index": 0.0397
+      }
+    },
+    "program_synergies": [
+      "Diesel & Automotive Tech + Welding (484 schools)",
+      "HVAC + Welding (443 schools)",
+      "Diesel & Automotive Tech + HVAC (354 schools)",
+      "Machine & Mechanical Systems + Welding (326 schools)",
+      "Diesel & Automotive Tech + Machine & Mechanical Systems (272 schools)"
+    ]
+  },
+  "strategic_insights": {
+    "geographic_gaps": [
+      "ND",
+      "MA",
+      "WY",
+      "ID",
+      "NH"
+    ],
+    "program_gaps": {
+      "HVAC": "92.3% coverage",
+      "Plumbing & Pipefitting": "78.8% coverage",
+      "Electronics": "82.7% coverage",
+      "Machine & Mechanical Systems": "90.4% coverage",
+      "Welding": "94.2% coverage",
+      "Diesel & Automotive Tech": "96.2% coverage"
+    },
+    "recommendations": [
+      "Priority expansion targets: ND, MA, WY (training capacity deficit)"
+    ]
+  }
+}

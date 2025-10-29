@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools Map + Data</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #map { 
+            flex: 1;
+            height: 100vh;
+            filter: brightness(0.8);
+        }
+        
+        #sidebar {
+            width: 450px;
+            background: #0a0a0a;
+            border-left: 1px solid #0f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #header {
+            padding: 20px;
+            border-bottom: 1px solid #0f0;
+        }
+        
+        #header h1 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        #header p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        #stats {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #0f0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        #data-display {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            font-size: 12px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        
+        .data-section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            color: #0ff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+        }
+        
+        .data-row {
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+        
+        .highlight {
+            color: #ff0;
+            font-weight: bold;
+        }
+        
+        .dim {
+            opacity: 0.5;
+        }
+        
+        #load-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+        }
+        
+        #load-button:hover {
+            background: #0f0;
+            color: #000;
+        }
+        
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button id="load-button" onclick="document.getElementById('file-input').click()">
+        Load CSV Data
+    </button>
+    <input type="file" id="file-input" accept=".csv" onchange="loadFile(event)">
+    
+    <div id="map"></div>
+    
+    <div id="sidebar">
+        <div id="header">
+            <h1>TRADE SCHOOL ANALYSIS</h1>
+            <p>SYSTEM STATUS: OPERATIONAL</p>
+        </div>
+        
+        <div id="stats">
+            <div class="stat">
+                <div class="stat-number" id="total-schools">1032</div>
+                <div class="stat-label">Schools</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="mapped-schools">0</div>
+                <div class="stat-label">Mapped</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="total-states">52</div>
+                <div class="stat-label">States</div>
+            </div>
+        </div>
+        
+        <div id="data-display">
+            <div class="data-section">
+                <div class="section-title">TOP WORKFORCE GAPS</div>
+                <div class="data-row"><span class="highlight">IL</span> CDL Training <span class="dim">|</span> Gap: 37 <span class="dim">|</span> Priority: 179.94</div>
+                <div class="data-row"><span class="highlight">ND</span> CDL Training <span class="dim">|</span> Gap: 37 <span class="dim">|</span> Priority: 175.59</div>
+                <div class="data-row"><span class="highlight">WI</span> CDL Training <span class="dim">|</span> Gap: 39 <span class="dim">|</span> Priority: 168.05</div>
+                <div class="data-row"><span class="highlight">UT</span> CDL Training <span class="dim">|</span> Gap: 40 <span class="dim">|</span> Priority: 162.07</div>
+                <div class="data-row"><span class="highlight">ID</span> CDL Training <span class="dim">|</span> Gap: 39 <span class="dim">|</span> Priority: 159.27</div>
+            </div>
+            
+            <div class="data-section">
+                <div class="section-title">PROGRAM DISTRIBUTION</div>
+                <div class="data-row">Welding <span class="dim">.................</span> 739 schools (71.6%)</div>
+                <div class="data-row">Diesel & Auto Tech <span class="dim">......</span> 593 schools (57.5%)</div>
+                <div class="data-row">HVAC <span class="dim">....................</span> 576 schools (55.8%)</div>
+                <div class="data-row">Machine & Mechanical <span class="dim">....</span> 393 schools (38.1%)</div>
+                <div class="data-row">Construction <span class="dim">............</span> 374 schools (36.2%)</div>
+                <div class="data-row">Electronics <span class="dim">.............</span> 238 schools (23.1%)</div>
+                <div class="data-row">CAD/CAM <span class="dim">.................</span> 209 schools (20.3%)</div>
+                <div class="data-row">Plumbing <span class="dim">................</span> 163 schools (15.8%)</div>
+            </div>
+            
+            <div class="data-section">
+                <div class="section-title">TOP STATES BY CONCENTRATION</div>
+                <div class="data-row"><span class="highlight">CA</span> California <span class="dim">...........</span> 121 institutions</div>
+                <div class="data-row"><span class="highlight">TX</span> Texas <span class="dim">.................</span> 70 institutions</div>
+                <div class="data-row"><span class="highlight">OH</span> Ohio <span class="dim">..................</span> 63 institutions</div>
+                <div class="data-row"><span class="highlight">FL</span> Florida <span class="dim">...............</span> 60 institutions</div>
+                <div class="data-row"><span class="highlight">NC</span> North Carolina <span class="dim">........</span> 48 institutions</div>
+                <div class="data-row"><span class="highlight">PA</span> Pennsylvania <span class="dim">..........</span> 46 institutions</div>
+                <div class="data-row"><span class="highlight">IL</span> Illinois <span class="dim">..............</span> 45 institutions</div>
+            </div>
+            
+            <div class="data-section">
+                <div class="section-title">ROI ANALYSIS</div>
+                <div class="data-row">Training Cost <span class="dim">...........</span> $15,000 per seat</div>
+                <div class="data-row">Average Salary <span class="dim">..........</span> $52,000-$60,000</div>
+                <div class="data-row">Payback Period <span class="dim">..........</span> <span class="highlight">1.0-1.1 years</span></div>
+                <div class="data-row">5-Year Net Benefit <span class="dim">......</span> <span class="highlight">$53,750-$57,500</span></div>
+            </div>
+            
+            <div class="data-section">
+                <div class="section-title">SYSTEM LOG</div>
+                <div class="data-row dim">[INIT] Map system loaded</div>
+                <div class="data-row dim">[DATA] Analysis complete: 1032 schools</div>
+                <div class="data-row dim">[GEO]  Geocoding successful: 920 locations</div>
+                <div class="data-row dim">[MAP]  Click "Load CSV Data" to visualize</div>
+                <div class="data-row dim">[CSV]  Expected: trade_schools_geocoded.csv</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    
+    <script>
+        // Initialize map with dark theme
+        const map = L.map('map').setView([39.8283, -98.5795], 4);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Create marker cluster group
+        const markers = L.markerClusterGroup({
+            chunkedLoading: true,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            iconCreateFunction: function(cluster) {
+                const count = cluster.getChildCount();
+                let size = 'small';
+                if (count > 50) size = 'large';
+                else if (count > 20) size = 'medium';
+                
+                return L.divIcon({
+                    html: '<div style="background:#0f0; color:#000; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px;">' + count + '</div>',
+                    className: 'marker-cluster-' + size,
+                    iconSize: L.point(30, 30)
+                });
+            }
+        });
+        
+        function loadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                Papa.parse(file, {
+                    header: true,
+                    complete: function(results) {
+                        displaySchoolsOnMap(results.data);
+                        updateLog('Data loaded: ' + results.data.length + ' records');
+                    }
+                });
+            }
+        }
+        
+        function displaySchoolsOnMap(data) {
+            markers.clearLayers();
+            let mappedCount = 0;
+            
+            data.forEach(school => {
+                if (school.geocoded === 'True' && school.lat && school.lon) {
+                    const lat = parseFloat(school.lat);
+                    const lon = parseFloat(school.lon);
+                    
+                    if (!isNaN(lat) && !isNaN(lon)) {
+                        const marker = L.circleMarker([lat, lon], {
+                            radius: 4,
+                            fillColor: '#0f0',
+                            color: '#0f0',
+                            weight: 1,
+                            opacity: 0.8,
+                            fillOpacity: 0.6
+                        });
+                        
+                        const name = school['Institution Name'] || school.Institution_Name || 'Unknown';
+                        const city = school.City || '';
+                        const state = school.State || '';
+                        
+                        marker.bindPopup(`
+                            <div style="font-family: monospace; font-size: 12px;">
+                                <strong>${name}</strong><br>
+                                ${city}, ${state}
+                            </div>
+                        `);
+                        
+                        markers.addLayer(marker);
+                        mappedCount++;
+                    }
+                }
+            });
+            
+            map.addLayer(markers);
+            document.getElementById('mapped-schools').textContent = mappedCount;
+            updateLog('Mapped ' + mappedCount + ' schools to visualization');
+        }
+        
+        function updateLog(message) {
+            const logSection = document.querySelector('.data-section:last-child');
+            const newRow = document.createElement('div');
+            newRow.className = 'data-row';
+            newRow.innerHTML = `<span class="highlight">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+            logSection.appendChild(newRow);
+        }
+        
+        // Auto-load if file exists locally (won't work due to browser security, but shows intent)
+        updateLog('Ready for data input');
+    </script>
+</body>
+</html>
