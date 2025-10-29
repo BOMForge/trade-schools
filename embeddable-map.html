@@ -928,6 +928,12 @@
             const state = e.target.value;
             const filtered = state ? allSchools.filter(s => s.state === state) : allSchools;
             addSchoolsToMap(filtered);
+            
+            // Auto-center map to show filtered schools
+            if (filtered.length > 0) {
+                const bounds = L.latLngBounds(filtered.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
         });
         
         document.getElementById('programFilter').addEventListener('change', function(e) {
@@ -936,6 +942,12 @@
                 allSchools.filter(s => s.programs.some(p => p.includes(program))) : 
                 allSchools;
             addSchoolsToMap(filtered);
+            
+            // Auto-center map to show filtered schools
+            if (filtered.length > 0) {
+                const bounds = L.latLngBounds(filtered.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
         });
         
         // Export data function

@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY"></script>
     <style>
         * {
             margin: 0;
@@ -67,6 +68,31 @@
             padding: 20px;
             background: #15202b;
             border-bottom: 1px solid #38444d;
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .nav-link {
+            color: #8899a6;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(29, 155, 240, 0.1);
+            color: #1d9bf0;
+        }
+        
+        .nav-link.active {
+            background: rgba(29, 155, 240, 0.2);
+            color: #1d9bf0;
         }
         
         .header h1 {
@@ -158,32 +184,47 @@
         
         .view-controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
         }
         
         .view-btn {
             flex: 1;
-            padding: 8px 12px;
+            padding: 10px 8px;
             background: #253341;
             border: 1px solid #38444d;
-            border-radius: 6px;
+            border-radius: 8px;
             color: #e1e8ed;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
         
         .view-btn:hover {
             border-color: #1d9bf0;
-            background: #1d9bf0;
+            background: #2a3f53;
             color: white;
+            transform: translateY(-1px);
         }
         
         .view-btn.active {
             background: #1d9bf0;
             border-color: #1d9bf0;
             color: white;
+            box-shadow: 0 2px 8px rgba(29, 155, 240, 0.3);
+        }
+        
+        .mode-indicator {
+            font-size: 10px;
+            color: #8899a6;
+            text-align: center;
+            margin-bottom: 12px;
+            padding: 6px;
+            background: rgba(29, 155, 240, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #1d9bf0;
         }
         
         .chart-container {
@@ -296,6 +337,110 @@
         .submit-btn:disabled {
             background: #38444d;
             cursor: not-allowed;
+        }
+
+        /* Enhanced form styles */
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-col-2 {
+            flex: 1;
+        }
+
+        .field-error {
+            color: #ff6b6b;
+            font-size: 11px;
+            margin-top: 4px;
+            min-height: 15px;
+            display: block;
+        }
+
+        .field-hint {
+            color: #8899a6;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .form-input.error,
+        .form-textarea.error {
+            border-color: #ff6b6b;
+        }
+
+        .form-input.success,
+        .form-textarea.success {
+            border-color: #6bcf7f;
+        }
+
+        .form-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .form-success {
+            background: rgba(107, 207, 127, 0.15);
+            border: 1px solid #6bcf7f;
+            color: #6bcf7f;
+        }
+
+        .form-error {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .program-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 11px;
+        }
+
+        .program-checkbox:hover {
+            border-color: #1d9bf0;
+            background: rgba(29, 155, 240, 0.1);
+        }
+
+        .program-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .program-checkbox input[type="checkbox"]:checked + span {
+            color: #1d9bf0;
+            font-weight: 600;
+        }
+
+        .recaptcha-notice {
+            font-size: 10px;
+            color: #8899a6;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .recaptcha-notice a {
+            color: #1d9bf0;
+            text-decoration: none;
+        }
+
+        .recaptcha-notice a:hover {
+            text-decoration: underline;
         }
         
         .school-list {
@@ -447,6 +592,76 @@
             border: 2px solid #1d9bf0;
         }
         
+        /* Program Legend */
+        .program-legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(21, 32, 43, 0.95);
+            border: 1px solid #38444d;
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 1000;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .program-legend.active {
+            display: block;
+        }
+        
+        .legend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e1e8ed;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #8899a6;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid #38444d;
+        }
+        
+        .legend-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(21, 32, 43, 0.95);
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            padding: 8px 12px;
+            z-index: 999;
+            cursor: pointer;
+            font-size: 12px;
+            color: #e1e8ed;
+            transition: all 0.2s;
+        }
+        
+        .legend-toggle:hover {
+            background: #1d9bf0;
+            border-color: #1d9bf0;
+        }
+        
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -465,17 +680,34 @@
 </head>
 <body>
     <div class="demo-banner">
-        🚀 DEMO IN PROGRESS - Trade Schools Map with 899 Schools Mapped | Interactive Search, Heatmap & Hex Grid | Submit New Schools<br>
-        📅 Last Updated: 5:16 PM PT / 12:16 AM UTC
+        🚀 ENHANCED: Zoom-Adaptive Hex Grid | Smart Viewport Filtering | 989 Schools Mapped<br>
+        ⬡ Hex Grid auto-adjusts resolution • 📍 Markers auto-filter at zoom 6+ • 🌡️ Heat Map shows all data
     </div>
     
     <div id="map"></div>
     
+    <!-- Program Legend -->
+    <div class="legend-toggle" id="legendToggle" onclick="toggleLegend()">
+        🎨 Show Legend
+    </div>
+    <div class="program-legend" id="programLegend">
+        <div class="legend-title">
+            <span>🎨</span>
+            <span>Program Colors</span>
+        </div>
+        <div class="legend-items" id="legendItems"></div>
+    </div>
+    
     <div id="sidebar">
         <div class="header">
+            <div class="header-nav">
+                <a href="index.html" class="nav-link">🏠 Home</a>
+                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="clean-map.html" class="nav-link active">🗺️ Map</a>
+            </div>
             <h1>🎓 Trade Schools Directory</h1>
             <div class="stats">
-                <div class="stat">
+                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
                     <div class="stat-value" id="totalSchools">0</div>
                     <div class="stat-label">Schools</div>
                 </div>
@@ -495,13 +727,16 @@
                 <label class="filter-label">Search Schools</label>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
             </div>
-            <div class="view-controls">
-                <button class="view-btn active" id="markersBtn" onclick="setView('markers')">Markers</button>
-                <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')">Heat Map</button>
-                <button class="view-btn" id="hexgridBtn" onclick="setView('hexgrid')">Hex Grid</button>
-            </div>
-            <div class="view-controls">
-                <button class="view-btn" id="viewportToggle" onclick="toggleViewportFiltering()">🎯 Viewport Only</button>
+            <div class="filter-group">
+                <label class="filter-label">Visualization Mode</label>
+                <div class="view-controls">
+                    <button class="view-btn" id="markersBtn" onclick="setView('markers')" title="Individual school markers (auto-filters at zoom level 6+)">📍 Markers</button>
+                    <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
+                    <button class="view-btn active" id="hexgridBtn" onclick="setView('hexgrid')" title="Program-coded hexagons with zoom-adaptive resolution">⬡ Hex Grid</button>
+                </div>
+                <div class="mode-indicator" id="modeIndicator" style="display: none;">
+                    <span id="modeText"></span>
+                </div>
             </div>
             <div class="filter-group">
                 <label class="filter-label">Filter by State</label>
@@ -524,84 +759,209 @@
         
         <div class="submission-form">
             <div class="form-title">🏫 Submit a School</div>
-            <form id="schoolSubmissionForm">
+            <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
+            <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
+
+            <form id="schoolSubmissionForm" novalidate>
                 <div class="form-group">
                     <label class="form-label">School Name *</label>
-                    <input type="text" class="form-input" id="schoolName" required>
+                    <input type="text" class="form-input" id="schoolName" name="schoolName" required minlength="2" maxlength="100">
+                    <div class="field-error" id="schoolName-error"></div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Street Address *</label>
+                    <input type="text" class="form-input" id="streetAddress" name="streetAddress" placeholder="123 Main Street" required minlength="5" maxlength="200">
+                    <div class="field-error" id="streetAddress-error"></div>
+                </div>
+
                 <div class="form-group">
                     <label class="form-label">City *</label>
-                    <input type="text" class="form-input" id="schoolCity" required>
+                    <input type="text" class="form-input" id="city" name="city" required minlength="2" maxlength="50">
+                    <div class="field-error" id="city-error"></div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group form-col-2">
+                        <label class="form-label">State *</label>
+                        <select class="form-input" id="state" name="state" required>
+                            <option value="">Select State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                        <div class="field-error" id="state-error"></div>
+                    </div>
+
+                    <div class="form-group form-col-2">
+                        <label class="form-label">ZIP Code *</label>
+                        <input type="text" class="form-input" id="zipCode" name="zipCode" placeholder="12345" required pattern="^\d{5}(-\d{4})?$" maxlength="10">
+                        <div class="field-error" id="zipCode-error"></div>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label class="form-label">State *</label>
-                    <select class="form-input" id="schoolState" required>
-                        <option value="">Select State</option>
-                        <option value="AL">Alabama</option>
-                        <option value="AK">Alaska</option>
-                        <option value="AZ">Arizona</option>
-                        <option value="AR">Arkansas</option>
-                        <option value="CA">California</option>
-                        <option value="CO">Colorado</option>
-                        <option value="CT">Connecticut</option>
-                        <option value="DE">Delaware</option>
-                        <option value="FL">Florida</option>
-                        <option value="GA">Georgia</option>
-                        <option value="HI">Hawaii</option>
-                        <option value="ID">Idaho</option>
-                        <option value="IL">Illinois</option>
-                        <option value="IN">Indiana</option>
-                        <option value="IA">Iowa</option>
-                        <option value="KS">Kansas</option>
-                        <option value="KY">Kentucky</option>
-                        <option value="LA">Louisiana</option>
-                        <option value="ME">Maine</option>
-                        <option value="MD">Maryland</option>
-                        <option value="MA">Massachusetts</option>
-                        <option value="MI">Michigan</option>
-                        <option value="MN">Minnesota</option>
-                        <option value="MS">Mississippi</option>
-                        <option value="MO">Missouri</option>
-                        <option value="MT">Montana</option>
-                        <option value="NE">Nebraska</option>
-                        <option value="NV">Nevada</option>
-                        <option value="NH">New Hampshire</option>
-                        <option value="NJ">New Jersey</option>
-                        <option value="NM">New Mexico</option>
-                        <option value="NY">New York</option>
-                        <option value="NC">North Carolina</option>
-                        <option value="ND">North Dakota</option>
-                        <option value="OH">Ohio</option>
-                        <option value="OK">Oklahoma</option>
-                        <option value="OR">Oregon</option>
-                        <option value="PA">Pennsylvania</option>
-                        <option value="RI">Rhode Island</option>
-                        <option value="SC">South Carolina</option>
-                        <option value="SD">South Dakota</option>
-                        <option value="TN">Tennessee</option>
-                        <option value="TX">Texas</option>
-                        <option value="UT">Utah</option>
-                        <option value="VT">Vermont</option>
-                        <option value="VA">Virginia</option>
-                        <option value="WA">Washington</option>
-                        <option value="WV">West Virginia</option>
-                        <option value="WI">Wisconsin</option>
-                        <option value="WY">Wyoming</option>
-                    </select>
+                    <label class="form-label">Contact Email *</label>
+                    <input type="email" class="form-input" id="contactEmail" name="contactEmail" placeholder="info@school.edu" required>
+                    <div class="field-error" id="contactEmail-error"></div>
+                    <div class="field-hint">Primary contact email for the school</div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" class="form-input" id="phone" name="phone" placeholder="(555) 123-4567" required>
+                    <div class="field-error" id="phone-error"></div>
+                </div>
+
                 <div class="form-group">
                     <label class="form-label">Website</label>
-                    <input type="url" class="form-input" id="schoolWebsite">
+                    <input type="url" class="form-input" id="website" name="website" placeholder="https://www.school.edu">
+                    <div class="field-error" id="website-error"></div>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-label">Programs Offered</label>
-                    <textarea class="form-textarea" id="schoolPrograms" placeholder="List programs separated by commas..."></textarea>
+                    <label class="form-label">Programs Offered * (select all that apply)</label>
+                    <div class="programs-grid" id="programsGrid">
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Welding">
+                            <span>Welding</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Diesel & Automotive Technology">
+                            <span>Diesel & Automotive</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="HVAC (Heating, Ventilation, and Air Conditioning)">
+                            <span>HVAC</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Machine Tool Technology & Mechanical Systems">
+                            <span>Machine Tool Tech</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Construction & Building Technology">
+                            <span>Construction</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Electronics Technology">
+                            <span>Electronics</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="CAD/CAM Drafting & Design">
+                            <span>CAD/CAM Drafting</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Plumbing & Pipefitting">
+                            <span>Plumbing</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Woodworking & Carpentry">
+                            <span>Woodworking</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Electrical Technology">
+                            <span>Electrical</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Industrial Maintenance">
+                            <span>Industrial Maintenance</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Machining & CNC">
+                            <span>Machining & CNC</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Robotics & Automation">
+                            <span>Robotics</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Manufacturing Technology">
+                            <span>Manufacturing</span>
+                        </label>
+                        <label class="program-checkbox">
+                            <input type="checkbox" name="programs" value="Other" id="programOtherCheckbox">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                    <div class="field-error" id="programs-error"></div>
                 </div>
+
+                <div class="form-group" id="programOtherGroup" style="display: none;">
+                    <label class="form-label">Specify Other Program</label>
+                    <input type="text" class="form-input" id="programOther" name="programOther" placeholder="Enter program name" maxlength="100">
+                    <div class="field-error" id="programOther-error"></div>
+                </div>
+
                 <div class="form-group">
-                    <label class="form-label">Your Email</label>
-                    <input type="email" class="form-input" id="submitterEmail">
+                    <label class="form-label">School Description (optional)</label>
+                    <textarea class="form-textarea" id="schoolDescription" name="schoolDescription" placeholder="Brief description of the school and its offerings..." maxlength="500" rows="3"></textarea>
+                    <div class="field-hint"><span id="descriptionCount">0</span>/500 characters</div>
+                    <div class="field-error" id="schoolDescription-error"></div>
                 </div>
-                <button type="submit" class="submit-btn" id="submitBtn">Submit School</button>
+
+                <div class="form-group">
+                    <label class="form-label">Your Name (optional)</label>
+                    <input type="text" class="form-input" id="submitterName" name="submitterName" placeholder="For contact purposes" maxlength="100">
+                    <div class="field-error" id="submitterName-error"></div>
+                </div>
+
+                <div class="recaptcha-notice">
+                    This site is protected by reCAPTCHA and the Google
+                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
+                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span id="submitBtnText">Submit School</span>
+                    <span id="submitBtnLoading" style="display: none;">Submitting...</span>
+                </button>
             </form>
         </div>
         
@@ -611,6 +971,115 @@
     </div>
     
     <script>
+        // Program color mapping - Updated to match interface legend
+        const PROGRAM_COLORS = {
+            'Welding': '#ff5959',
+            'HVAC': '#4ea3ff',
+            'HVAC (Heating, Ventilation, and Air Conditioning)': '#4ea3ff',
+            'Construction': '#ff9b42',
+            'Construction & Building Technology': '#ff9b42',
+            'CAD/CAM Drafting': '#d49f68',
+            'CAD/CAM Drafting & Design': '#d49f68',
+            'Woodworking & Carpentry': '#4db6ac',
+            'Mechatronics': '#a17fff',
+            'Diesel & Automotive Tech': '#35b276',
+            'Diesel & Automotive Technology': '#35b276',
+            'Machine & Mechanical Systems': '#a17fff',
+            'Machine Tool Technology & Mechanical Systems': '#a17fff',
+            'Electronics': '#f7e35b',
+            'Electronics Technology': '#f7e35b',
+            'Plumbing & Pipefitting': '#aaaaaa',
+            'Machining': '#da70d6',
+            'Machining & CNC': '#da70d6',
+            'Electrical Technology': '#ffa07a',
+            'Industrial Maintenance': '#87ceeb',
+            'Robotics & Automation': '#ff69b4',
+            'Manufacturing Technology': '#20b2aa',
+            'default': '#8899a6'
+        };
+        
+        // Get color for a program with improved matching
+        function getProgramColor(program) {
+            if (!program) return PROGRAM_COLORS['default'];
+            
+            // Direct match first
+            if (PROGRAM_COLORS[program]) {
+                return PROGRAM_COLORS[program];
+            }
+            
+            // Try partial matching for common variations
+            const programLower = program.toLowerCase();
+            for (const [key, color] of Object.entries(PROGRAM_COLORS)) {
+                if (key === 'default') continue;
+                
+                const keyLower = key.toLowerCase();
+                // Check if program contains key or key contains program
+                if (programLower.includes(keyLower) || keyLower.includes(programLower)) {
+                    return color;
+                }
+                
+                // Check for common abbreviations and variations
+                const variations = {
+                    'hvac': ['heating', 'ventilation', 'air conditioning'],
+                    'cad': ['computer aided design', 'drafting'],
+                    'cnc': ['computer numerical control'],
+                    'automotive': ['auto', 'vehicle'],
+                    'construction': ['building', 'construction'],
+                    'welding': ['weld'],
+                    'electronics': ['electronic'],
+                    'electrical': ['electric'],
+                    'plumbing': ['pipe', 'pipefitting'],
+                    'machining': ['machine', 'cnc'],
+                    'robotics': ['robot', 'automation']
+                };
+                
+                for (const [base, terms] of Object.entries(variations)) {
+                    if (keyLower.includes(base) && terms.some(term => programLower.includes(term))) {
+                        return color;
+                    }
+                }
+            }
+            
+            console.warn(`No color found for program: "${program}"`);
+            return PROGRAM_COLORS['default'];
+        }
+        
+        // Get top N programs across all schools
+        function getTopPrograms(schools, n = 10) {
+            const programCounts = {};
+            schools.forEach(school => {
+                school.programs.forEach(program => {
+                    programCounts[program] = (programCounts[program] || 0) + 1;
+                });
+            });
+            return Object.entries(programCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, n);
+        }
+        
+        // Initialize legend
+        function initializeLegend() {
+            const topPrograms = getTopPrograms(allSchools, 12);
+            const legendItems = document.getElementById('legendItems');
+            legendItems.innerHTML = topPrograms.map(([program, count]) => {
+                const shortName = program.length > 20 ? program.substring(0, 17) + '...' : program;
+                return `
+                    <div class="legend-item" title="${program}">
+                        <div class="legend-color" style="background: ${getProgramColor(program)}"></div>
+                        <span>${shortName}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Toggle legend visibility
+        function toggleLegend() {
+            const legend = document.getElementById('programLegend');
+            const toggle = document.getElementById('legendToggle');
+            legend.classList.toggle('active');
+            toggle.textContent = legend.classList.contains('active') ? '🎨 Hide Legend' : '🎨 Show Legend';
+        }
+        
         // Initialize map
         const map = L.map('map', {
             center: [39.8283, -98.5795],
@@ -638,56 +1107,154 @@
         let heatmapLayer = null;
         let hexLayer = L.layerGroup();
         let selectedMarker = null;
-        let currentView = 'markers';
-        let viewportFiltering = false; // Whether to filter by viewport
+        let currentView = 'hexgrid'; // Default to hex grid view
         
-        // Load geocoded data
+        // Load geocoded data with improved error handling
         function loadGeocodedData() {
             console.log('Starting to load geocoded data...');
-            Papa.parse('schools/trade_schools_geocoded_fixed.csv', {
-                download: true,
-                header: true,
-                complete: function(geoResults) {
-                    console.log('Fixed geocoded data loaded:', geoResults.data.length, 'rows');
-                    console.log('Sample row:', geoResults.data[0]);
-                    console.log('Geocoded field sample:', geoResults.data.slice(0, 5).map(r => r.geocoded));
-                    // Load matchmaking data for programs
-                    Papa.parse('schools/matchmaking_index.csv', {
-                        download: true,
-                        header: true,
-                        complete: function(matchResults) {
-                            console.log('Matchmaking data loaded:', matchResults.data.length, 'rows');
-                            processData(geoResults.data, matchResults.data);
-                        },
-                        error: function(error) {
-                            console.error('Error loading matchmaking data:', error);
-                            document.getElementById('schoolList').innerHTML = '<div class="no-results">Error loading matchmaking data. Please check the console.</div>';
-                        }
-                    });
-                },
-                error: function(error) {
-                    console.log('Fixed file not found, trying original...');
-                    // Fallback to original file
-                    Papa.parse('schools/trade_schools_geocoded.csv', {
-                        download: true,
-                        header: true,
-                        complete: function(geoResults) {
-                            console.log('Original geocoded data loaded:', geoResults.data.length, 'rows');
-                            Papa.parse('schools/matchmaking_index.csv', {
-                                download: true,
-                                header: true,
-                                complete: function(matchResults) {
-                                    processData(geoResults.data, matchResults.data);
-                                }
-                            });
-                        },
-                        error: function(error2) {
-                            console.error('Error loading both geocoded files:', error2);
-                            document.getElementById('schoolList').innerHTML = '<div class="no-results">Error loading geocoded data.</div>';
-                        }
-                    });
+            
+            // Try multiple file paths for deployment compatibility
+            const csvPaths = [
+                'schools/trade_schools_geocoded_fixed.csv',
+                './schools/trade_schools_geocoded_fixed.csv',
+                'trade_schools_geocoded_fixed.csv'
+            ];
+            
+            const matchmakingPaths = [
+                'schools/matchmaking_index.csv',
+                './schools/matchmaking_index.csv',
+                'matchmaking_index.csv'
+            ];
+            
+            let attempts = 0;
+            const maxAttempts = csvPaths.length;
+            
+            function tryLoadData(csvIndex = 0) {
+                if (csvIndex >= csvPaths.length) {
+                    console.error('All CSV loading attempts failed, loading sample data');
+                    loadSampleData();
+                    return;
                 }
-            });
+                
+                console.log(`Attempting to load CSV from: ${csvPaths[csvIndex]}`);
+                
+                Papa.parse(csvPaths[csvIndex], {
+                    download: true,
+                    header: true,
+                    complete: function(geoResults) {
+                        console.log(`✅ Geocoded data loaded from ${csvPaths[csvIndex]}:`, geoResults.data.length, 'rows');
+                        
+                        // Try to load matchmaking data
+                        tryLoadMatchmakingData(geoResults.data, 0);
+                    },
+                    error: function(error) {
+                        console.warn(`❌ Failed to load ${csvPaths[csvIndex]}:`, error);
+                        tryLoadData(csvIndex + 1);
+                    }
+                });
+            }
+            
+            function tryLoadMatchmakingData(geoData, matchIndex = 0) {
+                if (matchIndex >= matchmakingPaths.length) {
+                    console.warn('Matchmaking data not found, processing with empty programs');
+                    processData(geoData, []);
+                    return;
+                }
+                
+                console.log(`Attempting to load matchmaking data from: ${matchmakingPaths[matchIndex]}`);
+                
+                Papa.parse(matchmakingPaths[matchIndex], {
+                    download: true,
+                    header: true,
+                    complete: function(matchResults) {
+                        console.log(`✅ Matchmaking data loaded from ${matchmakingPaths[matchIndex]}:`, matchResults.data.length, 'rows');
+                        processData(geoData, matchResults.data);
+                    },
+                    error: function(error) {
+                        console.warn(`❌ Failed to load ${matchmakingPaths[matchIndex]}:`, error);
+                        tryLoadMatchmakingData(geoData, matchIndex + 1);
+                    }
+                });
+            }
+            
+            tryLoadData();
+        }
+        
+        // Load sample data as fallback
+        function loadSampleData() {
+            console.log('Loading sample data as fallback...');
+            
+            // Generate more realistic sample data with geographic clustering for better aggregations
+            const sampleSchools = [
+                // California cluster
+                { name: "Los Angeles Trade School", state: "CA", city: "Los Angeles", lat: 34.0522, lon: -118.2437, programs: ["Welding", "HVAC"], website: "https://example.com" },
+                { name: "San Francisco Technical Institute", state: "CA", city: "San Francisco", lat: 37.7749, lon: -122.4194, programs: ["Construction", "Electronics"], website: "https://example.com" },
+                { name: "San Diego Vocational College", state: "CA", city: "San Diego", lat: 32.7157, lon: -117.1611, programs: ["HVAC", "Plumbing"], website: "https://example.com" },
+                { name: "Sacramento Trade Center", state: "CA", city: "Sacramento", lat: 38.5816, lon: -121.4944, programs: ["Welding", "Construction"], website: "https://example.com" },
+                { name: "Fresno Technical School", state: "CA", city: "Fresno", lat: 36.7378, lon: -119.7871, programs: ["Diesel & Automotive Tech", "Electronics"], website: "https://example.com" },
+                
+                // Texas cluster
+                { name: "Houston Trade Institute", state: "TX", city: "Houston", lat: 29.7604, lon: -95.3698, programs: ["Construction", "Electronics"], website: "https://example.com" },
+                { name: "Dallas Technical College", state: "TX", city: "Dallas", lat: 32.7767, lon: -96.7970, programs: ["HVAC", "Welding"], website: "https://example.com" },
+                { name: "Austin Vocational School", state: "TX", city: "Austin", lat: 30.2672, lon: -97.7431, programs: ["Electronics", "CAD/CAM Drafting"], website: "https://example.com" },
+                { name: "San Antonio Trade Center", state: "TX", city: "San Antonio", lat: 29.4241, lon: -98.4936, programs: ["Construction", "Plumbing"], website: "https://example.com" },
+                { name: "Fort Worth Technical Institute", state: "TX", city: "Fort Worth", lat: 32.7555, lon: -97.3308, programs: ["Welding", "Diesel & Automotive Tech"], website: "https://example.com" },
+                
+                // New York cluster
+                { name: "New York Trade School", state: "NY", city: "New York", lat: 40.7128, lon: -74.0060, programs: ["HVAC", "Plumbing"], website: "https://example.com" },
+                { name: "Buffalo Technical College", state: "NY", city: "Buffalo", lat: 42.8864, lon: -78.8784, programs: ["Construction", "Welding"], website: "https://example.com" },
+                { name: "Rochester Vocational Institute", state: "NY", city: "Rochester", lat: 43.1566, lon: -77.6088, programs: ["Electronics", "HVAC"], website: "https://example.com" },
+                { name: "Albany Trade Center", state: "NY", city: "Albany", lat: 42.6526, lon: -73.7562, programs: ["Plumbing", "Construction"], website: "https://example.com" },
+                
+                // Florida cluster
+                { name: "Miami Technical School", state: "FL", city: "Miami", lat: 25.7617, lon: -80.1918, programs: ["HVAC", "Electronics"], website: "https://example.com" },
+                { name: "Tampa Vocational College", state: "FL", city: "Tampa", lat: 27.9506, lon: -82.4572, programs: ["Construction", "Welding"], website: "https://example.com" },
+                { name: "Orlando Trade Institute", state: "FL", city: "Orlando", lat: 28.5383, lon: -81.3792, programs: ["HVAC", "Plumbing"], website: "https://example.com" },
+                { name: "Jacksonville Technical Center", state: "FL", city: "Jacksonville", lat: 30.3322, lon: -81.6557, programs: ["Diesel & Automotive Tech", "Electronics"], website: "https://example.com" },
+                
+                // Illinois cluster
+                { name: "Chicago Trade School", state: "IL", city: "Chicago", lat: 41.8781, lon: -87.6298, programs: ["Construction", "HVAC"], website: "https://example.com" },
+                { name: "Springfield Technical Institute", state: "IL", city: "Springfield", lat: 39.7817, lon: -89.6501, programs: ["Welding", "Electronics"], website: "https://example.com" },
+                { name: "Rockford Vocational College", state: "IL", city: "Rockford", lat: 42.2711, lon: -89.0940, programs: ["Plumbing", "Construction"], website: "https://example.com" },
+                
+                // Pennsylvania cluster
+                { name: "Philadelphia Trade Center", state: "PA", city: "Philadelphia", lat: 39.9526, lon: -75.1652, programs: ["HVAC", "Welding"], website: "https://example.com" },
+                { name: "Pittsburgh Technical School", state: "PA", city: "Pittsburgh", lat: 40.4406, lon: -79.9959, programs: ["Construction", "Electronics"], website: "https://example.com" },
+                { name: "Harrisburg Vocational Institute", state: "PA", city: "Harrisburg", lat: 40.2737, lon: -76.8844, programs: ["Plumbing", "HVAC"], website: "https://example.com" },
+                
+                // Ohio cluster
+                { name: "Columbus Trade School", state: "OH", city: "Columbus", lat: 39.9612, lon: -82.9988, programs: ["Electronics", "Construction"], website: "https://example.com" },
+                { name: "Cleveland Technical College", state: "OH", city: "Cleveland", lat: 41.4993, lon: -81.6944, programs: ["Welding", "HVAC"], website: "https://example.com" },
+                { name: "Cincinnati Vocational Center", state: "OH", city: "Cincinnati", lat: 39.1031, lon: -84.5120, programs: ["Diesel & Automotive Tech", "Plumbing"], website: "https://example.com" },
+                
+                // Michigan cluster
+                { name: "Detroit Trade Institute", state: "MI", city: "Detroit", lat: 42.3314, lon: -83.0458, programs: ["Welding", "Diesel & Automotive Tech"], website: "https://example.com" },
+                { name: "Grand Rapids Technical School", state: "MI", city: "Grand Rapids", lat: 42.9634, lon: -85.6681, programs: ["Construction", "Electronics"], website: "https://example.com" },
+                { name: "Lansing Vocational College", state: "MI", city: "Lansing", lat: 42.7325, lon: -84.5555, programs: ["HVAC", "Plumbing"], website: "https://example.com" }
+            ];
+            
+            allSchools = sampleSchools;
+            filteredSchools = [...allSchools];
+            
+            console.log('Sample data loaded:', allSchools.length, 'schools');
+            
+            // Initialize UI with sample data
+            populateFilters();
+            updateStats();
+            displaySchools();
+            updateMapView();
+            updateProgramChart();
+            initializeLegend();
+            
+            // Ensure hex grid shows with sample data
+            console.log(`Sample data loaded: ${allSchools.length} schools, rendering initial view...`);
+            updateMapView();
+            
+            // Show sample data notice
+            document.getElementById('schoolList').innerHTML = 
+                '<div class="no-results" style="background: #ffeb3b; color: #000; padding: 10px; border-radius: 5px; margin-bottom: 10px;">' +
+                '⚠️ Sample data loaded. CSV files not accessible. Check deployment configuration.' +
+                '</div>' + document.getElementById('schoolList').innerHTML;
         }
         
         // Process and merge data
@@ -743,6 +1310,20 @@
             console.log(`Loaded ${allSchools.length} schools with coordinates`);
             console.log(`Note: ${geoData.filter(r => r.geocoded === 'False').length} schools failed geocoding and are not displayed`);
             
+            // Debug program data
+            const programStats = {};
+            allSchools.forEach(school => {
+                school.programs.forEach(program => {
+                    programStats[program] = (programStats[program] || 0) + 1;
+                });
+            });
+            
+            console.log('Program distribution:', Object.entries(programStats)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10)
+                .map(([prog, count]) => `${prog}: ${count}`)
+                .join(', '));
+            
             // Show data status
             const totalInFile = geoData.length - 1; // minus any empty rows
             const mappedCount = allSchools.length;
@@ -762,6 +1343,12 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
+            initializeLegend();
+            
+            // Ensure initial view is rendered
+            console.log(`Initializing with ${allSchools.length} schools, default view: ${currentView}`);
+            console.log('Rendering initial view...');
+            updateMapView();
         }
         
         // Populate filter dropdowns
@@ -808,11 +1395,19 @@
         // Update statistics
         function updateStats() {
             const schoolsToShow = getViewportSchools();
-            const stateCount = new Set(allSchools.map(s => s.state)).size;
-            const viewportStateCount = new Set(schoolsToShow.map(s => s.state)).size;
+            const zoom = map.getZoom();
+            const isViewportFiltered = currentView === 'markers' && zoom >= 6;
+            
+            // Only count actual US states (50 states, not territories)
+            const usStates = new Set(['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']);
+            const usSchools = allSchools.filter(s => usStates.has(s.state));
+            const usSchoolsInViewport = schoolsToShow.filter(s => usStates.has(s.state));
+            
+            const stateCount = new Set(usSchools.map(s => s.state)).size;
+            const viewportStateCount = new Set(usSchoolsInViewport.map(s => s.state)).size;
             
             document.getElementById('totalSchools').textContent = allSchools.length;
-            document.getElementById('totalStates').textContent = viewportFiltering ? viewportStateCount : stateCount;
+            document.getElementById('totalStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
             document.getElementById('visibleCount').textContent = schoolsToShow.length;
         }
         
@@ -822,10 +1417,7 @@
             const schoolsToShow = getViewportSchools();
             
             if (schoolsToShow.length === 0) {
-                const message = viewportFiltering ? 
-                    'No schools visible in current map view' : 
-                    'No schools found matching your filters';
-                container.innerHTML = `<div class="no-results">${message}</div>`;
+                container.innerHTML = '<div class="no-results">No schools visible in current map view</div>';
                 return;
             }
             
@@ -952,6 +1544,14 @@
             }
         }
         
+        // Zoom to full map view
+        function zoomToFullMap() {
+            if (allSchools.length > 0) {
+                const bounds = L.latLngBounds(allSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+        
         // Filter handlers
         document.getElementById('stateFilter').addEventListener('change', function(e) {
             applyFilters();
@@ -996,152 +1596,204 @@
         
         // Update map view based on current view mode
         function updateMapView() {
-            if (currentView === 'markers') {
-                addMarkersToMap();
-                if (heatmapLayer) {
-                    map.removeLayer(heatmapLayer);
-                }
-                map.removeLayer(hexLayer);
-            } else if (currentView === 'heatmap') {
-                addHeatmapToMap();
-                markersLayer.clearLayers();
-                map.removeLayer(hexLayer);
-            } else if (currentView === 'hexgrid') {
-                addHexGridToMap();
-                markersLayer.clearLayers();
-                if (heatmapLayer) {
-                    map.removeLayer(heatmapLayer);
-                }
+            console.log(`Switching to view: ${currentView}`);
+            
+            // Clear all layers first
+            markersLayer.clearLayers();
+            if (heatmapLayer) {
+                map.removeLayer(heatmapLayer);
+                heatmapLayer = null;
             }
+            if (hexLayer) {
+                map.removeLayer(hexLayer);
+            }
+            
+            // Add the appropriate layer based on current view
+            if (currentView === 'markers') {
+                console.log('Adding markers layer');
+                addMarkersToMap();
+            } else if (currentView === 'heatmap') {
+                console.log('Adding heatmap layer');
+                addHeatmapToMap();
+            } else if (currentView === 'hexgrid') {
+                console.log('Adding hex grid layer');
+                addHexGridToMap();
+            }
+        }
+        
+        // Get optimal H3 resolution based on zoom level - Updated for bigger hexes
+        function getH3Resolution() {
+            const zoom = map.getZoom();
+            // Use lower resolution numbers for bigger hexes
+            if (zoom <= 3) return 2;      // Continental view - very large hexes
+            if (zoom <= 5) return 3;      // Multi-state region - large hexes  
+            if (zoom <= 7) return 4;      // State level - medium hexes
+            if (zoom <= 9) return 5;      // Metro area - smaller hexes
+            return 6;                      // City level - smallest hexes
         }
         
         // Add hex grid to map
         function addHexGridToMap() {
             hexLayer.clearLayers();
             const hexData = {};
-            const resolution = 4;
+            const resolution = getH3Resolution();
+            
+            console.log(`Creating hex grid with resolution ${resolution} for ${filteredSchools.length} schools`);
             
             filteredSchools.forEach(school => {
-                const h3Index = h3.geoToH3(school.lat, school.lon, resolution);
-                if (!hexData[h3Index]) {
-                    hexData[h3Index] = {
-                        count: 0,
-                        schools: [],
-                        programs: {}
-                    };
+                try {
+                    const h3Index = h3.geoToH3(school.lat, school.lon, resolution);
+                    if (!hexData[h3Index]) {
+                        hexData[h3Index] = {
+                            count: 0,
+                            schools: [],
+                            programs: {}
+                        };
+                    }
+                    hexData[h3Index].count++;
+                    hexData[h3Index].schools.push(school);
+                    
+                    // Aggregate programs - count each program once per school
+                    school.programs.forEach(program => {
+                        hexData[h3Index].programs[program] = (hexData[h3Index].programs[program] || 0) + 1;
+                    });
+                } catch (e) {
+                    console.warn('Failed to process school for hex grid:', school.name, e);
                 }
-                hexData[h3Index].count++;
-                hexData[h3Index].schools.push(school);
-                
-                // Aggregate programs
-                school.programs.forEach(program => {
-                    hexData[h3Index].programs[program] = (hexData[h3Index].programs[program] || 0) + 1;
-                });
             });
             
+            console.log(`Created ${Object.keys(hexData).length} hex cells`);
+            
             Object.entries(hexData).forEach(([h3Index, data]) => {
-                const boundary = h3.h3ToGeoBoundary(h3Index);
-                const coordinates = boundary.map(coord => [coord[0], coord[1]]);
-                
-                const opacity = Math.min(0.3 + (data.count / 30), 0.9);
-                const color = data.count > 20 ? '#ff6b6b' : 
-                             data.count > 10 ? '#ffd93d' : 
-                             data.count > 5 ? '#6bcf7f' : '#4ecdc4';
-                
-                // Add text label for count
-                const center = h3.h3ToGeo(h3Index);
-                const label = L.divIcon({
-                    className: 'hex-label',
-                    html: `<div style="
-                        background: rgba(0,0,0,0.7);
-                        color: white;
-                        border-radius: 12px;
-                        padding: 2px 6px;
-                        font-size: 11px;
-                        font-weight: bold;
-                        border: 1px solid ${color};
-                        ">${data.count}</div>`,
-                    iconSize: [30, 20],
-                    iconAnchor: [15, 10]
-                });
-                
-                const marker = L.marker([center[0], center[1]], { icon: label });
-                hexLayer.addLayer(marker);
-                
-                const polygon = L.polygon(coordinates, {
-                    color: color,
-                    weight: 2,
-                    opacity: 0.9,
-                    fillColor: color,
-                    fillOpacity: opacity
-                });
-                
-                // Sort programs by count
-                const sortedPrograms = Object.entries(data.programs)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10);
-                
-                // Create program bars HTML
-                const maxCount = sortedPrograms[0] ? sortedPrograms[0][1] : 1;
-                const programBarsHtml = sortedPrograms.map(([prog, count]) => {
-                    const barWidth = (count / maxCount) * 100;
-                    const shortName = prog.length > 25 ? prog.substring(0, 22) + '...' : prog;
-                    return `
-                        <div style="margin-bottom: 4px;">
-                            <div style="font-size: 11px; color: #e1e8ed; margin-bottom: 2px;">${shortName}</div>
-                            <div style="display: flex; align-items: center;">
-                                <div style="background: #253341; border-radius: 4px; height: 16px; flex: 1; position: relative;">
-                                    <div style="background: #1d9bf0; height: 100%; border-radius: 4px; width: ${barWidth}%;"></div>
-                                </div>
-                                <span style="margin-left: 8px; font-size: 11px; color: #8899a6; min-width: 20px;">${count}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-                polygon.bindPopup(`
-                    <div style="min-width: 300px; max-width: 400px; background: #15202b; padding: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <strong style="color: #1d9bf0; font-size: 16px;">Hex Zone Statistics</strong>
-                            <span style="background: ${color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 14px; font-weight: bold;">${data.count}</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                            <div style="background: #253341; padding: 8px; border-radius: 6px;">
-                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Schools</div>
-                                <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${data.count}</div>
-                            </div>
-                            <div style="background: #253341; padding: 8px; border-radius: 6px;">
-                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Programs</div>
-                                <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${Object.keys(data.programs).length}</div>
-                            </div>
-                        </div>
-                        ${sortedPrograms.length > 0 ? `
-                            <div style="margin-bottom: 8px;">
-                                <strong style="color: #e1e8ed; font-size: 12px;">Top Programs in Zone:</strong>
-                            </div>
-                            ${programBarsHtml}
-                        ` : ''}
-                        ${data.schools.length > 0 ? `
-                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #38444d;">
-                                <strong style="color: #e1e8ed; font-size: 12px;">Schools in Zone:</strong>
-                                <div style="max-height: 150px; overflow-y: auto; margin-top: 8px;">
-                                    ${data.schools.slice(0, 10).map(s => `
-                                        <div style="color: #8899a6; font-size: 11px; margin-bottom: 4px;">• ${s.name}</div>
-                                    `).join('')}
-                                    ${data.schools.length > 10 ? `<div style="color: #8899a6; font-size: 11px; font-style: italic;">...and ${data.schools.length - 10} more</div>` : ''}
+                try {
+                    const boundary = h3.h3ToGeoBoundary(h3Index);
+                    const coordinates = boundary.map(coord => [coord[0], coord[1]]);
+                    
+                    // Get dominant program (most schools offering it in this hex)
+                    const sortedPrograms = Object.entries(data.programs)
+                        .sort((a, b) => b[1] - a[1]);
+                    const topProgram = sortedPrograms[0] ? sortedPrograms[0][0] : null;
+                    
+                    // Color based on dominant program
+                    const color = topProgram ? getProgramColor(topProgram) : '#8899a6';
+                    
+                    // Opacity based on density (more schools = more opaque)
+                    const opacity = Math.min(0.35 + (data.count / 25), 0.85);
+                    
+                    // Add text label for count with bigger, more visible styling
+                    const center = h3.h3ToGeo(h3Index);
+                    
+                    // Dynamic sizing based on count
+                    const size = Math.max(28, Math.min(50, 20 + data.count * 2));
+                    const fontSize = Math.max(14, Math.min(20, 12 + data.count));
+                    
+                    const label = L.divIcon({
+                        className: 'hex-label',
+                        html: `<div style="
+                            background: rgba(0,0,0,0.9);
+                            color: white;
+                            border-radius: 50%;
+                            width: ${size}px;
+                            height: ${size}px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: ${fontSize}px;
+                            font-weight: bold;
+                            border: 3px solid ${color};
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+                            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+                            ">${data.count}</div>`,
+                        iconSize: [size, size],
+                        iconAnchor: [size/2, size/2]
+                    });
+                    
+                    const marker = L.marker([center[0], center[1]], { icon: label });
+                    hexLayer.addLayer(marker);
+                    
+                    const polygon = L.polygon(coordinates, {
+                        color: color,
+                        weight: 2,
+                        opacity: 0.9,
+                        fillColor: color,
+                        fillOpacity: opacity
+                    });
+                    
+                    // Sort programs by count for display (top 10)
+                    const topProgramsForDisplay = sortedPrograms.slice(0, 10);
+                    
+                    // Create program bars HTML
+                    const maxCount = topProgramsForDisplay[0] ? topProgramsForDisplay[0][1] : 1;
+                    const programBarsHtml = topProgramsForDisplay.map(([prog, count]) => {
+                        const barWidth = (count / maxCount) * 100;
+                        const shortName = prog.length > 25 ? prog.substring(0, 22) + '...' : prog;
+                        return `
+                            <div style="margin-bottom: 4px;">
+                                <div style="font-size: 11px; color: #e1e8ed; margin-bottom: 2px;">${shortName}</div>
+                                <div style="display: flex; align-items: center;">
+                                    <div style="background: #253341; border-radius: 4px; height: 16px; flex: 1; position: relative;">
+                                        <div style="background: ${getProgramColor(prog)}; height: 100%; border-radius: 4px; width: ${barWidth}%;"></div>
+                                    </div>
+                                    <span style="margin-left: 8px; font-size: 11px; color: #8899a6; min-width: 20px;">${count}</span>
                                 </div>
                             </div>
-                        ` : ''}
-                    </div>
-                `, {
-                    maxWidth: 400,
-                    className: 'custom-popup'
-                });
-                
-                hexLayer.addLayer(polygon);
+                        `;
+                    }).join('');
+                    
+                    polygon.bindPopup(`
+                        <div style="min-width: 300px; max-width: 400px; background: #15202b; padding: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <strong style="color: #1d9bf0; font-size: 16px;">Hex Zone Statistics</strong>
+                                <span style="background: ${color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 14px; font-weight: bold;">${data.count}</span>
+                            </div>
+                            ${topProgram ? `
+                            <div style="margin-bottom: 12px; padding: 10px; background: rgba(${parseInt(color.slice(1,3), 16)}, ${parseInt(color.slice(3,5), 16)}, ${parseInt(color.slice(5,7), 16)}, 0.15); border-radius: 8px; border-left: 3px solid ${color};">
+                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase; margin-bottom: 4px;">Dominant Program</div>
+                                <div style="color: #e1e8ed; font-size: 14px; font-weight: 600;">${topProgram}</div>
+                                <div style="color: #8899a6; font-size: 11px; margin-top: 2px;">${sortedPrograms[0][1]} schools (${Math.round(sortedPrograms[0][1] / data.count * 100)}%)</div>
+                            </div>
+                            ` : ''}
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                                <div style="background: #253341; padding: 8px; border-radius: 6px;">
+                                    <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Schools</div>
+                                    <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${data.count}</div>
+                                </div>
+                                <div style="background: #253341; padding: 8px; border-radius: 6px;">
+                                    <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Programs</div>
+                                    <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${Object.keys(data.programs).length}</div>
+                                </div>
+                            </div>
+                            ${topProgramsForDisplay.length > 0 ? `
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="color: #e1e8ed; font-size: 12px;">Top Programs in Zone:</strong>
+                                </div>
+                                ${programBarsHtml}
+                            ` : ''}
+                            ${data.schools.length > 0 ? `
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #38444d;">
+                                    <strong style="color: #e1e8ed; font-size: 12px;">Schools in Zone:</strong>
+                                    <div style="max-height: 150px; overflow-y: auto; margin-top: 8px;">
+                                        ${data.schools.slice(0, 10).map(s => `
+                                            <div style="color: #8899a6; font-size: 11px; margin-bottom: 4px;">• ${s.name}</div>
+                                        `).join('')}
+                                        ${data.schools.length > 10 ? `<div style="color: #8899a6; font-size: 11px; font-style: italic;">...and ${data.schools.length - 10} more</div>` : ''}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `, {
+                        maxWidth: 400,
+                        className: 'custom-popup'
+                    });
+                    
+                    hexLayer.addLayer(polygon);
+                } catch (e) {
+                    console.warn('Failed to create hex cell:', h3Index, e);
+                }
             });
             
             map.addLayer(hexLayer);
+            console.log(`Hex grid rendered with ${Object.keys(hexData).length} cells`);
         }
         
         // Add heatmap to map
@@ -1173,8 +1825,31 @@
             }
         }
         
+        // Update mode indicator
+        function updateModeIndicator() {
+            const zoom = map.getZoom();
+            const indicator = document.getElementById('modeIndicator');
+            const modeText = document.getElementById('modeText');
+            
+            if (currentView === 'markers' && zoom >= 6) {
+                indicator.style.display = 'block';
+                modeText.textContent = `📍 Showing viewport only (zoom ${Math.round(zoom)}) • Pan to load more`;
+            } else if (currentView === 'hexgrid') {
+                indicator.style.display = 'block';
+                const res = getH3Resolution();
+                modeText.textContent = `⬡ Hex resolution: ${res} • Zoom to adjust granularity`;
+            } else if (currentView === 'heatmap') {
+                indicator.style.display = 'block';
+                modeText.textContent = `🌡️ Showing all ${filteredSchools.length} schools as density map`;
+            } else {
+                indicator.style.display = 'block';
+                modeText.textContent = `📍 Showing all ${filteredSchools.length} schools`;
+            }
+        }
+        
         // Set view mode
         function setView(view) {
+            console.log(`Setting view to: ${view}`);
             currentView = view;
             
             // Update button states
@@ -1182,6 +1857,18 @@
             document.getElementById('heatmapBtn').classList.toggle('active', view === 'heatmap');
             document.getElementById('hexgridBtn').classList.toggle('active', view === 'hexgrid');
             
+            // Auto-show legend when hex grid is active
+            const legend = document.getElementById('programLegend');
+            const toggle = document.getElementById('legendToggle');
+            if (view === 'hexgrid') {
+                legend.classList.add('active');
+                toggle.textContent = '🎨 Hide Legend';
+            } else {
+                legend.classList.remove('active');
+                toggle.textContent = '🎨 Show Legend';
+            }
+            
+            updateModeIndicator();
             updateMapView();
         }
         
@@ -1211,9 +1898,7 @@
             
             // Update chart title
             const chartTitle = document.getElementById('chartTitle');
-            chartTitle.textContent = viewportFiltering ? 
-                `📊 Program Distribution (Viewport: ${schoolsToShow.length} schools)` : 
-                '📊 Program Distribution';
+            chartTitle.textContent = `📊 Program Distribution (Viewport: ${schoolsToShow.length} schools)`;
             
             // Create chart
             const ctx = document.getElementById('programChart').getContext('2d');
@@ -1371,35 +2056,39 @@
         });
         
         // Get schools visible in current viewport
+        // Smart filtering: only applies to markers view for performance
         function getViewportSchools() {
-            if (!viewportFiltering) {
+            // For hex grid and heatmap, always show all filtered data (aggregation handles it)
+            if (currentView === 'hexgrid' || currentView === 'heatmap') {
                 return filteredSchools;
             }
             
-            const bounds = map.getBounds();
-            return filteredSchools.filter(school => {
-                return bounds.contains([school.lat, school.lon]);
-            });
+            // For markers view at high zoom, show viewport only to avoid clutter
+            const zoom = map.getZoom();
+            if (currentView === 'markers' && zoom >= 6) {
+                const bounds = map.getBounds();
+                return filteredSchools.filter(school => {
+                    return bounds.contains([school.lat, school.lon]);
+                });
+            }
+            
+            // At national zoom level, show all
+            return filteredSchools;
         }
         
         // Update viewport-based filtering
         function updateViewportFiltering() {
-            viewportSchools = getViewportSchools();
             updateStats();
             displaySchools();
             updateProgramChart();
-        }
-        
-        // Toggle viewport filtering
-        function toggleViewportFiltering() {
-            viewportFiltering = !viewportFiltering;
-            updateViewportFiltering();
+            updateModeIndicator();
             
-            // Update button text
-            const btn = document.getElementById('viewportToggle');
-            if (btn) {
-                btn.textContent = viewportFiltering ? '🌍 Show All' : '🎯 Viewport Only';
-                btn.classList.toggle('active', viewportFiltering);
+            // Re-render hex grid if active (zoom-dependent resolution)
+            if (currentView === 'hexgrid') {
+                const zoom = map.getZoom();
+                const resolution = getH3Resolution();
+                console.log(`Zoom changed to ${zoom}, updating hex grid with resolution ${resolution}`);
+                addHexGridToMap();
             }
         }
         

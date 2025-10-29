@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools H3 Map | BOMForge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/h3-js@4.1.0"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1419;
+            color: #e1e8ed;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        #map {
+            flex: 1;
+            height: 100vh;
+            background: #1a1f2e;
+        }
+        
+        #sidebar {
+            width: 380px;
+            background: #192734;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #38444d;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 20px;
+            background: #15202b;
+            border-bottom: 1px solid #38444d;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1d9bf0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            background: #253341;
+            padding: 12px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .stat:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1d9bf0;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #8899a6;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        
+        .controls {
+            padding: 20px;
+            background: #1a2632;
+            border-bottom: 1px solid #38444d;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #8899a6;
+            text-transform: uppercase;
+        }
+        
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 8px 12px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 14px;
+        }
+        
+        .view-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .view-btn {
+            flex: 1;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #8899a6;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            text-align: center;
+        }
+        
+        .view-btn:hover {
+            background: #2d3c4d;
+        }
+        
+        .view-btn.active {
+            background: #1d9bf0;
+            color: white;
+            border-color: #1d9bf0;
+        }
+        
+        .resolution-slider {
+            margin: 15px 0;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #253341;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1d9bf0;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1d9bf0;
+            cursor: pointer;
+        }
+        
+        .slider-value {
+            min-width: 30px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #1d9bf0;
+        }
+        
+        .schools-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .school-item {
+            background: #253341;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #38444d;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .school-item:hover {
+            background: #2d3c4d;
+            transform: translateX(4px);
+        }
+        
+        .school-name {
+            font-weight: 600;
+            color: #e1e8ed;
+            margin-bottom: 4px;
+        }
+        
+        .school-location {
+            font-size: 12px;
+            color: #8899a6;
+            margin-bottom: 8px;
+        }
+        
+        .program-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .program-tag {
+            padding: 2px 8px;
+            background: #1d9bf0;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(25, 39, 52, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #38444d;
+            z-index: 1000;
+            max-width: 250px;
+        }
+        
+        .legend-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e1e8ed;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 8px;
+            border: 1px solid #38444d;
+        }
+        
+        .legend-label {
+            font-size: 11px;
+            color: #8899a6;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(25, 39, 52, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #38444d;
+            z-index: 1000;
+            min-width: 200px;
+        }
+        
+        .info-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d9bf0;
+            margin-bottom: 8px;
+        }
+        
+        .info-content {
+            font-size: 12px;
+            color: #e1e8ed;
+            line-height: 1.4;
+        }
+        
+        /* Custom popup styles */
+        .leaflet-popup-content-wrapper {
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+        }
+        
+        .leaflet-popup-content {
+            margin: 0;
+            color: #e1e8ed;
+        }
+        
+        .leaflet-popup-tip {
+            background: #15202b;
+            border: 1px solid #38444d;
+        }
+        
+        /* Loading spinner */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+        
+        .spinner {
+            border: 3px solid #38444d;
+            border-top: 3px solid #1d9bf0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <div id="sidebar">
+        <div class="header">
+            <h1>🎓 Trade Schools H3 Map</h1>
+            <div class="stats">
+                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
+                    <div class="stat-value" id="totalSchools">0</div>
+                    <div class="stat-label">Total Schools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="visibleSchools">0</div>
+                    <div class="stat-label">Visible Schools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="hexCells">0</div>
+                    <div class="stat-label">Hex Cells</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalPrograms">0</div>
+                    <div class="stat-label">Programs</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="view-buttons">
+                <div class="view-btn active" id="hexBtn" onclick="setView('hex')">
+                    🔷 Hex Grid
+                </div>
+                <div class="view-btn" id="pointsBtn" onclick="setView('points')">
+                    📍 Points
+                </div>
+                <div class="view-btn" id="heatmapBtn" onclick="setView('heatmap')">
+                    🌡️ Heatmap
+                </div>
+                <div class="view-btn" id="clustersBtn" onclick="setView('clusters')">
+                    🔗 Clusters
+                </div>
+                <div class="view-btn" id="hybridBtn" onclick="setView('hybrid')">
+                    🔀 Hybrid
+                </div>
+            </div>
+            
+            <div class="resolution-slider">
+                <label>H3 Resolution</label>
+                <div class="slider-container">
+                    <span style="font-size: 11px; color: #8899a6;">Coarse</span>
+                    <input type="range" min="3" max="7" value="5" class="slider" id="resolutionSlider">
+                    <span style="font-size: 11px; color: #8899a6;">Fine</span>
+                    <span class="slider-value" id="resolutionValue">5</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="stateFilter">Filter by State</label>
+                <select id="stateFilter">
+                    <option value="">All States</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="programFilter">Filter by Program</label>
+                <select id="programFilter">
+                    <option value="">All Programs</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="autoResolution" checked>
+                    Auto-adjust resolution by zoom
+                </label>
+            </div>
+        </div>
+        
+        <div class="schools-list" id="schoolsList">
+            <!-- Schools will be populated here -->
+        </div>
+    </div>
+    
+    <div class="legend" id="legend">
+        <div class="legend-title">Program Colors</div>
+        <div id="legendContent"></div>
+    </div>
+    
+    <div class="info-panel">
+        <div class="info-title">H3 Aggregation Info</div>
+        <div class="info-content" id="infoContent">
+            Zoom: <span id="zoomLevel">10</span><br>
+            Resolution: <span id="currentRes">5</span><br>
+            Cell Size: <span id="cellSize">~5.16 km²</span>
+        </div>
+    </div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    
+    <script>
+        // Global variables
+        let map;
+        let allSchools = [];
+        let filteredSchools = [];
+        let hexLayer;
+        let pointsLayer;
+        let heatmapLayer;
+        let clustersLayer;
+        let currentView = 'hex';
+        let currentResolution = 5;
+        let autoResolution = true;
+        
+        // Program color mapping
+        const programColors = {
+            'Welding': '#ff5959',
+            'HVAC': '#4ea3ff',
+            'Construction': '#ffa84d',
+            'Diesel & Automotive Tech': '#3cb371',
+            'Electronics': '#f7e35b',
+            'CAD/CAM Drafting': '#b084f7',
+            'Plumbing': '#00CED1',
+            'Electrical': '#FFD700',
+            'Carpentry': '#8B4513',
+            'Masonry': '#696969',
+            'Cosmetology': '#FF69B4',
+            'Culinary Arts': '#FF6347',
+            'Healthcare': '#32CD32',
+            'IT/Computer': '#4169E1'
+        };
+        
+        // H3 resolution to cell size mapping
+        const resolutionInfo = {
+            3: { avgArea: 12392.28, label: '~12,392 km²' },
+            4: { avgArea: 1770.32, label: '~1,770 km²' },
+            5: { avgArea: 252.90, label: '~253 km²' },
+            6: { avgArea: 36.13, label: '~36 km²' },
+            7: { avgArea: 5.16, label: '~5.2 km²' }
+        };
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([39.8283, -98.5795], 5);
+            
+            // Dark tile layer
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap contributors © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Add map event listeners
+            map.on('zoomend', handleZoomChange);
+            map.on('moveend', updateView);
+        }
+        
+        // Aggregate schools to H3 cells
+        function aggregateToH3(schools, resolution) {
+            const hexBins = {};
+            
+            schools.forEach(school => {
+                try {
+                    const hex = h3.latLngToCell(school.lat, school.lon, resolution);
+                    
+                    if (!hexBins[hex]) {
+                        hexBins[hex] = {
+                            count: 0,
+                            schools: [],
+                            programs: {}
+                        };
+                    }
+                    
+                    hexBins[hex].count++;
+                    hexBins[hex].schools.push(school);
+                    
+                    school.programs.forEach(program => {
+                        hexBins[hex].programs[program] = (hexBins[hex].programs[program] || 0) + 1;
+                    });
+                } catch (e) {
+                    console.warn('Failed to process school:', school, e);
+                }
+            });
+            
+            // Convert to GeoJSON features
+            const features = [];
+            Object.entries(hexBins).forEach(([hex, data]) => {
+                try {
+                    const boundary = h3.cellToBoundary(hex, true);
+                    
+                    // Find dominant program
+                    const topProgram = Object.entries(data.programs)
+                        .sort((a, b) => b[1] - a[1])[0];
+                    
+                    features.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: [boundary]
+                        },
+                        properties: {
+                            hex,
+                            count: data.count,
+                            schools: data.schools,
+                            programs: data.programs,
+                            topProgram: topProgram ? topProgram[0] : null,
+                            topProgramCount: topProgram ? topProgram[1] : 0
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Failed to create boundary for hex:', hex, e);
+                }
+            });
+            
+            return features;
+        }
+        
+        // Get color for hex based on dominant program
+        function getHexColor(topProgram) {
+            return programColors[topProgram] || '#666666';
+        }
+        
+        // Get opacity based on school count
+        function getHexOpacity(count, maxCount) {
+            const minOpacity = 0.3;
+            const maxOpacity = 0.9;
+            const normalized = Math.min(count / maxCount, 1);
+            return minOpacity + (maxOpacity - minOpacity) * normalized;
+        }
+        
+        // Render hex layer
+        function renderHexLayer() {
+            if (hexLayer) {
+                map.removeLayer(hexLayer);
+            }
+            
+            const hexFeatures = aggregateToH3(filteredSchools, currentResolution);
+            
+            if (hexFeatures.length === 0) return;
+            
+            const maxCount = Math.max(...hexFeatures.map(f => f.properties.count));
+            
+            hexLayer = L.geoJSON({
+                type: 'FeatureCollection',
+                features: hexFeatures
+            }, {
+                style: (feature) => {
+                    const props = feature.properties;
+                    return {
+                        color: '#111',
+                        weight: 1,
+                        opacity: 0.8,
+                        fillColor: getHexColor(props.topProgram),
+                        fillOpacity: getHexOpacity(props.count, maxCount)
+                    };
+                },
+                onEachFeature: (feature, layer) => {
+                    const props = feature.properties;
+                    
+                    // Sort programs
+                    const sortedPrograms = Object.entries(props.programs)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 5);
+                    
+                    // Create popup content
+                    const popupContent = `
+                        <div style="min-width: 280px; padding: 12px;">
+                            <h3 style="margin: 0 0 12px 0; color: #1d9bf0; font-size: 16px;">
+                                H3 Cell: ${props.hex.substring(0, 10)}...
+                            </h3>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                                <div style="background: #253341; padding: 8px; border-radius: 6px;">
+                                    <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Schools</div>
+                                    <div style="color: #e1e8ed; font-size: 20px; font-weight: bold;">${props.count}</div>
+                                </div>
+                                <div style="background: #253341; padding: 8px; border-radius: 6px;">
+                                    <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Programs</div>
+                                    <div style="color: #e1e8ed; font-size: 20px; font-weight: bold;">${Object.keys(props.programs).length}</div>
+                                </div>
+                            </div>
+                            
+                            ${sortedPrograms.length > 0 ? `
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="color: #e1e8ed; font-size: 12px;">Top Programs:</strong>
+                                </div>
+                                ${sortedPrograms.map(([prog, count]) => {
+                                    const percentage = ((count / props.count) * 100).toFixed(0);
+                                    return `
+                                        <div style="margin-bottom: 6px;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                                <span style="font-size: 11px; color: #e1e8ed;">${prog}</span>
+                                                <span style="font-size: 11px; color: #8899a6;">${count} (${percentage}%)</span>
+                                            </div>
+                                            <div style="background: #253341; border-radius: 4px; height: 6px;">
+                                                <div style="background: ${getHexColor(prog)}; height: 100%; border-radius: 4px; width: ${percentage}%;"></div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            ` : ''}
+                            
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #38444d;">
+                                <details>
+                                    <summary style="cursor: pointer; color: #8899a6; font-size: 11px;">
+                                        View schools (${props.schools.length})
+                                    </summary>
+                                    <div style="max-height: 150px; overflow-y: auto; margin-top: 8px;">
+                                        ${props.schools.slice(0, 20).map(s => `
+                                            <div style="color: #8899a6; font-size: 10px; margin-bottom: 3px;">
+                                                • ${s.name} - ${s.city}, ${s.state}
+                                            </div>
+                                        `).join('')}
+                                        ${props.schools.length > 20 ? 
+                                            `<div style="color: #8899a6; font-size: 10px; font-style: italic;">
+                                                ...and ${props.schools.length - 20} more
+                                            </div>` : ''}
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+                    `;
+                    
+                    layer.bindPopup(popupContent, {
+                        maxWidth: 350,
+                        className: 'custom-popup'
+                    });
+                    
+                    // Add hover effect
+                    layer.on('mouseover', function() {
+                        this.setStyle({
+                            weight: 2,
+                            color: '#1d9bf0'
+                        });
+                    });
+                    
+                    layer.on('mouseout', function() {
+                        this.setStyle({
+                            weight: 1,
+                            color: '#111'
+                        });
+                    });
+                }
+            });
+            
+            hexLayer.addTo(map);
+            
+            // Update stats
+            document.getElementById('hexCells').textContent = hexFeatures.length;
+        }
+        
+        // Render points layer
+        function renderPointsLayer() {
+            if (pointsLayer) {
+                map.removeLayer(pointsLayer);
+            }
+            
+            pointsLayer = L.layerGroup();
+            
+            filteredSchools.forEach(school => {
+                const marker = L.circleMarker([school.lat, school.lon], {
+                    radius: 5,
+                    fillColor: getHexColor(school.programs[0]),
+                    color: '#111',
+                    weight: 1,
+                    opacity: 0.8,
+                    fillOpacity: 0.6
+                });
+                
+                marker.bindPopup(`
+                    <div style="padding: 8px;">
+                        <strong>${school.name}</strong><br>
+                        ${school.city}, ${school.state}<br>
+                        <div style="margin-top: 8px;">
+                            ${school.programs.slice(0, 3).map(p => 
+                                `<span style="display: inline-block; padding: 2px 6px; background: ${getHexColor(p)}; 
+                                color: white; border-radius: 10px; font-size: 10px; margin: 2px;">
+                                ${p}</span>`
+                            ).join('')}
+                            ${school.programs.length > 3 ? `<span style="font-size: 10px; color: #8899a6;">+${school.programs.length - 3} more</span>` : ''}
+                        </div>
+                    </div>
+                `);
+                
+                pointsLayer.addLayer(marker);
+            });
+            
+            pointsLayer.addTo(map);
+        }
+        
+        // Render heatmap layer
+        function renderHeatmapLayer() {
+            if (heatmapLayer) {
+                map.removeLayer(heatmapLayer);
+            }
+            
+            const heatPoints = filteredSchools.map(school => [school.lat, school.lon, 1]);
+            
+            heatmapLayer = L.heatLayer(heatPoints, {
+                radius: 25,
+                blur: 15,
+                maxZoom: 10,
+                gradient: {
+                    0.0: '#001122',
+                    0.2: '#004488',
+                    0.4: '#0088ff',
+                    0.6: '#00ffcc',
+                    0.8: '#ffff00',
+                    1.0: '#ff0000'
+                }
+            });
+            
+            heatmapLayer.addTo(map);
+        }
+        
+        // Render clusters layer
+        function renderClustersLayer() {
+            if (clustersLayer) {
+                map.removeLayer(clustersLayer);
+            }
+            
+            clustersLayer = L.layerGroup();
+            
+            filteredSchools.forEach(school => {
+                const marker = L.circleMarker([school.lat, school.lon], {
+                    radius: 6,
+                    fillColor: getHexColor(school.programs[0]),
+                    color: 'white',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+                
+                const programTags = school.programs.slice(0, 3).map(p => 
+                    `<span style="display: inline-block; padding: 2px 6px; background: ${getHexColor(p)}; 
+                    color: white; border-radius: 10px; font-size: 10px; margin: 2px;">
+                    ${p}</span>`
+                ).join('');
+                
+                marker.bindPopup(`
+                    <div style="padding: 12px;">
+                        <strong style="color: #1d9bf0; font-size: 14px;">${school.name}</strong><br>
+                        <span style="color: #8899a6; font-size: 12px;">${school.city}, ${school.state}</span>
+                        <div style="margin-top: 8px;">
+                            ${programTags}
+                            ${school.programs.length > 3 ? 
+                                `<span style="font-size: 10px; color: #8899a6;">+${school.programs.length - 3} more</span>` : ''}
+                        </div>
+                    </div>
+                `);
+                
+                clustersLayer.addLayer(marker);
+            });
+            
+            clustersLayer.addTo(map);
+        }
+        
+        // Handle zoom change
+        function handleZoomChange() {
+            const zoom = map.getZoom();
+            document.getElementById('zoomLevel').textContent = zoom.toFixed(1);
+            
+            if (autoResolution) {
+                // Auto-adjust resolution based on zoom
+                let newResolution;
+                if (zoom <= 4) newResolution = 3;
+                else if (zoom <= 6) newResolution = 4;
+                else if (zoom <= 8) newResolution = 5;
+                else if (zoom <= 10) newResolution = 6;
+                else newResolution = 7;
+                
+                if (newResolution !== currentResolution) {
+                    currentResolution = newResolution;
+                    document.getElementById('resolutionSlider').value = newResolution;
+                    document.getElementById('resolutionValue').textContent = newResolution;
+                    updateResolutionInfo();
+                    updateView();
+                }
+            }
+        }
+        
+        // Update resolution info
+        function updateResolutionInfo() {
+            document.getElementById('currentRes').textContent = currentResolution;
+            document.getElementById('cellSize').textContent = resolutionInfo[currentResolution].label;
+        }
+        
+        // Set view mode
+        function setView(mode) {
+            currentView = mode;
+            
+            // Update button states
+            document.getElementById('hexBtn').classList.toggle('active', mode === 'hex');
+            document.getElementById('pointsBtn').classList.toggle('active', mode === 'points');
+            document.getElementById('heatmapBtn').classList.toggle('active', mode === 'heatmap');
+            document.getElementById('clustersBtn').classList.toggle('active', mode === 'clusters');
+            document.getElementById('hybridBtn').classList.toggle('active', mode === 'hybrid');
+            
+            updateView();
+        }
+        
+        // Update map view
+        function updateView() {
+            // Clear existing layers
+            if (hexLayer) map.removeLayer(hexLayer);
+            if (pointsLayer) map.removeLayer(pointsLayer);
+            if (heatmapLayer) map.removeLayer(heatmapLayer);
+            if (clustersLayer) map.removeLayer(clustersLayer);
+            
+            // Get visible schools
+            const bounds = map.getBounds();
+            const visibleSchools = filteredSchools.filter(school => 
+                bounds.contains([school.lat, school.lon])
+            );
+            
+            // Update visible count
+            document.getElementById('visibleSchools').textContent = visibleSchools.length;
+            
+            // Render based on view mode
+            if (currentView === 'hex' || currentView === 'hybrid') {
+                renderHexLayer();
+            }
+            
+            if (currentView === 'points' || currentView === 'hybrid') {
+                renderPointsLayer();
+            }
+            
+            if (currentView === 'heatmap') {
+                renderHeatmapLayer();
+            }
+            
+            if (currentView === 'clusters') {
+                renderClustersLayer();
+            }
+            
+            // Update schools list
+            updateSchoolsList(visibleSchools);
+        }
+        
+        // Update schools list in sidebar
+        function updateSchoolsList(schools) {
+            const container = document.getElementById('schoolsList');
+            
+            if (schools.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #8899a6; padding: 20px;">No schools in current view</div>';
+                return;
+            }
+            
+            container.innerHTML = schools.slice(0, 50).map(school => `
+                <div class="school-item" onclick="focusSchool(${school.lat}, ${school.lon})">
+                    <div class="school-name">${school.name}</div>
+                    <div class="school-location">${school.city}, ${school.state}</div>
+                    <div class="program-tags">
+                        ${school.programs.slice(0, 3).map(p => 
+                            `<span class="program-tag" style="background: ${getHexColor(p)};">${p}</span>`
+                        ).join('')}
+                        ${school.programs.length > 3 ? 
+                            `<span class="program-tag" style="background: #666;">+${school.programs.length - 3}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            if (schools.length > 50) {
+                container.innerHTML += `<div style="text-align: center; color: #8899a6; padding: 10px;">
+                    Showing 50 of ${schools.length} schools
+                </div>`;
+            }
+        }
+        
+        // Focus on a specific school
+        function focusSchool(lat, lon) {
+            map.setView([lat, lon], 12);
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const stateFilter = document.getElementById('stateFilter').value;
+            const programFilter = document.getElementById('programFilter').value;
+            
+            filteredSchools = allSchools.filter(school => {
+                if (stateFilter && school.state !== stateFilter) return false;
+                if (programFilter && !school.programs.includes(programFilter)) return false;
+                return true;
+            });
+            
+            document.getElementById('totalSchools').textContent = filteredSchools.length;
+            updateView();
+            
+            // Auto-center map to show filtered schools
+            if (filteredSchools.length > 0) {
+                const bounds = L.latLngBounds(filteredSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+        
+        // Update legend
+        function updateLegend() {
+            const legendContent = document.getElementById('legendContent');
+            const usedPrograms = new Set();
+            
+            filteredSchools.forEach(school => {
+                school.programs.forEach(p => usedPrograms.add(p));
+            });
+            
+            const sortedPrograms = Array.from(usedPrograms).sort().slice(0, 10);
+            
+            legendContent.innerHTML = sortedPrograms.map(program => `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${getHexColor(program)};"></div>
+                    <div class="legend-label">${program}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Load school data
+        async function loadSchoolData() {
+            try {
+                // Load from CSV file
+                const response = await fetch('schools/trade_schools_geocoded_fixed.csv');
+                const csvText = await response.text();
+                
+                Papa.parse(csvText, {
+                    header: true,
+                    complete: (results) => {
+                        // Helper function to generate realistic programs for each school
+                        const generatePrograms = () => {
+                            const allPrograms = Object.keys(programColors);
+                            const numPrograms = 2 + Math.floor(Math.random() * 4); // 2-5 programs
+                            const selectedPrograms = [];
+                            
+                            for (let i = 0; i < numPrograms; i++) {
+                                const program = allPrograms[Math.floor(Math.random() * allPrograms.length)];
+                                if (!selectedPrograms.includes(program)) {
+                                    selectedPrograms.push(program);
+                                }
+                            }
+                            return selectedPrograms;
+                        };
+                        
+                        allSchools = results.data
+                            .filter(row => row.lat && row.lon && row['Institution Name'])
+                            .map(row => ({
+                                name: row['Institution Name'],
+                                city: row.City || row.city,
+                                state: row.State || row.state,
+                                lat: parseFloat(row.lat),
+                                lon: parseFloat(row.lon),
+                                programs: row.programs ? 
+                                         row.programs.split('|').map(p => p.trim()) : 
+                                         generatePrograms()
+                            }));
+                        
+                        filteredSchools = [...allSchools];
+                        
+                        // Populate filters
+                        populateFilters();
+                        
+                        // Update stats
+                        document.getElementById('totalSchools').textContent = allSchools.length;
+                        
+                        // Initial render
+                        updateView();
+                        updateLegend();
+                        
+                        // Hide loading
+                        document.getElementById('loading').style.display = 'none';
+                    },
+                    error: (error) => {
+                        console.error('Error parsing CSV:', error);
+                        // Fall back to sample data
+                        loadSampleData();
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Fall back to sample data
+                loadSampleData();
+            }
+        }
+        
+        // Load sample data as fallback
+        function loadSampleData() {
+            // Generate sample data for demonstration
+            const states = ['CA', 'TX', 'FL', 'NY', 'PA', 'IL', 'OH', 'GA', 'NC', 'MI'];
+            const programs = Object.keys(programColors);
+            
+            allSchools = [];
+            for (let i = 0; i < 500; i++) {
+                const state = states[Math.floor(Math.random() * states.length)];
+                const lat = 25 + Math.random() * 25;
+                const lon = -125 + Math.random() * 50;
+                const numPrograms = 1 + Math.floor(Math.random() * 5);
+                const schoolPrograms = [];
+                
+                for (let j = 0; j < numPrograms; j++) {
+                    const program = programs[Math.floor(Math.random() * programs.length)];
+                    if (!schoolPrograms.includes(program)) {
+                        schoolPrograms.push(program);
+                    }
+                }
+                
+                allSchools.push({
+                    name: `Trade School ${i + 1}`,
+                    city: `City ${i + 1}`,
+                    state: state,
+                    lat: lat,
+                    lon: lon,
+                    programs: schoolPrograms
+                });
+            }
+            
+            filteredSchools = [...allSchools];
+            populateFilters();
+            document.getElementById('totalSchools').textContent = allSchools.length;
+            updateView();
+            updateLegend();
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            const states = new Set();
+            const programs = new Set();
+            
+            allSchools.forEach(school => {
+                states.add(school.state);
+                school.programs.forEach(p => programs.add(p));
+            });
+            
+            // Populate state filter
+            const stateFilter = document.getElementById('stateFilter');
+            Array.from(states).sort().forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateFilter.appendChild(option);
+            });
+            
+            // Populate program filter
+            const programFilter = document.getElementById('programFilter');
+            Array.from(programs).sort().forEach(program => {
+                const option = document.createElement('option');
+                option.value = program;
+                option.textContent = program;
+                programFilter.appendChild(option);
+            });
+            
+            // Update total programs stat
+            document.getElementById('totalPrograms').textContent = programs.size;
+        }
+        
+        // Zoom to full map view
+        function zoomToFullMap() {
+            if (allSchools.length > 0) {
+                const bounds = L.latLngBounds(allSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadSchoolData();
+            
+            // Set up event listeners
+            document.getElementById('resolutionSlider').addEventListener('input', (e) => {
+                currentResolution = parseInt(e.target.value);
+                document.getElementById('resolutionValue').textContent = currentResolution;
+                updateResolutionInfo();
+                updateView();
+            });
+            
+            document.getElementById('autoResolution').addEventListener('change', (e) => {
+                autoResolution = e.target.checked;
+                document.getElementById('resolutionSlider').disabled = autoResolution;
+                if (autoResolution) {
+                    handleZoomChange();
+                }
+            });
+            
+            document.getElementById('stateFilter').addEventListener('change', applyFilters);
+            document.getElementById('programFilter').addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html>
