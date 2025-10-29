@@ -26,6 +26,8 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUTPUT_DIR = os.path.join(REPO_ROOT, "src", "assets", "favicons")
 
 SOURCES = [
+    os.path.join(REPO_ROOT, "data", "production", "trade_schools_geocoded_fixed.csv"),
+    os.path.join(REPO_ROOT, "data", "production", "matchmaking_index.csv"),
     os.path.join(REPO_ROOT, "schools", "matchmaking_index.csv"),
     os.path.join(REPO_ROOT, "schools", "trade_schools_curated.csv"),
 ]

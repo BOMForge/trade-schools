@@ -21,41 +21,57 @@
         }
         
         .demo-banner {
-            background: #111;
-            border-bottom: 1px solid #333;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        
-        .banner-text {
-            color: #888;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #15202b;
+            border-bottom: 1px solid #38444d;
+            color: #e1e8ed;
+            text-align: center;
+            padding: 10px 40px;
             font-size: 14px;
             font-weight: 500;
-            letter-spacing: 0.5px;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .banner-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
         
         .banner-links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
+            align-items: center;
         }
         
-        .banner-links a {
-            color: #3b82f6;
+        .banner-link {
+            color: #1d9bf0;
             text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
+            padding: 4px 12px;
+            background: rgba(29, 155, 240, 0.1);
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
         
-        .banner-links a:hover {
-            color: #60a5fa;
+        .banner-link:hover {
+            background: rgba(29, 155, 240, 0.2);
+            color: #6bcf7f;
         }
         
         .container {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 90px auto 50px;
             padding: 20px;
         }
         
@@ -170,7 +186,7 @@
         
         @media (max-width: 768px) {
             .container {
-                margin: 20px auto;
+                margin: 70px auto 20px;
                 padding: 15px;
             }
             
@@ -182,25 +198,38 @@
                 grid-template-columns: 1fr;
             }
             
-            .banner-text {
+            .demo-banner {
+                padding: 10px 20px;
                 font-size: 12px;
+            }
+            
+            .banner-content {
+                gap: 10px;
+            }
+            
+            .banner-link {
+                font-size: 12px;
+                padding: 3px 8px;
             }
         }
     </style>
 </head>
 <body>
     <div class="demo-banner">
-        <div class="banner-text">
-            Trade Schools Directory • 1031 Schools Nationwide • Submit a School
-        </div>
-        <div class="banner-links">
-            <a href="https://bomforge.com" target="_blank">BOMForge</a>
-            <a href="https://doss.com" target="_blank">Doss</a>
+        <div class="banner-content">
+            <div>
+                Trade Schools Directory • 1031 Schools Nationwide
+            </div>
+            <div class="banner-links">
+                <a href="clean-map.html" class="banner-link">Map</a>
+                <a href="https://bomforge.com" target="_blank" class="banner-link">BOMForge</a>
+                <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
+            </div>
         </div>
     </div>
 
     <div class="container">
-        <a href="/" class="back-link">
+        <a href="clean-map.html" class="back-link">
             ← Back to Map
         </a>
         

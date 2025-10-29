@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://bomforge.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# Allow important pages
+Allow: /index.html
+Allow: /map.html
+Allow: /clean-map.html
+Allow: /school-detail.html
+Allow: /employer-hiring.html
+Allow: /submit-school.html
+
+# Allow data files for SEO
+Allow: /data/production/
