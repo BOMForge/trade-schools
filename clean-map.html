@@ -380,7 +380,7 @@
         // Load geocoded data
         function loadGeocodedData() {
             console.log('Starting to load geocoded data...');
-            Papa.parse('schools/trade_schools_geocoded.csv', {
+            Papa.parse('schools/trade_schools_geocoded_fixed.csv', {
                 download: true,
                 header: true,
                 complete: function(geoResults) {
