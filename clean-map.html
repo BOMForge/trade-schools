@@ -243,6 +243,17 @@
             font-size: 12px;
         }
         
+        .form-input select {
+            width: 100%;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
         .form-input:focus {
             outline: none;
             border-color: #1d9bf0;
@@ -419,6 +430,23 @@
             border: 1px solid #38444d;
         }
         
+        /* Hex label styles */
+        .hex-label {
+            z-index: 1000 !important;
+            pointer-events: none;
+        }
+        
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: #15202b;
+            border: 2px solid #1d9bf0;
+            box-shadow: 0 4px 20px rgba(29, 155, 240, 0.3);
+        }
+        
+        .custom-popup .leaflet-popup-tip {
+            background: #15202b;
+            border: 2px solid #1d9bf0;
+        }
+        
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -502,8 +530,64 @@
                     <input type="text" class="form-input" id="schoolName" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">City, State *</label>
-                    <input type="text" class="form-input" id="schoolLocation" required>
+                    <label class="form-label">City *</label>
+                    <input type="text" class="form-input" id="schoolCity" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">State *</label>
+                    <select class="form-input" id="schoolState" required>
+                        <option value="">Select State</option>
+                        <option value="AL">Alabama</option>
+                        <option value="AK">Alaska</option>
+                        <option value="AZ">Arizona</option>
+                        <option value="AR">Arkansas</option>
+                        <option value="CA">California</option>
+                        <option value="CO">Colorado</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="DE">Delaware</option>
+                        <option value="FL">Florida</option>
+                        <option value="GA">Georgia</option>
+                        <option value="HI">Hawaii</option>
+                        <option value="ID">Idaho</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IN">Indiana</option>
+                        <option value="IA">Iowa</option>
+                        <option value="KS">Kansas</option>
+                        <option value="KY">Kentucky</option>
+                        <option value="LA">Louisiana</option>
+                        <option value="ME">Maine</option>
+                        <option value="MD">Maryland</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="MI">Michigan</option>
+                        <option value="MN">Minnesota</option>
+                        <option value="MS">Mississippi</option>
+                        <option value="MO">Missouri</option>
+                        <option value="MT">Montana</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="NV">Nevada</option>
+                        <option value="NH">New Hampshire</option>
+                        <option value="NJ">New Jersey</option>
+                        <option value="NM">New Mexico</option>
+                        <option value="NY">New York</option>
+                        <option value="NC">North Carolina</option>
+                        <option value="ND">North Dakota</option>
+                        <option value="OH">Ohio</option>
+                        <option value="OK">Oklahoma</option>
+                        <option value="OR">Oregon</option>
+                        <option value="PA">Pennsylvania</option>
+                        <option value="RI">Rhode Island</option>
+                        <option value="SC">South Carolina</option>
+                        <option value="SD">South Dakota</option>
+                        <option value="TN">Tennessee</option>
+                        <option value="TX">Texas</option>
+                        <option value="UT">Utah</option>
+                        <option value="VT">Vermont</option>
+                        <option value="VA">Virginia</option>
+                        <option value="WA">Washington</option>
+                        <option value="WV">West Virginia</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Website</label>
@@ -565,6 +649,8 @@
                 header: true,
                 complete: function(geoResults) {
                     console.log('Fixed geocoded data loaded:', geoResults.data.length, 'rows');
+                    console.log('Sample row:', geoResults.data[0]);
+                    console.log('Geocoded field sample:', geoResults.data.slice(0, 5).map(r => r.geocoded));
                     // Load matchmaking data for programs
                     Papa.parse('schools/matchmaking_index.csv', {
                         download: true,
@@ -624,8 +710,11 @@
             
             // Process geocoded schools
             allSchools = [];
+            console.log('Processing geoData:', geoData.length, 'rows');
+            let processedCount = 0;
             geoData.forEach(row => {
                 if (row.geocoded === 'True' && row.lat && row.lon) {
+                    processedCount++;
                     const key = `${row['Institution Name']}_${row.State}_${row.City}`;
                     const programData = schoolPrograms[key] || { programs: [], email: '', website: '' };
                     
@@ -650,6 +739,7 @@
                 }
             });
             
+            console.log(`Processed ${processedCount} schools that passed geocoded filter`);
             console.log(`Loaded ${allSchools.length} schools with coordinates`);
             console.log(`Note: ${geoData.filter(r => r.geocoded === 'False').length} schools failed geocoding and are not displayed`);
             
@@ -743,6 +833,12 @@
                 const websiteUrl = school.website ? 
                     (school.website.startsWith('http') ? school.website : `https://${school.website}`) : '';
                 
+                // Clean display name for website (remove protocol and trailing slash)
+                let websiteDisplay = school.website || '';
+                if (websiteDisplay) {
+                    websiteDisplay = websiteDisplay.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                }
+                
                 return `
                     <div class="school-card" data-name="${school.name}" onclick="selectSchool('${school.name}')">
                         <div class="school-name">${school.name}</div>
@@ -760,7 +856,7 @@
                             <div class="school-contact">
                                 <div class="contact-item">
                                     🌐 <a href="${websiteUrl}" target="_blank" rel="noopener noreferrer">
-                                        ${school.website}
+                                        ${websiteDisplay}
                                     </a>
                                 </div>
                             </div>
@@ -789,11 +885,17 @@
                 const websiteUrl = school.website ? 
                     (school.website.startsWith('http') ? school.website : `https://${school.website}`) : '';
                 
+                // Clean display name for website
+                let websiteDisplay = school.website || '';
+                if (websiteDisplay) {
+                    websiteDisplay = websiteDisplay.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                }
+                
                 const popupContent = `
                     <div style="min-width: 200px;">
                         <strong style="color: #1d9bf0;">${school.name}</strong><br>
                         📍 ${school.city}, ${school.state}<br>
-                        ${websiteUrl ? `🌐 <a href="${websiteUrl}" target="_blank">${school.website}</a><br>` : ''}
+                        ${websiteUrl ? `🌐 <a href="${websiteUrl}" target="_blank">${websiteDisplay}</a><br>` : ''}
                         ${school.programs.length > 0 ? `<br><strong>Programs:</strong><br>${school.programs.join(', ')}` : ''}
                     </div>
                 `;
@@ -924,39 +1026,117 @@
                 if (!hexData[h3Index]) {
                     hexData[h3Index] = {
                         count: 0,
-                        schools: []
+                        schools: [],
+                        programs: {}
                     };
                 }
                 hexData[h3Index].count++;
                 hexData[h3Index].schools.push(school);
+                
+                // Aggregate programs
+                school.programs.forEach(program => {
+                    hexData[h3Index].programs[program] = (hexData[h3Index].programs[program] || 0) + 1;
+                });
             });
             
             Object.entries(hexData).forEach(([h3Index, data]) => {
                 const boundary = h3.h3ToGeoBoundary(h3Index);
                 const coordinates = boundary.map(coord => [coord[0], coord[1]]);
                 
-                const opacity = Math.min(0.2 + (data.count / 50), 0.8);
+                const opacity = Math.min(0.3 + (data.count / 30), 0.9);
                 const color = data.count > 20 ? '#ff6b6b' : 
                              data.count > 10 ? '#ffd93d' : 
                              data.count > 5 ? '#6bcf7f' : '#4ecdc4';
                 
+                // Add text label for count
+                const center = h3.h3ToGeo(h3Index);
+                const label = L.divIcon({
+                    className: 'hex-label',
+                    html: `<div style="
+                        background: rgba(0,0,0,0.7);
+                        color: white;
+                        border-radius: 12px;
+                        padding: 2px 6px;
+                        font-size: 11px;
+                        font-weight: bold;
+                        border: 1px solid ${color};
+                        ">${data.count}</div>`,
+                    iconSize: [30, 20],
+                    iconAnchor: [15, 10]
+                });
+                
+                const marker = L.marker([center[0], center[1]], { icon: label });
+                hexLayer.addLayer(marker);
+                
                 const polygon = L.polygon(coordinates, {
                     color: color,
-                    weight: 1,
-                    opacity: 0.8,
+                    weight: 2,
+                    opacity: 0.9,
                     fillColor: color,
                     fillOpacity: opacity
                 });
                 
+                // Sort programs by count
+                const sortedPrograms = Object.entries(data.programs)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10);
+                
+                // Create program bars HTML
+                const maxCount = sortedPrograms[0] ? sortedPrograms[0][1] : 1;
+                const programBarsHtml = sortedPrograms.map(([prog, count]) => {
+                    const barWidth = (count / maxCount) * 100;
+                    const shortName = prog.length > 25 ? prog.substring(0, 22) + '...' : prog;
+                    return `
+                        <div style="margin-bottom: 4px;">
+                            <div style="font-size: 11px; color: #e1e8ed; margin-bottom: 2px;">${shortName}</div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="background: #253341; border-radius: 4px; height: 16px; flex: 1; position: relative;">
+                                    <div style="background: #1d9bf0; height: 100%; border-radius: 4px; width: ${barWidth}%;"></div>
+                                </div>
+                                <span style="margin-left: 8px; font-size: 11px; color: #8899a6; min-width: 20px;">${count}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
                 polygon.bindPopup(`
-                    <div style="min-width: 200px;">
-                        <strong style="color: #1d9bf0;">H3 Hexagon</strong><br>
-                        📊 Schools: ${data.count}<br>
-                        🔢 H3 Index: ${h3Index.substring(0,10)}...<br>
-                        📍 Density: ${(data.count / 10).toFixed(1)} per 100km²<br>
-                        ${data.schools.length > 0 ? `<br><strong>Sample Schools:</strong><br>${data.schools.slice(0, 3).map(s => s.name).join('<br>')}${data.schools.length > 3 ? '<br>...' : ''}` : ''}
+                    <div style="min-width: 300px; max-width: 400px; background: #15202b; padding: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <strong style="color: #1d9bf0; font-size: 16px;">Hex Zone Statistics</strong>
+                            <span style="background: ${color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 14px; font-weight: bold;">${data.count}</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div style="background: #253341; padding: 8px; border-radius: 6px;">
+                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Schools</div>
+                                <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${data.count}</div>
+                            </div>
+                            <div style="background: #253341; padding: 8px; border-radius: 6px;">
+                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Programs</div>
+                                <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${Object.keys(data.programs).length}</div>
+                            </div>
+                        </div>
+                        ${sortedPrograms.length > 0 ? `
+                            <div style="margin-bottom: 8px;">
+                                <strong style="color: #e1e8ed; font-size: 12px;">Top Programs in Zone:</strong>
+                            </div>
+                            ${programBarsHtml}
+                        ` : ''}
+                        ${data.schools.length > 0 ? `
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #38444d;">
+                                <strong style="color: #e1e8ed; font-size: 12px;">Schools in Zone:</strong>
+                                <div style="max-height: 150px; overflow-y: auto; margin-top: 8px;">
+                                    ${data.schools.slice(0, 10).map(s => `
+                                        <div style="color: #8899a6; font-size: 11px; margin-bottom: 4px;">• ${s.name}</div>
+                                    `).join('')}
+                                    ${data.schools.length > 10 ? `<div style="color: #8899a6; font-size: 11px; font-style: italic;">...and ${data.schools.length - 10} more</div>` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
-                `);
+                `, {
+                    maxWidth: 400,
+                    className: 'custom-popup'
+                });
                 
                 hexLayer.addLayer(polygon);
             });
@@ -1148,9 +1328,13 @@
             submitBtn.textContent = 'Submitting...';
             
             // Collect form data
+            const schoolCity = document.getElementById('schoolCity').value;
+            const schoolState = document.getElementById('schoolState').value;
             const formData = {
                 schoolName: document.getElementById('schoolName').value,
-                schoolLocation: document.getElementById('schoolLocation').value,
+                schoolCity: schoolCity,
+                schoolState: schoolState,
+                schoolLocation: `${schoolCity}, ${schoolState}`,
                 schoolWebsite: document.getElementById('schoolWebsite').value,
                 schoolPrograms: document.getElementById('schoolPrograms').value,
                 submitterEmail: document.getElementById('submitterEmail').value,
@@ -1162,6 +1346,8 @@
             const subject = `New Trade School Submission: ${formData.schoolName}`;
             const body = `New trade school submission:\n\n` +
                         `School Name: ${formData.schoolName}\n` +
+                        `City: ${formData.schoolCity}\n` +
+                        `State: ${formData.schoolState}\n` +
                         `Location: ${formData.schoolLocation}\n` +
                         `Website: ${formData.schoolWebsite || 'Not provided'}\n` +
                         `Programs: ${formData.schoolPrograms || 'Not provided'}\n` +
