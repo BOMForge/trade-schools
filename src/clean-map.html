@@ -1887,18 +1887,21 @@
                 }
                 
                 console.log(`Attempting to load CSV from: ${csvPaths[csvIndex]}`);
+                console.log('Papa object available:', typeof Papa !== 'undefined');
                 
                 Papa.parse(csvPaths[csvIndex], {
                     download: true,
                     header: true,
                     complete: function(geoResults) {
                         console.log(`✅ Geocoded data loaded from ${csvPaths[csvIndex]}:`, geoResults.data.length, 'rows');
+                        console.log('First few rows:', geoResults.data.slice(0, 3));
                         
                         // Try to load matchmaking data
                         tryLoadMatchmakingData(geoResults.data, 0);
                     },
                     error: function(error) {
                         console.warn(`❌ Failed to load ${csvPaths[csvIndex]}:`, error);
+                        console.log('Error details:', error);
                         tryLoadData(csvIndex + 1);
                     }
                 });
@@ -2009,6 +2012,8 @@
         
         // Process and merge data
         function processData(geoData, matchData) {
+            console.log('🔄 processData called with:', geoData.length, 'geo rows,', matchData.length, 'match rows');
+            
             // Group matchmaking data by institution
             const schoolPrograms = {};
             matchData.forEach(row => {
@@ -2088,6 +2093,8 @@
             
             // Initialize UI
             filteredSchools = [...allSchools];
+            console.log('🎯 Final allSchools count:', allSchools.length);
+            console.log('🎯 First few schools:', allSchools.slice(0, 3));
             populateFilters();
             updateStats();
             displaySchools();
