@@ -885,10 +885,33 @@
             background: rgba(21, 32, 43, 0.95);
             border: 1px solid #38444d;
             border-radius: 12px;
-            padding: 12px 16px;
+            padding: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: move;
+            user-select: none;
+        }
+        
+        .stats-badge.dragging {
+            opacity: 0.8;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        
+        .stats-badge-handle {
+            background: rgba(29, 155, 240, 0.2);
+            padding: 6px 12px;
+            border-bottom: 1px solid #38444d;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            font-size: 14px;
+            color: #8899a6;
+            cursor: move;
+        }
+        
+        .stats-badge-handle:hover {
+            background: rgba(29, 155, 240, 0.3);
+            color: #1d9bf0;
         }
         
         .stats-badge-content {
@@ -896,6 +919,7 @@
             gap: 16px;
             align-items: center;
             font-size: 13px;
+            padding: 12px 16px;
         }
         
         .stats-badge-item {
@@ -1310,6 +1334,7 @@
     
     <!-- Stats Badge -->
     <div class="stats-badge" id="statsBadge">
+        <div class="stats-badge-handle">☰</div>
         <div class="stats-badge-content">
             <div class="stats-badge-item">
                 <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
@@ -3420,6 +3445,94 @@
         // Add viewport change listeners
         map.on('moveend', updateViewportFiltering);
         map.on('zoomend', updateViewportFiltering);
+        
+        // Make stats badge draggable
+        (function() {
+            const statsBadge = document.getElementById('statsBadge');
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+            
+            // Load saved position
+            const savedPos = localStorage.getItem('statsBadgePosition');
+            if (savedPos) {
+                const pos = JSON.parse(savedPos);
+                statsBadge.style.left = pos.x + 'px';
+                statsBadge.style.top = pos.y + 'px';
+            }
+            
+            statsBadge.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            statsBadge.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+            
+            function dragStart(e) {
+                if (e.type === "touchstart") {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+                
+                if (e.target === statsBadge || e.target.classList.contains('stats-badge-handle')) {
+                    isDragging = true;
+                    statsBadge.classList.add('dragging');
+                }
+            }
+            
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    
+                    if (e.type === "touchmove") {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+                    
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    
+                    setTranslate(currentX, currentY, statsBadge);
+                }
+            }
+            
+            function dragEnd(e) {
+                if (isDragging) {
+                    initialX = currentX;
+                    initialY = currentY;
+                    isDragging = false;
+                    statsBadge.classList.remove('dragging');
+                    
+                    // Save position
+                    const rect = statsBadge.getBoundingClientRect();
+                    localStorage.setItem('statsBadgePosition', JSON.stringify({
+                        x: rect.left,
+                        y: rect.top
+                    }));
+                }
+            }
+            
+            function setTranslate(xPos, yPos, el) {
+                const rect = el.getBoundingClientRect();
+                const newLeft = rect.left + (xPos - xOffset);
+                const newTop = rect.top + (yPos - yOffset);
+                
+                el.style.left = newLeft + 'px';
+                el.style.top = newTop + 'px';
+                el.style.transform = 'none';
+            }
+        })();
 
         // Viewport-only toggle handler
         const viewportToggleEl = document.getElementById('viewportOnlyToggle');
