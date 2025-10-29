@@ -1741,21 +1741,16 @@
                 document.body.style.paddingTop = '0';
             }
             
-            // Restore sidebar state (default collapsed when not set)
+            // Initialize sidebar state (default to collapsed)
             (function() {
-                const saved = localStorage.getItem('sidebarCollapsed');
                 const sidebar = document.getElementById('sidebar');
                 const toggle = document.getElementById('sidebarToggle');
                 if (!sidebar || !toggle) return;
-                if (saved === 'false') {
-                    sidebar.classList.remove('collapsed');
-                    toggle.innerHTML = '×';
-                    toggle.classList.remove('collapsed');
-                } else {
-                    sidebar.classList.add('collapsed');
-                    toggle.innerHTML = '☰';
-                    toggle.classList.add('collapsed');
-                }
+                
+                // Always start collapsed
+                sidebar.classList.add('collapsed');
+                toggle.classList.add('collapsed');
+                toggle.innerHTML = '☰';
             })();
 
             // Make the floating stats badge a quick reset-and-zoom control
