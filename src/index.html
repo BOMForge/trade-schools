@@ -1359,7 +1359,7 @@
         <button class="banner-close" onclick="dismissBanner()" aria-label="Dismiss banner">×</button>
     </div>
 
-    <button class="sidebar-toggle collapsed" id="sidebarToggle" onclick="toggleSidebar()">
+    <button class="sidebar-toggle collapsed" id="sidebarToggle">
         ☰
     </button>
     
@@ -1716,6 +1716,17 @@
                 }
             }, 300);
         }
+        
+        // Attach event listener to toggle button
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', toggleSidebar);
+                console.log('Toggle button event listener attached');
+            } else {
+                console.error('Toggle button not found on DOMContentLoaded');
+            }
+        });
         
         // Open submit school modal (redirect to submit page)
         function openSubmitModal() {
