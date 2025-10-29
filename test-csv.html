@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV Test</title>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h1>CSV Loading Test</h1>
+    <div id="output"></div>
+    
+    <script>
+        console.log('Papa available:', typeof Papa !== 'undefined');
+        
+        Papa.parse('schools/trade_schools_geocoded_fixed.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                console.log('✅ CSV loaded:', results.data.length, 'rows');
+                console.log('First row:', results.data[0]);
+                
+                const validSchools = results.data.filter(row => 
+                    row.geocoded === 'True' && row.lat && row.lon
+                );
+                
+                console.log('Valid schools:', validSchools.length);
+                console.log('First valid school:', validSchools[0]);
+                
+                document.getElementById('output').innerHTML = `
+                    <p>Total rows: ${results.data.length}</p>
+                    <p>Valid schools: ${validSchools.length}</p>
+                    <p>First school: ${validSchools[0] ? validSchools[0]['Institution Name'] : 'None'}</p>
+                `;
+            },
+            error: function(error) {
+                console.error('❌ CSV failed:', error);
+                document.getElementById('output').innerHTML = `<p style="color: red;">Error: ${error}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
