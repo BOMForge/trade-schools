@@ -1761,16 +1761,20 @@
         
         // Check if banner was previously dismissed
         window.addEventListener('DOMContentLoaded', function() {
-            // Email Gate functionality
-            function checkEmailGate() {
+            // Email Gate functionality - show on interaction
+            window.requireEmail = function() {
                 const userEmail = localStorage.getItem('userEmail');
-                const emailGate = document.getElementById('emailGate');
-                
                 if (!userEmail) {
-                    // Show email gate if no email stored
+                    const emailGate = document.getElementById('emailGate');
                     emailGate.classList.remove('email-gate-hidden');
+                    return false; // Block interaction
                 }
-            }
+                return true; // Allow interaction
+            };
+            
+            window.hasEmail = function() {
+                return !!localStorage.getItem('userEmail');
+            };
             
             // Handle email gate form submission
             const emailGateForm = document.getElementById('emailGateForm');
@@ -1799,8 +1803,7 @@
                 });
             }
             
-            // Check email gate first
-            checkEmailGate();
+            // Don't show email gate on page load - let them look but not touch
             
             if (localStorage.getItem('bannerDismissed') === 'true') {
                 const banner = document.getElementById('demoBanner');
@@ -2276,6 +2279,7 @@
         
         // Select school
         function selectSchool(schoolName) {
+            if (!requireEmail()) return; // Require email before interaction
             const school = getViewportSchools().find(s => s.name === schoolName);
             if (!school) return;
             
@@ -2320,10 +2324,18 @@
         
         // Filter handlers
         document.getElementById('stateFilter').addEventListener('change', function(e) {
+            if (!requireEmail()) {
+                e.target.value = ''; // Reset filter
+                return;
+            }
             applyFilters();
         });
         
         document.getElementById('programFilter').addEventListener('change', function(e) {
+            if (!requireEmail()) {
+                e.target.value = ''; // Reset filter
+                return;
+            }
             applyFilters();
         });
         
@@ -2869,6 +2881,7 @@
         
         // Set view mode
         function setView(view) {
+            if (!requireEmail()) return; // Require email before changing view
             console.log(`Setting view to: ${view}`);
             currentView = view;
             
@@ -2997,6 +3010,7 @@
         
         // Filter by program
         function filterByProgram(program) {
+            if (!requireEmail()) return; // Require email before filtering
             document.getElementById('programFilter').value = program;
             applyFilters();
         }
