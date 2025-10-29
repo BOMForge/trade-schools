@@ -888,6 +888,13 @@
             z-index: 1000;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: move;
+            user-select: none;
+        }
+        
+        .stats-badge:active {
+            cursor: grabbing;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
         
         .stats-badge-content {
@@ -1275,11 +1282,39 @@
             
             #sidebar {
                 width: 100%;
-                height: 50vh;
+                height: auto;
+                max-height: 60vh;
+            }
+            
+            #sidebar.collapsed {
+                transform: translateY(100%);
             }
             
             #map {
-                height: 50vh;
+                height: 100vh;
+            }
+            
+            .sidebar-toggle {
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+            }
+            
+            .stats-badge {
+                top: 10px;
+                left: 10px;
+                font-size: 11px;
+            }
+            
+            .stats-badge-value {
+                font-size: 16px;
+            }
+            
+            .floating-submit {
+                bottom: 80px;
+                right: 10px;
+                padding: 12px 20px;
+                font-size: 14px;
             }
         }
         
@@ -1702,7 +1737,59 @@
         }
         
         // Check if banner was previously dismissed
+        // Make element draggable
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            element.onmousedown = dragMouseDown;
+            element.ontouchstart = dragTouchStart;
+            
+            function dragMouseDown(e) {
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+            
+            function dragTouchStart(e) {
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+                document.ontouchend = closeDragElement;
+                document.ontouchmove = elementDragTouch;
+            }
+            
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+            
+            function elementDragTouch(e) {
+                pos1 = pos3 - e.touches[0].clientX;
+                pos2 = pos4 - e.touches[0].clientY;
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+            
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+        
         window.addEventListener('DOMContentLoaded', function() {
+            // Make stats badge and submit button draggable
+            makeDraggable(document.getElementById('statsBadge'));
+            
             // Email Gate functionality
             function checkEmailGate() {
                 const userEmail = localStorage.getItem('userEmail');
