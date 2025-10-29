@@ -888,6 +888,13 @@
             z-index: 1000;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: move;
+            user-select: none;
+        }
+        
+        .stats-badge:active {
+            cursor: grabbing;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
         
         .stats-badge-content {
@@ -1275,11 +1282,39 @@
             
             #sidebar {
                 width: 100%;
-                height: 50vh;
+                height: auto;
+                max-height: 60vh;
+            }
+            
+            #sidebar.collapsed {
+                transform: translateY(100%);
             }
             
             #map {
-                height: 50vh;
+                height: 100vh;
+            }
+            
+            .sidebar-toggle {
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+            }
+            
+            .stats-badge {
+                top: 10px;
+                left: 10px;
+                font-size: 11px;
+            }
+            
+            .stats-badge-value {
+                font-size: 16px;
+            }
+            
+            .floating-submit {
+                bottom: 80px;
+                right: 10px;
+                padding: 12px 20px;
+                font-size: 14px;
             }
         }
         
@@ -1448,7 +1483,7 @@
     </div>
     
     <!-- Floating Submit Button -->
-    <a href="employer-hiring.html" class="floating-submit" id="floatingSubmit">
+    <a href="submit-school.html" class="floating-submit" id="floatingSubmit">
         <span>+</span>
         <span>Submit a School or Program</span>
     </a>
@@ -1465,61 +1500,10 @@
         <div class="legend-items" id="legendItems"></div>
     </div>
     
-    <div id="sidebar">
-        <div class="header">
-            <div class="header-nav">
-                <a href="index.html" class="nav-link">🏠 Home</a>
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="clean-map.html" class="nav-link active">🗺️ Map</a>
-            </div>
-            <h1>🎓 Trade Schools Directory</h1>
-            <div class="stats">
-                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
-                    <div class="stat-value" id="totalSchools">0</div>
-                    <div class="stat-label">Schools</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="totalStates">0</div>
-                    <div class="stat-label">States</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="visibleCount">0</div>
-                    <div class="stat-label">Visible</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="filters">
-            <!-- Data Summary Widget -->
-            <div class="data-summary" id="dataSummary">
-                <div class="data-summary-title">📊 Live Data Overview</div>
-                <div class="data-summary-main" id="summaryMain">989 Schools in 50 States</div>
-                <div class="data-summary-programs" id="summaryPrograms">
-                    <strong>🎓 Top Programs:</strong> Welding (739), Diesel (592), HVAC (576)
-                </div>
-            </div>
-
-            <div class="filter-group">
-                <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
-                <div class="view-controls">
-                    <button class="view-btn active" id="markersBtn" onclick="setView('markers')" title="Individual school markers with favicons">📍 Markers</button>
-                </div>
-                <div class="mode-indicator" id="modeIndicator" style="display: none;">
-                    <span id="modeText" class="mode-text"></span>
-                    <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
-                </div>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><span class="filter-icon">🗺️</span> Viewport Only</label>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <input type="checkbox" id="viewportOnlyToggle">
-                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit heat/hex calculations to visible map area</label>
-                </div>
-            </div>
+    <div id="sidebar" class="collapsed">
+        <div class="filters" style="padding: 20px;">
+            <h2 style="color: #e1e8ed; margin-bottom: 20px; font-size: 1.2em;">Filters</h2>
+            
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">📍</span> Filter by State</label>
                 <select class="filter-select" id="stateFilter">
@@ -1533,16 +1517,9 @@
                 </select>
             </div>
         </div>
-        
-        <div class="school-list" id="schoolList">
-            <div class="loading">Loading schools...</div>
-        </div>
-        
-        <div class="chart-container">
-            <div class="chart-title" id="chartTitle">📊 Program Distribution</div>
-            <canvas id="programChart" class="chart-canvas"></canvas>
-        </div>
-        
+    </div>
+    
+    <script>
         // Program color mapping - Updated to match interface legend
         const PROGRAM_COLORS = {
             'Welding': '#ff5959',
@@ -1760,7 +1737,59 @@
         }
         
         // Check if banner was previously dismissed
+        // Make element draggable
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            element.onmousedown = dragMouseDown;
+            element.ontouchstart = dragTouchStart;
+            
+            function dragMouseDown(e) {
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+            
+            function dragTouchStart(e) {
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+                document.ontouchend = closeDragElement;
+                document.ontouchmove = elementDragTouch;
+            }
+            
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+            
+            function elementDragTouch(e) {
+                pos1 = pos3 - e.touches[0].clientX;
+                pos2 = pos4 - e.touches[0].clientY;
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+            
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            }
+        }
+        
         window.addEventListener('DOMContentLoaded', function() {
+            // Make stats badge and submit button draggable
+            makeDraggable(document.getElementById('statsBadge'));
+            
             // Email Gate functionality
             function checkEmailGate() {
                 const userEmail = localStorage.getItem('userEmail');
@@ -1800,7 +1829,7 @@
             }
             
             // Check email gate first
-            checkEmailGate();
+            // checkEmailGate(); // Temporarily disabled
             
             if (localStorage.getItem('bannerDismissed') === 'true') {
                 const banner = document.getElementById('demoBanner');
@@ -2327,9 +2356,12 @@
             applyFilters();
         });
         
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            applyFilters();
-        });
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                applyFilters();
+            });
+        }
         
         // Apply filters
         function applyFilters() {
