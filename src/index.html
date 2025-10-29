@@ -360,10 +360,44 @@
         
         .chart-container {
             margin-top: 20px;
-            padding: 15px;
             background: #15202b;
             border: 1px solid #38444d;
             border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-container.collapsed .chart-content {
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .chart-header {
+            padding: 12px 15px;
+            background: #253341;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #38444d;
+        }
+        
+        .chart-header:hover {
+            background: #2a3f53;
+        }
+        
+        .chart-content {
+            padding: 15px;
+            max-height: 300px;
+            transition: max-height 0.3s ease;
+        }
+        
+        .chart-toggle {
+            transition: transform 0.3s ease;
+        }
+        
+        .chart-container.collapsed .chart-toggle {
+            transform: rotate(-90deg);
         }
         
         .chart-title {
@@ -1392,250 +1426,17 @@
             <div class="loading">Loading schools...</div>
         </div>
         
-        <div class="chart-container">
-            <div class="chart-title" id="chartTitle">📊 Program Distribution</div>
-            <canvas id="programChart" class="chart-canvas"></canvas>
-        </div>
-        
-        <div class="submission-form" id="submitForm">
-            <div class="form-title">🏫 Submit a School</div>
-            <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
-            <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
-
-            <form id="schoolSubmissionForm" novalidate>
-                <!-- Section 1: Basic Info -->
-                <div class="form-section">
-                    <div class="form-section-header active" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>📝</span>
-                            <span>Basic Info</span>
-                            <span class="form-section-badge">2 Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content active">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">School Name</label>
-                                <input type="text" class="form-input" id="schoolName" name="schoolName" required minlength="2" maxlength="100" placeholder="Enter school name">
-                                <div class="field-error" id="schoolName-error"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label required">Street Address</label>
-                                <input type="text" class="form-input" id="streetAddress" name="streetAddress" placeholder="123 Main Street" required minlength="5" maxlength="200">
-                                <div class="field-hint">💡 Tip: Start typing for auto-complete suggestions</div>
-                                <div class="field-error" id="streetAddress-error"></div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="chart-container collapsed" id="programChartContainer">
+            <div class="chart-header" onclick="toggleProgramChart()">
+                <div class="chart-title">
+                    <span>📊</span>
+                    <span id="chartTitle">Program Distribution</span>
                 </div>
-
-                <!-- Section 2: Location Details -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>📍</span>
-                            <span>Location Details</span>
-                            <span class="form-section-badge">3 Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">City</label>
-                                <input type="text" class="form-input" id="city" name="city" required minlength="2" maxlength="50" placeholder="City name">
-                                <div class="field-error" id="city-error"></div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group form-col-2">
-                                    <label class="form-label required">State</label>
-                                    <select class="form-input" id="state" name="state" required>
-                                        <option value="">Select State</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <option value="AR">Arkansas</option>
-                            <option value="CA">California</option>
-                            <option value="CO">Colorado</option>
-                            <option value="CT">Connecticut</option>
-                            <option value="DE">Delaware</option>
-                            <option value="FL">Florida</option>
-                            <option value="GA">Georgia</option>
-                            <option value="HI">Hawaii</option>
-                            <option value="ID">Idaho</option>
-                            <option value="IL">Illinois</option>
-                            <option value="IN">Indiana</option>
-                            <option value="IA">Iowa</option>
-                            <option value="KS">Kansas</option>
-                            <option value="KY">Kentucky</option>
-                            <option value="LA">Louisiana</option>
-                            <option value="ME">Maine</option>
-                            <option value="MD">Maryland</option>
-                            <option value="MA">Massachusetts</option>
-                            <option value="MI">Michigan</option>
-                            <option value="MN">Minnesota</option>
-                            <option value="MS">Mississippi</option>
-                            <option value="MO">Missouri</option>
-                            <option value="MT">Montana</option>
-                            <option value="NE">Nebraska</option>
-                            <option value="NV">Nevada</option>
-                            <option value="NH">New Hampshire</option>
-                            <option value="NJ">New Jersey</option>
-                            <option value="NM">New Mexico</option>
-                            <option value="NY">New York</option>
-                            <option value="NC">North Carolina</option>
-                            <option value="ND">North Dakota</option>
-                            <option value="OH">Ohio</option>
-                            <option value="OK">Oklahoma</option>
-                            <option value="OR">Oregon</option>
-                            <option value="PA">Pennsylvania</option>
-                            <option value="RI">Rhode Island</option>
-                            <option value="SC">South Carolina</option>
-                            <option value="SD">South Dakota</option>
-                            <option value="TN">Tennessee</option>
-                            <option value="TX">Texas</option>
-                            <option value="UT">Utah</option>
-                            <option value="VT">Vermont</option>
-                            <option value="VA">Virginia</option>
-                            <option value="WA">Washington</option>
-                            <option value="WV">West Virginia</option>
-                            <option value="WI">Wisconsin</option>
-                            <option value="WY">Wyoming</option>
-                                    </select>
-                                    <div class="field-error" id="state-error"></div>
-                                </div>
-
-                                <div class="form-group form-col-2">
-                                    <label class="form-label required">ZIP Code</label>
-                                    <input type="text" class="form-input" id="zipCode" name="zipCode" placeholder="12345" required pattern="^\d{5}(-\d{4})?$" maxlength="10">
-                                    <div class="field-error" id="zipCode-error"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 3: Contact Info -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>📞</span>
-                            <span>Contact Info</span>
-                            <span class="form-section-badge">2 Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">Contact Email</label>
-                                <input type="email" class="form-input" id="contactEmail" name="contactEmail" placeholder="info@school.edu" required>
-                                <div class="field-error" id="contactEmail-error"></div>
-                                <div class="field-hint">Primary contact email for the school</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label required">Phone Number</label>
-                                <input type="tel" class="form-input" id="phone" name="phone" placeholder="(555) 123-4567" required>
-                                <div class="field-error" id="phone-error"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Website</label>
-                                <input type="url" class="form-input" id="website" name="website" placeholder="https://www.school.edu">
-                                <div class="field-error" id="website-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 4: Programs Offered -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>🎓</span>
-                            <span>Programs Offered</span>
-                            <span class="form-section-badge">Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">Select Programs</label>
-                                <div class="multiselect-container" id="programsMultiselect">
-                                    <div class="multiselect-selected" onclick="toggleMultiselect()">
-                                        <div class="multiselect-tags" id="multiselectTags">
-                                            <span class="multiselect-placeholder">Click to select programs...</span>
-                                        </div>
-                                        <span>▼</span>
-                                    </div>
-                                    <div class="multiselect-dropdown" id="multiselectDropdown">
-                                        <div class="multiselect-search">
-                                            <input type="text" placeholder="Search programs..." id="programSearch" oninput="filterProgramOptions()">
-                                        </div>
-                                        <div class="multiselect-options" id="multiselectOptions">
-                                            <!-- Options will be populated by JavaScript -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="programs" id="programsHidden">
-                                <div class="field-error" id="programs-error"></div>
-                            </div>
-
-                            <div class="form-group" id="programOtherGroup" style="display: none;">
-                                <label class="form-label">Specify Other Program</label>
-                                <input type="text" class="form-input" id="programOther" name="programOther" placeholder="Enter program name" maxlength="100">
-                                <div class="field-error" id="programOther-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 5: Optional Details -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>✏️</span>
-                            <span>Optional Details</span>
-                            <span class="form-section-badge">Optional</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label">School Description</label>
-                                <textarea class="form-textarea" id="schoolDescription" name="schoolDescription" placeholder="Brief description of the school and its offerings..." maxlength="500" rows="3"></textarea>
-                                <div class="field-hint"><span id="descriptionCount">0</span>/500 characters</div>
-                                <div class="field-error" id="schoolDescription-error"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Your Name</label>
-                                <input type="text" class="form-input" id="submitterName" name="submitterName" placeholder="For contact purposes" maxlength="100">
-                                <div class="field-error" id="submitterName-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recaptcha-notice">
-                    This site is protected by reCAPTCHA and the Google
-                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
-                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
-                </div>
-
-                <div class="submit-btn-container">
-                    <button type="submit" class="submit-btn" id="submitBtn">
-                        <span id="submitBtnText">✅ Submit School</span>
-                        <span id="submitBtnLoading" style="display: none;">⏳ Submitting...</span>
-                    </button>
-                </div>
-            </form>
+                <span class="chart-toggle">▼</span>
+            </div>
+            <div class="chart-content">
+                <canvas id="programChart" class="chart-canvas"></canvas>
+            </div>
         </div>
     </div>
     
@@ -1830,6 +1631,17 @@
         
         // Chart instance
         let programChart = null;
+        
+        // Toggle program chart visibility
+        function toggleProgramChart() {
+            const container = document.getElementById('programChartContainer');
+            container.classList.toggle('collapsed');
+            
+            // Update chart when expanding
+            if (!container.classList.contains('collapsed')) {
+                updateProgramChart();
+            }
+        }
         
         // Banner dismissal functionality
         function dismissBanner() {
@@ -2951,52 +2763,92 @@
             updateMapView();
         }
         
-        // Update program distribution chart
+        // Update program distribution chart - stacked by state
         function updateProgramChart() {
             // Destroy existing chart if it exists
             if (programChart) {
                 programChart.destroy();
             }
             
-            // Count programs from schools in current viewport
+            // Get schools to show
             const schoolsToShow = getViewportSchools();
-            const programCounts = {};
+            
+            // Build state-program matrix
+            const stateProgramMatrix = {};
+            const allStates = new Set();
+            const allPrograms = new Set();
+            
             schoolsToShow.forEach(school => {
+                allStates.add(school.state);
                 school.programs.forEach(program => {
-                    programCounts[program] = (programCounts[program] || 0) + 1;
+                    allPrograms.add(program);
+                    const key = `${school.state}-${program}`;
+                    stateProgramMatrix[key] = (stateProgramMatrix[key] || 0) + 1;
                 });
             });
             
-            // Sort programs by count and take top 10
-            const sortedPrograms = Object.entries(programCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
+            // Get top 8 programs by total count
+            const programTotals = {};
+            allPrograms.forEach(program => {
+                programTotals[program] = 0;
+                allStates.forEach(state => {
+                    const key = `${state}-${program}`;
+                    programTotals[program] += (stateProgramMatrix[key] || 0);
+                });
+            });
             
-            const labels = sortedPrograms.map(([program]) => program.length > 20 ? program.substring(0, 17) + '...' : program);
-            const data = sortedPrograms.map(([, count]) => count);
+            const topPrograms = Object.entries(programTotals)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8)
+                .map(([name]) => name);
+            
+            // Get top 5 states by school count
+            const stateCounts = {};
+            allStates.forEach(state => {
+                stateCounts[state] = schoolsToShow.filter(s => s.state === state).length;
+            });
+            
+            const topStates = Object.entries(stateCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([state]) => state);
+            
+            // Build datasets for stacked bar chart
+            const stateColors = {
+                'CA': '#ff6b6b',
+                'TX': '#1d9bf0',
+                'FL': '#ffd93d',
+                'NY': '#6bcf7f',
+                'PA': '#a8e6cf'
+            };
+            
+            const datasets = topStates.map((state, idx) => {
+                const color = stateColors[state] || `hsl(${(idx * 60) + 200}, 70%, ${50 + (idx * 5)}%)`;
+                return {
+                    label: state,
+                    data: topPrograms.map(program => {
+                        const key = `${state}-${program}`;
+                        return stateProgramMatrix[key] || 0;
+                    }),
+                    backgroundColor: color,
+                    borderColor: '#38444d',
+                    borderWidth: 1
+                };
+            });
             
             // Update chart title
             const chartTitle = document.getElementById('chartTitle');
-            chartTitle.textContent = `📊 Program Distribution (Viewport: ${schoolsToShow.length} schools)`;
+            chartTitle.innerHTML = `📊 Programs by State <span style="color: #8899a6; font-size: 11px;">(${schoolsToShow.length} schools)</span>`;
             
-            // Create chart
+            // Create stacked bar chart
             const ctx = document.getElementById('programChart').getContext('2d');
             programChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Schools',
-                        data: data,
-                        backgroundColor: [
-                            '#1d9bf0', '#ff6b6b', '#6bcf7f', '#ffd93d', '#4ecdc4',
-                            '#a8e6cf', '#ffaaa5', '#ffd3a5', '#a8c8ec', '#dda0dd'
-                        ],
-                        borderColor: '#38444d',
-                        borderWidth: 2,
-                        borderRadius: 4,
-                        borderSkipped: false
-                    }]
+                    labels: topPrograms.map(name => 
+                        name.length > 15 ? name.substring(0, 12) + '...' : name
+                    ),
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
@@ -3004,13 +2856,23 @@
                     onClick: (event, elements) => {
                         if (elements.length > 0) {
                             const index = elements[0].index;
-                            const program = sortedPrograms[index][0];
+                            const program = topPrograms[index];
                             filterByProgram(program);
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#8899a6',
+                                font: {
+                                    size: 10
+                                },
+                                padding: 5,
+                                boxWidth: 12,
+                                boxHeight: 12
+                            }
                         },
                         tooltip: {
                             backgroundColor: '#15202b',
@@ -3019,34 +2881,34 @@
                             borderColor: '#38444d',
                             borderWidth: 1,
                             cornerRadius: 8,
-                            displayColors: false,
                             callbacks: {
                                 title: function(context) {
-                                    return sortedPrograms[context[0].dataIndex][0];
+                                    return topPrograms[context[0].dataIndex];
                                 },
                                 label: function(context) {
-                                    return `${context.parsed.y} schools`;
+                                    return `${context.dataset.label}: ${context.parsed.y} schools`;
                                 }
                             }
                         }
                     },
                     scales: {
                         x: {
+                            stacked: true,
                             ticks: {
                                 color: '#8899a6',
                                 font: {
-                                    size: 10,
+                                    size: 9,
                                     weight: '500'
                                 },
                                 maxRotation: 45,
-                                minRotation: 0
+                                minRotation: 45
                             },
                             grid: {
-                                color: '#38444d',
-                                drawBorder: false
+                                display: false
                             }
                         },
                         y: {
+                            stacked: true,
                             beginAtZero: true,
                             ticks: {
                                 color: '#8899a6',
