@@ -4,10 +4,21 @@
     <meta charset="utf-8">
     <title>Trade Schools Map | BOMForge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-460P8JXLJ4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-460P8JXLJ4');
+    </script>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-    <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
+    <script src="https://unpkg.com/h3-js@4.1.0"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY"></script>
@@ -57,11 +68,12 @@
         
         #sidebar {
             width: 400px;
-            background: #192734;
+            background: #1e2936;
             display: flex;
             flex-direction: column;
             border-left: 1px solid #38444d;
             overflow: hidden;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
         }
         
         .header {
@@ -225,6 +237,38 @@
             background: rgba(29, 155, 240, 0.1);
             border-radius: 6px;
             border-left: 3px solid #1d9bf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .refresh-btn {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .refresh-btn:hover {
+            background: #0d8bd9;
+            transform: translateY(-1px);
+        }
+        
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+        
+        .mode-text {
+            flex: 1;
+            text-align: left;
         }
         
         .chart-container {
@@ -661,6 +705,353 @@
             background: #1d9bf0;
             border-color: #1d9bf0;
         }
+
+        /* Data Summary Widget */
+        .data-summary {
+            padding: 15px;
+            background: linear-gradient(135deg, #1d9bf0 0%, #0d8bd9 100%);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(29, 155, 240, 0.3);
+        }
+
+        .data-summary-title {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .data-summary-main {
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .data-summary-programs {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .data-summary-programs strong {
+            font-weight: 600;
+        }
+
+        /* Accordion Form Sections */
+        .form-section {
+            margin-bottom: 12px;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #192734;
+        }
+
+        .form-section-header {
+            padding: 12px 15px;
+            background: #253341;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .form-section-header:hover {
+            background: #2a3f53;
+        }
+
+        .form-section-header.active {
+            background: #1d9bf0;
+        }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #e1e8ed;
+        }
+
+        .form-section-header.active .form-section-title {
+            color: white;
+        }
+
+        .form-section-badge {
+            background: rgba(29, 155, 240, 0.2);
+            color: #1d9bf0;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .form-section-header.active .form-section-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .form-section-toggle {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .form-section-header.active .form-section-toggle {
+            transform: rotate(180deg);
+        }
+
+        .form-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .form-section-content.active {
+            max-height: 1000px;
+        }
+
+        .form-section-body {
+            padding: 15px;
+        }
+
+        /* Multi-select Dropdown */
+        .multiselect-container {
+            position: relative;
+        }
+
+        .multiselect-selected {
+            width: 100%;
+            padding: 10px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        .multiselect-selected:hover {
+            border-color: #1d9bf0;
+        }
+
+        .multiselect-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .multiselect-tag {
+            background: #1d9bf0;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .multiselect-tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        .multiselect-tag-remove:hover {
+            opacity: 1;
+        }
+
+        .multiselect-placeholder {
+            color: #8899a6;
+        }
+
+        .multiselect-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #15202b;
+            border: 1px solid #1d9bf0;
+            border-radius: 8px;
+            margin-top: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .multiselect-dropdown.active {
+            display: block;
+        }
+
+        .multiselect-search {
+            padding: 10px;
+            border-bottom: 1px solid #38444d;
+            position: sticky;
+            top: 0;
+            background: #15202b;
+        }
+
+        .multiselect-search input {
+            width: 100%;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 12px;
+        }
+
+        .multiselect-search input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+        }
+
+        .multiselect-options {
+            padding: 8px;
+        }
+
+        .multiselect-option {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #e1e8ed;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .multiselect-option:hover {
+            background: #253341;
+        }
+
+        .multiselect-option.selected {
+            background: rgba(29, 155, 240, 0.2);
+            color: #1d9bf0;
+            font-weight: 600;
+        }
+
+        .multiselect-option input[type="checkbox"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* Required Field Indicator */
+        .required-indicator {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-left: 2px;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: #ff6b6b;
+        }
+
+        /* Sticky Submit Button (Mobile) */
+        .submit-btn-container {
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .submit-btn-container {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                left: auto;
+                z-index: 1500;
+                padding: 0;
+            }
+
+            .submit-btn {
+                width: auto;
+                min-width: 200px;
+                box-shadow: 0 8px 24px rgba(29, 155, 240, 0.4);
+                font-size: 14px;
+                padding: 14px 28px;
+            }
+
+            .form-section-content.active {
+                max-height: 2000px;
+            }
+        }
+
+        /* School Card Hover Tooltips */
+        .school-card {
+            position: relative;
+        }
+
+        .school-card-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+            gap: 6px;
+        }
+
+        .school-card:hover .school-card-actions {
+            display: flex;
+        }
+
+        .action-btn {
+            background: #1d9bf0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .action-btn:hover {
+            background: #0d8bd9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(29, 155, 240, 0.3);
+        }
+
+        /* Filter Icons */
+        .filter-label-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-icon {
+            font-size: 14px;
+        }
+
+        /* Loading Skeleton */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #253341 25%, #2a3f53 50%, #253341 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
         
         @media (max-width: 768px) {
             body {
@@ -723,29 +1114,39 @@
         </div>
         
         <div class="filters">
+            <!-- Data Summary Widget -->
+            <div class="data-summary" id="dataSummary">
+                <div class="data-summary-title">📊 Live Data Overview</div>
+                <div class="data-summary-main" id="summaryMain">989 Schools in 50 States</div>
+                <div class="data-summary-programs" id="summaryPrograms">
+                    <strong>🎓 Top Programs:</strong> Welding (739), Diesel (592), HVAC (576)
+                </div>
+            </div>
+
             <div class="filter-group">
-                <label class="filter-label">Search Schools</label>
+                <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
             </div>
             <div class="filter-group">
-                <label class="filter-label">Visualization Mode</label>
+                <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
                 <div class="view-controls">
                     <button class="view-btn" id="markersBtn" onclick="setView('markers')" title="Individual school markers (auto-filters at zoom level 6+)">📍 Markers</button>
                     <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
                     <button class="view-btn active" id="hexgridBtn" onclick="setView('hexgrid')" title="Program-coded hexagons with zoom-adaptive resolution">⬡ Hex Grid</button>
                 </div>
                 <div class="mode-indicator" id="modeIndicator" style="display: none;">
-                    <span id="modeText"></span>
+                    <span id="modeText" class="mode-text"></span>
+                    <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
                 </div>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Filter by State</label>
+                <label class="filter-label"><span class="filter-icon">📍</span> Filter by State</label>
                 <select class="filter-select" id="stateFilter">
                     <option value="">All States</option>
                 </select>
             </div>
             <div class="filter-group">
-                <label class="filter-label">Filter by Program</label>
+                <label class="filter-label"><span class="filter-icon">🎓</span> Filter by Program</label>
                 <select class="filter-select" id="programFilter">
                     <option value="">All Programs</option>
                 </select>
@@ -763,29 +1164,57 @@
             <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
 
             <form id="schoolSubmissionForm" novalidate>
-                <div class="form-group">
-                    <label class="form-label">School Name *</label>
-                    <input type="text" class="form-input" id="schoolName" name="schoolName" required minlength="2" maxlength="100">
-                    <div class="field-error" id="schoolName-error"></div>
+                <!-- Section 1: Basic Info -->
+                <div class="form-section">
+                    <div class="form-section-header active" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>📝</span>
+                            <span>Basic Info</span>
+                            <span class="form-section-badge">2 Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content active">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">School Name</label>
+                                <input type="text" class="form-input" id="schoolName" name="schoolName" required minlength="2" maxlength="100" placeholder="Enter school name">
+                                <div class="field-error" id="schoolName-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">Street Address</label>
+                                <input type="text" class="form-input" id="streetAddress" name="streetAddress" placeholder="123 Main Street" required minlength="5" maxlength="200">
+                                <div class="field-hint">💡 Tip: Start typing for auto-complete suggestions</div>
+                                <div class="field-error" id="streetAddress-error"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Street Address *</label>
-                    <input type="text" class="form-input" id="streetAddress" name="streetAddress" placeholder="123 Main Street" required minlength="5" maxlength="200">
-                    <div class="field-error" id="streetAddress-error"></div>
-                </div>
+                <!-- Section 2: Location Details -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>📍</span>
+                            <span>Location Details</span>
+                            <span class="form-section-badge">3 Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">City</label>
+                                <input type="text" class="form-input" id="city" name="city" required minlength="2" maxlength="50" placeholder="City name">
+                                <div class="field-error" id="city-error"></div>
+                            </div>
 
-                <div class="form-group">
-                    <label class="form-label">City *</label>
-                    <input type="text" class="form-input" id="city" name="city" required minlength="2" maxlength="50">
-                    <div class="field-error" id="city-error"></div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group form-col-2">
-                        <label class="form-label">State *</label>
-                        <select class="form-input" id="state" name="state" required>
-                            <option value="">Select State</option>
+                            <div class="form-row">
+                                <div class="form-group form-col-2">
+                                    <label class="form-label required">State</label>
+                                    <select class="form-input" id="state" name="state" required>
+                                        <option value="">Select State</option>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
                             <option value="AZ">Arizona</option>
@@ -836,120 +1265,123 @@
                             <option value="WV">West Virginia</option>
                             <option value="WI">Wisconsin</option>
                             <option value="WY">Wyoming</option>
-                        </select>
-                        <div class="field-error" id="state-error"></div>
+                                    </select>
+                                    <div class="field-error" id="state-error"></div>
+                                </div>
+
+                                <div class="form-group form-col-2">
+                                    <label class="form-label required">ZIP Code</label>
+                                    <input type="text" class="form-input" id="zipCode" name="zipCode" placeholder="12345" required pattern="^\d{5}(-\d{4})?$" maxlength="10">
+                                    <div class="field-error" id="zipCode-error"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-group form-col-2">
-                        <label class="form-label">ZIP Code *</label>
-                        <input type="text" class="form-input" id="zipCode" name="zipCode" placeholder="12345" required pattern="^\d{5}(-\d{4})?$" maxlength="10">
-                        <div class="field-error" id="zipCode-error"></div>
+                <!-- Section 3: Contact Info -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>📞</span>
+                            <span>Contact Info</span>
+                            <span class="form-section-badge">2 Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">Contact Email</label>
+                                <input type="email" class="form-input" id="contactEmail" name="contactEmail" placeholder="info@school.edu" required>
+                                <div class="field-error" id="contactEmail-error"></div>
+                                <div class="field-hint">Primary contact email for the school</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">Phone Number</label>
+                                <input type="tel" class="form-input" id="phone" name="phone" placeholder="(555) 123-4567" required>
+                                <div class="field-error" id="phone-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Website</label>
+                                <input type="url" class="form-input" id="website" name="website" placeholder="https://www.school.edu">
+                                <div class="field-error" id="website-error"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Contact Email *</label>
-                    <input type="email" class="form-input" id="contactEmail" name="contactEmail" placeholder="info@school.edu" required>
-                    <div class="field-error" id="contactEmail-error"></div>
-                    <div class="field-hint">Primary contact email for the school</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Phone Number *</label>
-                    <input type="tel" class="form-input" id="phone" name="phone" placeholder="(555) 123-4567" required>
-                    <div class="field-error" id="phone-error"></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Website</label>
-                    <input type="url" class="form-input" id="website" name="website" placeholder="https://www.school.edu">
-                    <div class="field-error" id="website-error"></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Programs Offered * (select all that apply)</label>
-                    <div class="programs-grid" id="programsGrid">
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Welding">
-                            <span>Welding</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Diesel & Automotive Technology">
-                            <span>Diesel & Automotive</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="HVAC (Heating, Ventilation, and Air Conditioning)">
-                            <span>HVAC</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Machine Tool Technology & Mechanical Systems">
-                            <span>Machine Tool Tech</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Construction & Building Technology">
-                            <span>Construction</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Electronics Technology">
-                            <span>Electronics</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="CAD/CAM Drafting & Design">
-                            <span>CAD/CAM Drafting</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Plumbing & Pipefitting">
-                            <span>Plumbing</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Woodworking & Carpentry">
-                            <span>Woodworking</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Electrical Technology">
-                            <span>Electrical</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Industrial Maintenance">
-                            <span>Industrial Maintenance</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Machining & CNC">
-                            <span>Machining & CNC</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Robotics & Automation">
-                            <span>Robotics</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Manufacturing Technology">
-                            <span>Manufacturing</span>
-                        </label>
-                        <label class="program-checkbox">
-                            <input type="checkbox" name="programs" value="Other" id="programOtherCheckbox">
-                            <span>Other</span>
-                        </label>
+                <!-- Section 4: Programs Offered -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>🎓</span>
+                            <span>Programs Offered</span>
+                            <span class="form-section-badge">Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
                     </div>
-                    <div class="field-error" id="programs-error"></div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">Select Programs</label>
+                                <div class="multiselect-container" id="programsMultiselect">
+                                    <div class="multiselect-selected" onclick="toggleMultiselect()">
+                                        <div class="multiselect-tags" id="multiselectTags">
+                                            <span class="multiselect-placeholder">Click to select programs...</span>
+                                        </div>
+                                        <span>▼</span>
+                                    </div>
+                                    <div class="multiselect-dropdown" id="multiselectDropdown">
+                                        <div class="multiselect-search">
+                                            <input type="text" placeholder="Search programs..." id="programSearch" oninput="filterProgramOptions()">
+                                        </div>
+                                        <div class="multiselect-options" id="multiselectOptions">
+                                            <!-- Options will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="programs" id="programsHidden">
+                                <div class="field-error" id="programs-error"></div>
+                            </div>
+
+                            <div class="form-group" id="programOtherGroup" style="display: none;">
+                                <label class="form-label">Specify Other Program</label>
+                                <input type="text" class="form-input" id="programOther" name="programOther" placeholder="Enter program name" maxlength="100">
+                                <div class="field-error" id="programOther-error"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group" id="programOtherGroup" style="display: none;">
-                    <label class="form-label">Specify Other Program</label>
-                    <input type="text" class="form-input" id="programOther" name="programOther" placeholder="Enter program name" maxlength="100">
-                    <div class="field-error" id="programOther-error"></div>
-                </div>
+                <!-- Section 5: Optional Details -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>✏️</span>
+                            <span>Optional Details</span>
+                            <span class="form-section-badge">Optional</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label">School Description</label>
+                                <textarea class="form-textarea" id="schoolDescription" name="schoolDescription" placeholder="Brief description of the school and its offerings..." maxlength="500" rows="3"></textarea>
+                                <div class="field-hint"><span id="descriptionCount">0</span>/500 characters</div>
+                                <div class="field-error" id="schoolDescription-error"></div>
+                            </div>
 
-                <div class="form-group">
-                    <label class="form-label">School Description (optional)</label>
-                    <textarea class="form-textarea" id="schoolDescription" name="schoolDescription" placeholder="Brief description of the school and its offerings..." maxlength="500" rows="3"></textarea>
-                    <div class="field-hint"><span id="descriptionCount">0</span>/500 characters</div>
-                    <div class="field-error" id="schoolDescription-error"></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Your Name (optional)</label>
-                    <input type="text" class="form-input" id="submitterName" name="submitterName" placeholder="For contact purposes" maxlength="100">
-                    <div class="field-error" id="submitterName-error"></div>
+                            <div class="form-group">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" class="form-input" id="submitterName" name="submitterName" placeholder="For contact purposes" maxlength="100">
+                                <div class="field-error" id="submitterName-error"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="recaptcha-notice">
@@ -958,10 +1390,12 @@
                     <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
                 </div>
 
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    <span id="submitBtnText">Submit School</span>
-                    <span id="submitBtnLoading" style="display: none;">Submitting...</span>
-                </button>
+                <div class="submit-btn-container">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span id="submitBtnText">✅ Submit School</span>
+                        <span id="submitBtnLoading" style="display: none;">⏳ Submitting...</span>
+                    </button>
+                </div>
             </form>
         </div>
         
@@ -1432,8 +1866,12 @@
                 }
                 
                 return `
-                    <div class="school-card" data-name="${school.name}" onclick="selectSchool('${school.name}')">
-                        <div class="school-name">${school.name}</div>
+                    <div class="school-card" data-name="${school.name}">
+                        <div class="school-card-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); selectSchool('${school.name}')" title="View on map">📍 Map</button>
+                            ${websiteUrl ? `<button class="action-btn" onclick="event.stopPropagation(); window.open('${websiteUrl}', '_blank')" title="Visit website">🌐 Visit</button>` : ''}
+                        </div>
+                        <div class="school-name" onclick="selectSchool('${school.name}')" style="cursor: pointer;">${school.name}</div>
                         <div class="school-location">📍 ${school.city}, ${school.state}</div>
                         ${school.programs.length > 0 ? `
                             <div class="school-programs">
@@ -1621,18 +2059,89 @@
             }
         }
         
-        // Get optimal H3 resolution based on zoom level - Updated for bigger hexes
+        // Get optimal H3 resolution based on zoom level - Optimized for data clarity
         function getH3Resolution() {
             const zoom = map.getZoom();
-            // Use lower resolution numbers for bigger hexes
-            if (zoom <= 3) return 2;      // Continental view - very large hexes
-            if (zoom <= 5) return 3;      // Multi-state region - large hexes  
-            if (zoom <= 7) return 4;      // State level - medium hexes
-            if (zoom <= 9) return 5;      // Metro area - smaller hexes
-            return 6;                      // City level - smallest hexes
+            // Dynamic resolution: lower numbers = larger hexes, better for overview
+            if (zoom <= 3) return 2;      // Continental view - very large hexes (base ~12,392 km²)
+            if (zoom <= 5) return 3;      // Multi-state region - large hexes (~1,770 km²)
+            if (zoom <= 7) return 4;      // State level - medium hexes (~253 km²)
+            if (zoom <= 9) return 5;      // Metro area - smaller hexes (~36 km²)
+            if (zoom <= 11) return 6;     // City level - small hexes (~5.2 km²)
+            return 7;                      // Neighborhood level - very small hexes (~0.7 km²)
         }
         
-        // Add hex grid to map
+        // Color blending utilities for multi-program visualization
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 136, g: 153, b: 166 };  // Default gray
+        }
+        
+        function rgbToHex(r, g, b) {
+            return "#" + ((1 << 24) + (Math.round(r) << 16) + (Math.round(g) << 8) + Math.round(b)).toString(16).slice(1);
+        }
+        
+        // Blend two colors based on a ratio (0 = all color1, 1 = all color2)
+        function blendColors(color1, color2, ratio) {
+            const rgb1 = hexToRgb(color1);
+            const rgb2 = hexToRgb(color2);
+            
+            const r = rgb1.r * (1 - ratio) + rgb2.r * ratio;
+            const g = rgb1.g * (1 - ratio) + rgb2.g * ratio;
+            const b = rgb1.b * (1 - ratio) + rgb2.b * ratio;
+            
+            return rgbToHex(r, g, b);
+        }
+        
+        // Blend multiple colors based on weights
+        function blendMultipleColors(colorWeights) {
+            const totalWeight = colorWeights.reduce((sum, cw) => sum + cw.weight, 0);
+            if (totalWeight === 0) return '#8899a6';
+            
+            let r = 0, g = 0, b = 0;
+            colorWeights.forEach(cw => {
+                const rgb = hexToRgb(cw.color);
+                const normalizedWeight = cw.weight / totalWeight;
+                r += rgb.r * normalizedWeight;
+                g += rgb.g * normalizedWeight;
+                b += rgb.b * normalizedWeight;
+            });
+            
+            return rgbToHex(r, g, b);
+        }
+        
+        // Calculate program diversity score (Shannon entropy)
+        function calculateDiversity(programs) {
+            const total = Object.values(programs).reduce((sum, count) => sum + count, 0);
+            if (total === 0) return 0;
+            
+            let entropy = 0;
+            for (const count of Object.values(programs)) {
+                if (count > 0) {
+                    const p = count / total;
+                    entropy -= p * Math.log2(p);
+                }
+            }
+            return entropy;
+        }
+        
+        // Get top N programs with percentages
+        function getTopPrograms(programs, totalCount, n = 5) {
+            return Object.entries(programs)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, n)
+                .map(([program, count]) => ({
+                    program,
+                    count,
+                    percentage: Math.round((count / totalCount) * 100)
+                }));
+        }
+        
+        // Add hex grid to map with enhanced aggregation
         function addHexGridToMap() {
             hexLayer.clearLayers();
             const hexData = {};
@@ -1640,149 +2149,297 @@
             
             console.log(`Creating hex grid with resolution ${resolution} for ${filteredSchools.length} schools`);
             
+            // STEP 1: Aggregate schools into hex bins with detailed metrics
             filteredSchools.forEach(school => {
                 try {
-                    const h3Index = h3.geoToH3(school.lat, school.lon, resolution);
+                    const h3Index = h3.latLngToCell(school.lat, school.lon, resolution);
                     if (!hexData[h3Index]) {
                         hexData[h3Index] = {
                             count: 0,
                             schools: [],
-                            programs: {}
+                            programs: {},
+                            programInstances: 0  // Total program offerings (one school can offer multiple)
                         };
                     }
                     hexData[h3Index].count++;
                     hexData[h3Index].schools.push(school);
                     
-                    // Aggregate programs - count each program once per school
+                    // Aggregate programs with better counting
                     school.programs.forEach(program => {
                         hexData[h3Index].programs[program] = (hexData[h3Index].programs[program] || 0) + 1;
+                        hexData[h3Index].programInstances++;
                     });
                 } catch (e) {
                     console.warn('Failed to process school for hex grid:', school.name, e);
                 }
             });
             
-            console.log(`Created ${Object.keys(hexData).length} hex cells`);
+            // STEP 2: Calculate derived metrics for each hex
+            Object.keys(hexData).forEach(h3Index => {
+                const data = hexData[h3Index];
+                data.diversity = calculateDiversity(data.programs);
+                data.topPrograms = getTopPrograms(data.programs, data.count, 5);
+                data.uniqueProgramCount = Object.keys(data.programs).length;
+                data.avgProgramsPerSchool = (data.programInstances / data.count).toFixed(1);
+            });
             
+            console.log(`Created ${Object.keys(hexData).length} hex cells with enhanced metrics`);
+            
+            // STEP 3: Render hexagons with multi-program visualization
             Object.entries(hexData).forEach(([h3Index, data]) => {
                 try {
-                    const boundary = h3.h3ToGeoBoundary(h3Index);
-                    const coordinates = boundary.map(coord => [coord[0], coord[1]]);
+                    const boundary = h3.cellToBoundary(h3Index, true);
                     
-                    // Get dominant program (most schools offering it in this hex)
-                    const sortedPrograms = Object.entries(data.programs)
-                        .sort((a, b) => b[1] - a[1]);
-                    const topProgram = sortedPrograms[0] ? sortedPrograms[0][0] : null;
+                    // Get top programs for visualization
+                    const topProgram = data.topPrograms[0];
+                    const secondProgram = data.topPrograms[1];
+                    const thirdProgram = data.topPrograms[2];
                     
-                    // Color based on dominant program
-                    const color = topProgram ? getProgramColor(topProgram) : '#8899a6';
+                    // Multi-color approach: blend top 3 programs based on their percentages
+                    let fillColor;
+                    if (!topProgram) {
+                        fillColor = '#8899a6';  // Default gray
+                    } else if (topProgram.percentage >= 70 || !secondProgram) {
+                        // Single dominant program
+                        fillColor = getProgramColor(topProgram.program);
+                    } else if (topProgram.percentage >= 50) {
+                        // Blend top 2 programs
+                        fillColor = blendColors(
+                            getProgramColor(topProgram.program),
+                            getProgramColor(secondProgram.program),
+                            topProgram.percentage / 100
+                        );
+                    } else {
+                        // Highly diverse - use gradient of top 3
+                        fillColor = blendMultipleColors([
+                            { color: getProgramColor(topProgram.program), weight: topProgram.percentage },
+                            { color: getProgramColor(secondProgram.program), weight: secondProgram.percentage },
+                            ...(thirdProgram ? [{ color: getProgramColor(thirdProgram.program), weight: thirdProgram.percentage }] : [])
+                        ]);
+                    }
                     
-                    // Opacity based on density (more schools = more opaque)
-                    const opacity = Math.min(0.35 + (data.count / 25), 0.85);
+                    // Opacity based on density and diversity
+                    const baseOpacity = Math.min(0.4 + (data.count / 20), 0.8);
+                    const diversityBonus = data.diversity > 2 ? 0.1 : 0;  // Highlight diverse areas
+                    const opacity = Math.min(baseOpacity + diversityBonus, 0.9);
                     
-                    // Add text label for count with bigger, more visible styling
-                    const center = h3.h3ToGeo(h3Index);
+                    // Create enhanced label with program composition visualization
+                    const center = h3.cellToLatLng(h3Index);
                     
                     // Dynamic sizing based on count
-                    const size = Math.max(28, Math.min(50, 20 + data.count * 2));
-                    const fontSize = Math.max(14, Math.min(20, 12 + data.count));
+                    const size = Math.max(32, Math.min(54, 24 + data.count * 2));
+                    const fontSize = Math.max(13, Math.min(19, 11 + data.count));
+                    
+                    // Create radial gradient for top 3 programs (pie-wedge effect)
+                    let borderStyle = '';
+                    if (data.topPrograms.length >= 3) {
+                        // Multi-color border for diverse areas
+                        const colors = data.topPrograms.slice(0, 3).map(p => getProgramColor(p.program));
+                        borderStyle = `border: 4px solid transparent; 
+                                      background: 
+                                        conic-gradient(
+                                          ${colors[0]} 0deg ${data.topPrograms[0].percentage * 3.6}deg,
+                                          ${colors[1]} ${data.topPrograms[0].percentage * 3.6}deg ${(data.topPrograms[0].percentage + data.topPrograms[1].percentage) * 3.6}deg,
+                                          ${colors[2]} ${(data.topPrograms[0].percentage + data.topPrograms[1].percentage) * 3.6}deg 360deg
+                                        ) border-box,
+                                        rgba(0,0,0,0.95) padding-box;
+                                      background-clip: padding-box, border-box;
+                                      background-origin: padding-box, border-box;`;
+                    } else if (data.topPrograms.length >= 2) {
+                        // Dual-color border
+                        const colors = data.topPrograms.slice(0, 2).map(p => getProgramColor(p.program));
+                        borderStyle = `border: 4px solid ${colors[0]}; box-shadow: 0 0 0 2px ${colors[1]}, 0 4px 8px rgba(0,0,0,0.4);`;
+                    } else if (data.topPrograms.length >= 1) {
+                        // Single-color border
+                        borderStyle = `border: 4px solid ${getProgramColor(data.topPrograms[0].program)}; box-shadow: 0 4px 8px rgba(0,0,0,0.4);`;
+                    } else {
+                        borderStyle = `border: 3px solid #666; box-shadow: 0 4px 8px rgba(0,0,0,0.4);`;
+                    }
+                    
+                    // Diversity indicator icon
+                    const diversityIcon = data.diversity > 2.5 ? '🌈' : 
+                                        data.diversity > 1.5 ? '◐' : '';
                     
                     const label = L.divIcon({
                         className: 'hex-label',
                         html: `<div style="
-                            background: rgba(0,0,0,0.9);
+                            background: rgba(0,0,0,0.95);
                             color: white;
                             border-radius: 50%;
                             width: ${size}px;
                             height: ${size}px;
                             display: flex;
+                            flex-direction: column;
                             align-items: center;
                             justify-content: center;
                             font-size: ${fontSize}px;
                             font-weight: bold;
-                            border: 3px solid ${color};
-                            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+                            ${borderStyle}
                             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-                            ">${data.count}</div>`,
+                            position: relative;
+                            ">
+                            <div style="font-size: ${fontSize}px; line-height: 1;">${data.count}</div>
+                            ${diversityIcon ? `<div style="font-size: ${Math.max(10, fontSize - 4)}px; line-height: 1; margin-top: 2px;">${diversityIcon}</div>` : ''}
+                        </div>`,
                         iconSize: [size, size],
                         iconAnchor: [size/2, size/2]
                     });
                     
-                    const marker = L.marker([center[0], center[1]], { icon: label });
+                    const marker = L.marker([center.lat, center.lng], { icon: label });
                     hexLayer.addLayer(marker);
                     
-                    const polygon = L.polygon(coordinates, {
-                        color: color,
+                    // Render polygon with enhanced styling
+                    const polygon = L.polygon(boundary, {
+                        color: fillColor,
                         weight: 2,
                         opacity: 0.9,
-                        fillColor: color,
+                        fillColor: fillColor,
                         fillOpacity: opacity
                     });
                     
-                    // Sort programs by count for display (top 10)
-                    const topProgramsForDisplay = sortedPrograms.slice(0, 10);
+                    // STEP 4: Create enhanced popup with comprehensive statistics
+                    const diversityLabel = data.diversity > 2.5 ? 'Very High 🌈' :
+                                          data.diversity > 2.0 ? 'High' :
+                                          data.diversity > 1.0 ? 'Moderate' :
+                                          'Low (Specialized)';
                     
-                    // Create program bars HTML
-                    const maxCount = topProgramsForDisplay[0] ? topProgramsForDisplay[0][1] : 1;
-                    const programBarsHtml = topProgramsForDisplay.map(([prog, count]) => {
-                        const barWidth = (count / maxCount) * 100;
-                        const shortName = prog.length > 25 ? prog.substring(0, 22) + '...' : prog;
+                    const diversityColor = data.diversity > 2.5 ? '#6bcf7f' :
+                                          data.diversity > 2.0 ? '#1d9bf0' :
+                                          data.diversity > 1.0 ? '#ffd93d' :
+                                          '#8899a6';
+                    
+                    // Create enhanced program bars with percentages
+                    const programBarsHtml = data.topPrograms.map(({ program, count, percentage }) => {
+                        const shortName = program.length > 23 ? program.substring(0, 20) + '...' : program;
+                        const barColor = getProgramColor(program);
                         return `
-                            <div style="margin-bottom: 4px;">
-                                <div style="font-size: 11px; color: #e1e8ed; margin-bottom: 2px;">${shortName}</div>
-                                <div style="display: flex; align-items: center;">
-                                    <div style="background: #253341; border-radius: 4px; height: 16px; flex: 1; position: relative;">
-                                        <div style="background: ${getProgramColor(prog)}; height: 100%; border-radius: 4px; width: ${barWidth}%;"></div>
+                            <div style="margin-bottom: 6px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #e1e8ed; margin-bottom: 3px;">
+                                    <span style="font-weight: 500;">${shortName}</span>
+                                    <span style="color: #1d9bf0; font-weight: 600;">${percentage}%</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <div style="background: #253341; border-radius: 4px; height: 18px; flex: 1; position: relative; overflow: hidden;">
+                                        <div style="background: ${barColor}; height: 100%; width: ${percentage}%; border-radius: 4px; 
+                                                    transition: width 0.3s ease; box-shadow: inset 0 1px 2px rgba(255,255,255,0.2);"></div>
                                     </div>
-                                    <span style="margin-left: 8px; font-size: 11px; color: #8899a6; min-width: 20px;">${count}</span>
+                                    <span style="font-size: 11px; color: #8899a6; min-width: 24px; text-align: right;">${count}</span>
                                 </div>
                             </div>
                         `;
                     }).join('');
                     
-                    polygon.bindPopup(`
-                        <div style="min-width: 300px; max-width: 400px; background: #15202b; padding: 12px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                <strong style="color: #1d9bf0; font-size: 16px;">Hex Zone Statistics</strong>
-                                <span style="background: ${color}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 14px; font-weight: bold;">${data.count}</span>
+                    // Build comprehensive popup
+                    const popupHtml = `
+                        <div style="min-width: 320px; max-width: 420px; background: #15202b; padding: 14px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; 
+                                        padding-bottom: 10px; border-bottom: 2px solid #38444d;">
+                                <div>
+                                    <strong style="color: #1d9bf0; font-size: 17px; display: flex; align-items: center; gap: 6px;">
+                                        <span>⬡</span> Hex Zone Analytics
+                                    </strong>
+                                    <div style="color: #8899a6; font-size: 10px; margin-top: 2px;">Resolution ${resolution}</div>
+                                </div>
+                                <span style="background: linear-gradient(135deg, ${fillColor} 0%, ${fillColor}dd 100%); 
+                                             color: white; padding: 6px 12px; border-radius: 16px; font-size: 16px; 
+                                             font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${data.count}</span>
                             </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+                                <div style="background: linear-gradient(135deg, #253341 0%, #2a3a4a 100%); 
+                                           padding: 10px 8px; border-radius: 8px; text-align: center; border: 1px solid #38444d;">
+                                    <div style="color: #8899a6; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px;">Schools</div>
+                                    <div style="color: #1d9bf0; font-size: 20px; font-weight: bold; margin-top: 2px;">${data.count}</div>
+                                </div>
+                                <div style="background: linear-gradient(135deg, #253341 0%, #2a3a4a 100%); 
+                                           padding: 10px 8px; border-radius: 8px; text-align: center; border: 1px solid #38444d;">
+                                    <div style="color: #8899a6; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px;">Programs</div>
+                                    <div style="color: #6bcf7f; font-size: 20px; font-weight: bold; margin-top: 2px;">${data.uniqueProgramCount}</div>
+                                </div>
+                                <div style="background: linear-gradient(135deg, #253341 0%, #2a3a4a 100%); 
+                                           padding: 10px 8px; border-radius: 8px; text-align: center; border: 1px solid #38444d;">
+                                    <div style="color: #8899a6; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px;">Avg/School</div>
+                                    <div style="color: #ffd93d; font-size: 20px; font-weight: bold; margin-top: 2px;">${data.avgProgramsPerSchool}</div>
+                                </div>
+                            </div>
+                            
                             ${topProgram ? `
-                            <div style="margin-bottom: 12px; padding: 10px; background: rgba(${parseInt(color.slice(1,3), 16)}, ${parseInt(color.slice(3,5), 16)}, ${parseInt(color.slice(5,7), 16)}, 0.15); border-radius: 8px; border-left: 3px solid ${color};">
-                                <div style="color: #8899a6; font-size: 10px; text-transform: uppercase; margin-bottom: 4px;">Dominant Program</div>
-                                <div style="color: #e1e8ed; font-size: 14px; font-weight: 600;">${topProgram}</div>
-                                <div style="color: #8899a6; font-size: 11px; margin-top: 2px;">${sortedPrograms[0][1]} schools (${Math.round(sortedPrograms[0][1] / data.count * 100)}%)</div>
+                            <div style="margin-bottom: 12px; padding: 12px; 
+                                        background: linear-gradient(135deg, rgba(${parseInt(fillColor.slice(1,3), 16)}, ${parseInt(fillColor.slice(3,5), 16)}, ${parseInt(fillColor.slice(5,7), 16)}, 0.15) 0%, 
+                                                                              rgba(${parseInt(fillColor.slice(1,3), 16)}, ${parseInt(fillColor.slice(3,5), 16)}, ${parseInt(fillColor.slice(5,7), 16)}, 0.08) 100%);
+                                        border-radius: 8px; border-left: 4px solid ${getProgramColor(topProgram.program)}; border: 1px solid rgba(${parseInt(fillColor.slice(1,3), 16)}, ${parseInt(fillColor.slice(3,5), 16)}, ${parseInt(fillColor.slice(5,7), 16)}, 0.3);">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="flex: 1;">
+                                        <div style="color: #8899a6; font-size: 10px; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;">
+                                            👑 Dominant Program
+                                        </div>
+                                        <div style="color: #e1e8ed; font-size: 15px; font-weight: 700; line-height: 1.3;">${topProgram.program}</div>
+                                        <div style="color: #8899a6; font-size: 11px; margin-top: 4px;">
+                                            ${topProgram.count} schools • ${topProgram.percentage}% market share
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             ` : ''}
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                                <div style="background: #253341; padding: 8px; border-radius: 6px;">
-                                    <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Schools</div>
-                                    <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${data.count}</div>
+                            
+                            <div style="background: #1a2632; padding: 10px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #38444d;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #8899a6; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Program Diversity</span>
+                                    <span style="color: ${diversityColor}; font-size: 12px; font-weight: 600;">${diversityLabel}</span>
                                 </div>
-                                <div style="background: #253341; padding: 8px; border-radius: 6px;">
-                                    <div style="color: #8899a6; font-size: 10px; text-transform: uppercase;">Programs</div>
-                                    <div style="color: #e1e8ed; font-size: 18px; font-weight: bold;">${Object.keys(data.programs).length}</div>
+                                <div style="margin-top: 6px; background: #253341; border-radius: 4px; height: 8px; overflow: hidden;">
+                                    <div style="background: linear-gradient(90deg, #8899a6 0%, ${diversityColor} 100%); 
+                                               height: 100%; width: ${Math.min((data.diversity / 4) * 100, 100)}%; 
+                                               border-radius: 4px; transition: width 0.3s ease;"></div>
                                 </div>
                             </div>
-                            ${topProgramsForDisplay.length > 0 ? `
-                                <div style="margin-bottom: 8px;">
-                                    <strong style="color: #e1e8ed; font-size: 12px;">Top Programs in Zone:</strong>
+                            
+                            ${programBarsHtml ? `
+                                <div style="margin-bottom: 12px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <strong style="color: #e1e8ed; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                                            📊 Program Distribution
+                                        </strong>
+                                        <span style="color: #8899a6; font-size: 10px;">${data.topPrograms.length} of ${data.uniqueProgramCount}</span>
+                                    </div>
+                                    ${programBarsHtml}
                                 </div>
-                                ${programBarsHtml}
                             ` : ''}
+                            
                             ${data.schools.length > 0 ? `
                                 <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #38444d;">
-                                    <strong style="color: #e1e8ed; font-size: 12px;">Schools in Zone:</strong>
-                                    <div style="max-height: 150px; overflow-y: auto; margin-top: 8px;">
-                                        ${data.schools.slice(0, 10).map(s => `
-                                            <div style="color: #8899a6; font-size: 11px; margin-bottom: 4px;">• ${s.name}</div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <strong style="color: #e1e8ed; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                                            🏫 Schools in Zone
+                                        </strong>
+                                        <span style="color: #8899a6; font-size: 10px;">${data.schools.length} total</span>
+                                    </div>
+                                    <div style="max-height: 140px; overflow-y: auto; padding-right: 4px;">
+                                        ${data.schools.slice(0, 15).map(s => `
+                                            <div style="color: #8899a6; font-size: 11px; margin-bottom: 5px; padding: 4px 6px; 
+                                                       background: #1a2632; border-radius: 4px; border-left: 2px solid ${getProgramColor(s.programs[0])};">
+                                                <span style="color: #e1e8ed; font-weight: 500;">•</span> ${s.name}
+                                                <span style="color: #666; font-size: 10px; margin-left: 4px;">(${s.city})</span>
+                                            </div>
                                         `).join('')}
-                                        ${data.schools.length > 10 ? `<div style="color: #8899a6; font-size: 11px; font-style: italic;">...and ${data.schools.length - 10} more</div>` : ''}
+                                        ${data.schools.length > 15 ? `
+                                            <div style="color: #8899a6; font-size: 11px; font-style: italic; text-align: center; 
+                                                       padding: 6px; background: #1a2632; border-radius: 4px; margin-top: 4px;">
+                                                + ${data.schools.length - 15} more schools...
+                                            </div>
+                                        ` : ''}
                                     </div>
                                 </div>
                             ` : ''}
                         </div>
-                    `, {
-                        maxWidth: 400,
+                    `;
+                    
+                    polygon.bindPopup(popupHtml, {
+                        maxWidth: 450,
+                        className: 'custom-popup'
+                    });
+                    marker.bindPopup(popupHtml, {
+                        maxWidth: 450,
                         className: 'custom-popup'
                     });
                     
@@ -1837,7 +2494,7 @@
             } else if (currentView === 'hexgrid') {
                 indicator.style.display = 'block';
                 const res = getH3Resolution();
-                modeText.textContent = `⬡ Hex resolution: ${res} • Zoom to adjust granularity`;
+                modeText.textContent = `⬡ H3 Resolution ${res} • Multi-program blending • Diversity metrics • Click hexes for analytics`;
             } else if (currentView === 'heatmap') {
                 indicator.style.display = 'block';
                 modeText.textContent = `🌡️ Showing all ${filteredSchools.length} schools as density map`;
@@ -2092,8 +2749,216 @@
             }
         }
         
-        // Initialize
-        loadGeocodedData();
+        // Form Section Accordion Toggle
+        function toggleFormSection(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        // Multi-select Dropdown Functions
+        const programOptions = [
+            'Welding',
+            'Diesel & Automotive Technology',
+            'HVAC (Heating, Ventilation, and Air Conditioning)',
+            'Machine Tool Technology & Mechanical Systems',
+            'Construction & Building Technology',
+            'Electronics Technology',
+            'CAD/CAM Drafting & Design',
+            'Plumbing & Pipefitting',
+            'Woodworking & Carpentry',
+            'Electrical Technology',
+            'Industrial Maintenance',
+            'Machining & CNC',
+            'Robotics & Automation',
+            'Manufacturing Technology',
+            'Other'
+        ];
+
+        let selectedPrograms = [];
+
+        function initializeProgramMultiselect() {
+            const optionsContainer = document.getElementById('multiselectOptions');
+            optionsContainer.innerHTML = programOptions.map(program => `
+                <div class="multiselect-option" onclick="toggleProgramSelection('${program}')">
+                    <input type="checkbox" id="prog-${program.replace(/[^a-z0-9]/gi, '')}" onchange="toggleProgramSelection('${program}')">
+                    <label for="prog-${program.replace(/[^a-z0-9]/gi, '')}">${program}</label>
+                </div>
+            `).join('');
+        }
+
+        function toggleMultiselect() {
+            const dropdown = document.getElementById('multiselectDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        function toggleProgramSelection(program) {
+            const index = selectedPrograms.indexOf(program);
+            if (index > -1) {
+                selectedPrograms.splice(index, 1);
+            } else {
+                selectedPrograms.push(program);
+            }
+            updateMultiselectDisplay();
+            updateProgramHiddenField();
+            
+            // Show/hide "Other" input
+            const otherGroup = document.getElementById('programOtherGroup');
+            otherGroup.style.display = selectedPrograms.includes('Other') ? 'block' : 'none';
+        }
+
+        function updateMultiselectDisplay() {
+            const tagsContainer = document.getElementById('multiselectTags');
+            if (selectedPrograms.length === 0) {
+                tagsContainer.innerHTML = '<span class="multiselect-placeholder">Click to select programs...</span>';
+            } else {
+                tagsContainer.innerHTML = selectedPrograms.map(program => `
+                    <span class="multiselect-tag">
+                        ${program}
+                        <span class="multiselect-tag-remove" onclick="event.stopPropagation(); toggleProgramSelection('${program}')">×</span>
+                    </span>
+                `).join('');
+            }
+
+            // Update checkboxes
+            programOptions.forEach(program => {
+                const checkbox = document.getElementById(`prog-${program.replace(/[^a-z0-9]/gi, '')}`);
+                if (checkbox) {
+                    checkbox.checked = selectedPrograms.includes(program);
+                    const option = checkbox.closest('.multiselect-option');
+                    if (option) {
+                        option.classList.toggle('selected', selectedPrograms.includes(program));
+                    }
+                }
+            });
+        }
+
+        function updateProgramHiddenField() {
+            document.getElementById('programsHidden').value = selectedPrograms.join(',');
+        }
+
+        function filterProgramOptions() {
+            const searchTerm = document.getElementById('programSearch').value.toLowerCase();
+            const options = document.querySelectorAll('.multiselect-option');
+            
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                option.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+            });
+        }
+
+        // Close multiselect when clicking outside
+        document.addEventListener('click', function(e) {
+            const multiselect = document.getElementById('programsMultiselect');
+            const dropdown = document.getElementById('multiselectDropdown');
+            if (multiselect && !multiselect.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Update Data Summary Widget
+        function updateDataSummary() {
+            const schoolsToShow = getViewportSchools();
+            const stateCount = new Set(allSchools.map(s => s.state)).size;
+            
+            // Get top 3 programs
+            const programCounts = {};
+            schoolsToShow.forEach(school => {
+                school.programs.forEach(program => {
+                    programCounts[program] = (programCounts[program] || 0) + 1;
+                });
+            });
+            
+            const topPrograms = Object.entries(programCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+            
+            document.getElementById('summaryMain').textContent = 
+                `${allSchools.length} Schools in ${stateCount} States`;
+            
+            if (topPrograms.length > 0) {
+                document.getElementById('summaryPrograms').innerHTML = 
+                    `<strong>🎓 Top Programs:</strong> ${topPrograms.map(([prog, count]) => 
+                        `${prog.split(' ')[0]} (${count})`
+                    ).join(', ')}`;
+            }
+        }
+
+        // localStorage Caching
+        function cacheSchoolData() {
+            try {
+                localStorage.setItem('tradeSchools_data', JSON.stringify(allSchools));
+                localStorage.setItem('tradeSchools_timestamp', Date.now().toString());
+            } catch (e) {
+                console.warn('Failed to cache data to localStorage:', e);
+            }
+        }
+
+        function loadCachedData() {
+            try {
+                const cached = localStorage.getItem('tradeSchools_data');
+                const timestamp = localStorage.getItem('tradeSchools_timestamp');
+                
+                // Cache expires after 24 hours
+                if (cached && timestamp && (Date.now() - parseInt(timestamp)) < 86400000) {
+                    return JSON.parse(cached);
+                }
+            } catch (e) {
+                console.warn('Failed to load cached data:', e);
+            }
+            return null;
+        }
+
+        // Character counter for description
+        document.addEventListener('DOMContentLoaded', function() {
+            const descTextarea = document.getElementById('schoolDescription');
+            const countSpan = document.getElementById('descriptionCount');
+            
+            if (descTextarea && countSpan) {
+                descTextarea.addEventListener('input', function() {
+                    countSpan.textContent = this.value.length;
+                });
+            }
+            
+            // Initialize multi-select
+            initializeProgramMultiselect();
+        });
+
+        // Override the original updateStats to also update summary
+        const originalUpdateStats = updateStats;
+        updateStats = function() {
+            originalUpdateStats();
+            updateDataSummary();
+        };
+
+        // Override processData to cache results
+        const originalProcessData = processData;
+        processData = function(geoData, matchData) {
+            originalProcessData(geoData, matchData);
+            cacheSchoolData();
+        };
+
+        // Try to load cached data first
+        const cachedData = loadCachedData();
+        if (cachedData && cachedData.length > 0) {
+            console.log('Loading from cache:', cachedData.length, 'schools');
+            allSchools = cachedData;
+            filteredSchools = [...allSchools];
+            populateFilters();
+            updateStats();
+            displaySchools();
+            updateMapView();
+            updateProgramChart();
+            initializeLegend();
+            
+            // Still load fresh data in background
+            setTimeout(() => loadGeocodedData(), 100);
+        } else {
+            // Initialize normally
+            loadGeocodedData();
+        }
         
         // Add viewport change listeners
         map.on('moveend', updateViewportFiltering);
