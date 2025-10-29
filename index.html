@@ -2024,42 +2024,45 @@
         }
         
         // Check if banner was previously dismissed
-        // Email Gate functionality
-        function checkEmailGate() {
-            const userEmail = localStorage.getItem('userEmail');
-            const emailGate = document.getElementById('emailGate');
-            
-            if (!userEmail) {
-                // Show email gate if no email stored
-                emailGate.classList.remove('email-gate-hidden');
-            }
-        }
-        
-        // Handle email gate form submission
-        document.getElementById('emailGateForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('emailGateInput');
-            const email = emailInput.value.trim();
-            
-            if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                // Store email in localStorage
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('emailSubmittedAt', new Date().toISOString());
-                
-                // Track with Google Analytics
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'email_gate_submit', {
-                        'event_category': 'engagement',
-                        'event_label': 'email_collected'
-                    });
-                }
-                
-                // Hide the gate
-                document.getElementById('emailGate').classList.add('email-gate-hidden');
-            }
-        });
-        
         window.addEventListener('DOMContentLoaded', function() {
+            // Email Gate functionality
+            function checkEmailGate() {
+                const userEmail = localStorage.getItem('userEmail');
+                const emailGate = document.getElementById('emailGate');
+                
+                if (!userEmail) {
+                    // Show email gate if no email stored
+                    emailGate.classList.remove('email-gate-hidden');
+                }
+            }
+            
+            // Handle email gate form submission
+            const emailGateForm = document.getElementById('emailGateForm');
+            if (emailGateForm) {
+                emailGateForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = document.getElementById('emailGateInput');
+                    const email = emailInput.value.trim();
+                    
+                    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        // Store email in localStorage
+                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('emailSubmittedAt', new Date().toISOString());
+                        
+                        // Track with Google Analytics
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'email_gate_submit', {
+                                'event_category': 'engagement',
+                                'event_label': 'email_collected'
+                            });
+                        }
+                        
+                        // Hide the gate
+                        document.getElementById('emailGate').classList.add('email-gate-hidden');
+                    }
+                });
+            }
+            
             // Check email gate first
             checkEmailGate();
             
