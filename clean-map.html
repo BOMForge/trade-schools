@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -160,6 +161,26 @@
             background: #1d9bf0;
             border-color: #1d9bf0;
             color: white;
+        }
+        
+        .chart-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+        }
+        
+        .chart-title {
+            color: #e1e8ed;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .chart-canvas {
+            max-height: 300px;
         }
         
         .school-list {
@@ -349,6 +370,11 @@
             </div>
         </div>
         
+        <div class="chart-container">
+            <div class="chart-title">📊 Program Distribution</div>
+            <canvas id="programChart" class="chart-canvas"></canvas>
+        </div>
+        
         <div class="school-list" id="schoolList">
             <div class="loading">Loading schools...</div>
         </div>
@@ -369,6 +395,9 @@
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
+        
+        // Chart instance
+        let programChart = null;
         
         // Data storage
         let allSchools = [];
@@ -470,7 +499,8 @@
             populateFilters();
             updateStats();
             displaySchools();
-            addMarkersToMap();
+            updateMapView();
+            updateProgramChart();
         }
         
         // Populate filter dropdowns
@@ -675,6 +705,7 @@
             updateStats();
             displaySchools();
             updateMapView();
+            updateProgramChart();
             
             // Adjust map view to show filtered schools
             if (filteredSchools.length > 0) {
@@ -794,6 +825,83 @@
             document.getElementById('hexgridBtn').classList.toggle('active', view === 'hexgrid');
             
             updateMapView();
+        }
+        
+        // Update program distribution chart
+        function updateProgramChart() {
+            // Destroy existing chart if it exists
+            if (programChart) {
+                programChart.destroy();
+            }
+            
+            // Count programs
+            const programCounts = {};
+            filteredSchools.forEach(school => {
+                school.programs.forEach(program => {
+                    programCounts[program] = (programCounts[program] || 0) + 1;
+                });
+            });
+            
+            // Sort programs by count and take top 10
+            const sortedPrograms = Object.entries(programCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            const labels = sortedPrograms.map(([program]) => program.length > 20 ? program.substring(0, 17) + '...' : program);
+            const data = sortedPrograms.map(([, count]) => count);
+            
+            // Create chart
+            const ctx = document.getElementById('programChart').getContext('2d');
+            programChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Schools',
+                        data: data,
+                        backgroundColor: [
+                            '#1d9bf0', '#ff6b6b', '#6bcf7f', '#ffd93d', '#4ecdc4',
+                            '#a8e6cf', '#ffaaa5', '#ffd3a5', '#a8c8ec', '#dda0dd'
+                        ],
+                        borderColor: '#38444d',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#8899a6',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
+                                color: '#38444d'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#8899a6',
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
+                                color: '#38444d'
+                            }
+                        }
+                    }
+                }
+            });
         }
         
         // Initialize
