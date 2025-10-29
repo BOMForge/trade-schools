@@ -1691,9 +1691,17 @@
         
         // Toggle sidebar visibility
         function toggleSidebar() {
+            console.log('Toggle sidebar clicked');
             const sidebar = document.getElementById('sidebar');
             const toggle = document.getElementById('sidebarToggle');
+            
+            if (!sidebar || !toggle) {
+                console.error('Sidebar or toggle button not found!');
+                return;
+            }
+            
             const isCollapsed = sidebar.classList.toggle('collapsed');
+            console.log('Sidebar collapsed:', isCollapsed);
             
             toggle.innerHTML = isCollapsed ? '☰' : '×';
             toggle.classList.toggle('collapsed', isCollapsed);
@@ -1702,7 +1710,11 @@
             localStorage.setItem('sidebarCollapsed', isCollapsed);
             
             // Trigger map resize to adjust to new container size
-            setTimeout(() => map.invalidateSize(), 300);
+            setTimeout(() => {
+                if (map && map.invalidateSize) {
+                    map.invalidateSize();
+                }
+            }, 300);
         }
         
         // Open submit school modal (redirect to submit page)
