@@ -152,3 +152,5 @@ Added on top of existing logic:
 **Testing**: Manual verification recommended in hex grid mode
 
 
+
+

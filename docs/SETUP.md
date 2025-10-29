@@ -546,3 +546,5 @@ wrangler d1 execute trade-schools-db --command="YOUR_SQL_HERE"
 For deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 
+
+

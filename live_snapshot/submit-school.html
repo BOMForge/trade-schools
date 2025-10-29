@@ -26,19 +26,18 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #1a1f2e 0%, #2a3340 100%);
-            color: white;
+            background: #15202b;
+            border-bottom: 1px solid #38444d;
+            color: #e1e8ed;
             text-align: center;
-            padding: 8px 40px;
+            padding: 10px 40px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 2000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
-            border-bottom: 2px solid #3d4855;
         }
         
         .banner-content {
@@ -57,33 +56,32 @@
         }
         
         .banner-link {
-            color: white;
+            color: #1d9bf0;
             text-decoration: none;
             padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(29, 155, 240, 0.1);
             border-radius: 4px;
-            font-weight: 700;
+            font-weight: 500;
             transition: all 0.2s ease;
         }
         
         .banner-link:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(1.05);
+            background: rgba(29, 155, 240, 0.2);
+            color: #6bcf7f;
         }
         
         .contact-link {
             color: #10b981;
             text-decoration: none;
             padding: 4px 12px;
-            background: rgba(16, 185, 129, 0.15);
+            background: rgba(16, 185, 129, 0.1);
             border-radius: 4px;
-            font-weight: 700;
+            font-weight: 500;
             transition: all 0.2s ease;
         }
         
         .contact-link:hover {
-            background: rgba(16, 185, 129, 0.25);
-            transform: scale(1.05);
+            background: rgba(16, 185, 129, 0.2);
         }
         
         .container {
@@ -304,8 +302,11 @@
 <body>
     <div class="demo-banner">
         <div class="banner-content">
+            <div>
+                Trade Schools Directory • 1031 Schools Nationwide
+            </div>
             <div class="banner-links">
-                <a href="index.html" class="banner-link">Home</a>
+                <a href="clean-map.html" class="banner-link">Map</a>
                 <a href="mailto:tom@bomforge.com" class="contact-link">Contact Us</a>
                 <a href="https://bomforge.com" target="_blank" class="banner-link">BOMForge</a>
                 <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
@@ -314,7 +315,7 @@
     </div>
 
     <div class="container">
-        <a href="index.html" class="back-link">
+        <a href="clean-map.html" class="back-link">
             ← Back to Map
         </a>
         
@@ -335,19 +336,19 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="schoolAddress">Street Address</label>
-                    <input type="text" id="schoolAddress" name="schoolAddress" placeholder="e.g., 123 Main Street" maxlength="200">
+                    <label for="schoolAddress">Street Address <span class="required">*</span></label>
+                    <input type="text" id="schoolAddress" name="schoolAddress" required placeholder="e.g., 123 Main Street" maxlength="200">
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="schoolCity">City</label>
-                        <input type="text" id="schoolCity" name="schoolCity" placeholder="e.g., Denver" maxlength="100">
+                        <label for="schoolCity">City <span class="required">*</span></label>
+                        <input type="text" id="schoolCity" name="schoolCity" required placeholder="e.g., Denver" maxlength="100">
                     </div>
                     
                     <div class="form-group">
-                        <label for="schoolState">State</label>
-                        <select id="schoolState" name="schoolState">
+                        <label for="schoolState">State <span class="required">*</span></label>
+                        <select id="schoolState" name="schoolState" required>
                             <option value="">Select State</option>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
@@ -405,32 +406,32 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="schoolZip">ZIP Code</label>
-                        <input type="text" id="schoolZip" name="schoolZip" placeholder="e.g., 80202" maxlength="10" pattern="[0-9]{5}(-[0-9]{4})?">
+                        <label for="schoolZip">ZIP Code <span class="required">*</span></label>
+                        <input type="text" id="schoolZip" name="schoolZip" required placeholder="e.g., 80202" maxlength="10" pattern="[0-9]{5}(-[0-9]{4})?">
                     </div>
                     
                     <div class="form-group">
-                        <label for="schoolPhone">Phone Number</label>
-                        <input type="tel" id="schoolPhone" name="schoolPhone" placeholder="(555) 123-4567" maxlength="14">
+                        <label for="schoolPhone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="schoolPhone" name="schoolPhone" required placeholder="(555) 123-4567" maxlength="14">
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="schoolWebsite">School Website <span class="required">*</span></label>
-                    <input type="url" id="schoolWebsite" name="schoolWebsite" placeholder="https://example.edu" required>
+                    <label for="schoolWebsite">School Website</label>
+                    <input type="url" id="schoolWebsite" name="schoolWebsite" placeholder="https://example.edu">
                     <div class="field-hint">Official website for the institution</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="schoolEmail">Contact Email</label>
-                    <input type="email" id="schoolEmail" name="schoolEmail" placeholder="admissions@school.edu">
+                    <label for="schoolEmail">Contact Email <span class="required">*</span></label>
+                    <input type="email" id="schoolEmail" name="schoolEmail" required placeholder="admissions@school.edu">
                     <div class="field-hint">Main contact email for the school</div>
                 </div>
                 
                 <h2 class="section-title">Programs & Training</h2>
                 
                 <div class="form-group">
-                    <label>Programs Offered</label>
+                    <label>Programs Offered <span class="required">*</span></label>
                     <div class="field-hint" style="margin-bottom: 10px;">Select all programs that apply</div>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
@@ -456,38 +457,6 @@
                         <label class="checkbox-label">
                             <input type="checkbox" name="programs" value="CNC/Machining">
                             <span>CNC/Machining</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Mechatronics">
-                            <span>Mechatronics</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Robotics & Automation">
-                            <span>Robotics & Automation</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Electronics">
-                            <span>Electronics</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Industrial Maintenance">
-                            <span>Industrial Maintenance</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Manufacturing Technology">
-                            <span>Manufacturing Technology</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="CAD/CAM Drafting">
-                            <span>CAD/CAM Drafting</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Woodworking & Carpentry">
-                            <span>Woodworking & Carpentry</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="programs" value="Electrical Technology">
-                            <span>Electrical Technology</span>
                         </label>
                         <label class="checkbox-label">
                             <input type="checkbox" name="programs" value="Construction">
@@ -615,67 +584,106 @@
             }
         });
         
-        // Form submission -> POST to API
-        document.getElementById('schoolSubmissionForm').addEventListener('submit', async function(e) {
+        // Form submission
+        document.getElementById('schoolSubmissionForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const formEl = document.getElementById('schoolSubmissionForm');
-            if (!formEl.checkValidity()) {
-                formEl.reportValidity();
-                return;
-            }
-
+            
             const successMsg = document.getElementById('successMessage');
             const errorMsg = document.getElementById('errorMessage');
             const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.textContent;
-
+            
+            // Clear previous messages
             successMsg.style.display = 'none';
             errorMsg.style.display = 'none';
-
+            
+            // Validate at least one program is selected
             const programsChecked = document.querySelectorAll('input[name="programs"]:checked');
-            const programs = Array.from(programsChecked).map(cb => cb.value);
-
+            if (programsChecked.length === 0) {
+                errorMsg.textContent = 'Please select at least one program offered.';
+                errorMsg.style.display = 'block';
+                errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            
+            // Disable button and show loading
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
-
-            const payload = {
+            
+            // Collect form data
+            const programs = Array.from(programsChecked).map(cb => cb.value);
+            const formData = {
                 schoolName: document.getElementById('schoolName').value.trim(),
-                streetAddress: document.getElementById('schoolAddress').value.trim(),
-                city: document.getElementById('schoolCity').value.trim(),
-                state: document.getElementById('schoolState').value,
-                zipCode: document.getElementById('schoolZip').value.trim(),
-                phone: document.getElementById('schoolPhone').value.trim(),
-                website: document.getElementById('schoolWebsite').value.trim(),
-                contactEmail: document.getElementById('schoolEmail').value.trim(),
+                schoolAddress: document.getElementById('schoolAddress').value.trim(),
+                schoolCity: document.getElementById('schoolCity').value.trim(),
+                schoolState: document.getElementById('schoolState').value,
+                schoolZip: document.getElementById('schoolZip').value.trim(),
+                schoolPhone: document.getElementById('schoolPhone').value.trim(),
+                schoolWebsite: document.getElementById('schoolWebsite').value.trim(),
+                schoolEmail: document.getElementById('schoolEmail').value.trim(),
                 programs: programs,
                 programOther: document.getElementById('programOtherText').value.trim(),
-                schoolDescription: document.getElementById('programDetails').value.trim(),
-                submitterName: document.getElementById('submitterName').value.trim()
+                programDetails: document.getElementById('programDetails').value.trim(),
+                submitterName: document.getElementById('submitterName').value.trim(),
+                submitterEmail: document.getElementById('submitterEmail').value.trim(),
+                submitterRole: document.getElementById('submitterRole').value,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
             };
-
+            
+            // Build email content
+            const subject = `New Trade School Submission: ${formData.schoolName}`;
+            const body = `NEW TRADE SCHOOL SUBMISSION\n\n` +
+                        `SCHOOL INFORMATION:\n` +
+                        `Name: ${formData.schoolName}\n` +
+                        `Address: ${formData.schoolAddress}\n` +
+                        `City: ${formData.schoolCity}\n` +
+                        `State: ${formData.schoolState}\n` +
+                        `ZIP: ${formData.schoolZip}\n` +
+                        `Phone: ${formData.schoolPhone}\n` +
+                        `Email: ${formData.schoolEmail}\n` +
+                        `Website: ${formData.schoolWebsite || 'Not provided'}\n\n` +
+                        `PROGRAMS OFFERED:\n` +
+                        `${programs.join(', ')}${formData.programOther ? ` (Other: ${formData.programOther})` : ''}\n\n` +
+                        `PROGRAM DETAILS:\n` +
+                        `${formData.programDetails || 'Not provided'}\n\n` +
+                        `SUBMITTER INFORMATION:\n` +
+                        `Name: ${formData.submitterName || 'Not provided'}\n` +
+                        `Email: ${formData.submitterEmail || 'Not provided'}\n` +
+                        `Role: ${formData.submitterRole || 'Not provided'}\n\n` +
+                        `METADATA:\n` +
+                        `Submitted: ${formData.timestamp}\n` +
+                        `User Agent: ${formData.userAgent}`;
+            
+            // Save to localStorage for admin panel
             try {
-                const res = await fetch('/api/schools/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await res.json();
-                if (!res.ok || !result.success) throw new Error(result?.error || 'Submission failed.');
-
+                const submissions = JSON.parse(localStorage.getItem('schoolSubmissions') || '{"pending":[],"approved":[]}');
+                submissions.pending.push(formData);
+                localStorage.setItem('schoolSubmissions', JSON.stringify(submissions));
+            } catch (e) {
+                console.error('Failed to save to localStorage:', e);
+            }
+            
+            // Create mailto link
+            const mailtoLink = `mailto:tom@bomforge.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Show success message and reset form
+            setTimeout(() => {
                 document.getElementById('schoolSubmissionForm').reset();
                 document.getElementById('otherProgramField').style.display = 'none';
                 document.getElementById('charCount').textContent = '0';
-                successMsg.innerHTML = '<strong>Thank you!</strong> Your submission has been received and is pending review.';
-                successMsg.style.display = 'block';
-                successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } catch (err) {
-                errorMsg.textContent = err.message || 'Network error. Please try again.';
-                errorMsg.style.display = 'block';
-                errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
-            }
+                
+                successMsg.innerHTML = '<strong>Thank you!</strong> Your submission has been received. ' +
+                                      'Your email client should open with the details. Please send the email to complete your submission. ' +
+                                      'We will review and add the school to our directory within 2-3 business days.';
+                successMsg.style.display = 'block';
+                successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 1000);
         });
     </script>
 </body>

@@ -93,6 +93,23 @@ CREATE TABLE IF NOT EXISTS admin_users (
 INSERT OR IGNORE INTO admin_users (id, email, name, role)
 VALUES ('admin-1', 'tom@bomforge.com', 'Tom', 'admin');
 
+-- Table for email collection
+CREATE TABLE IF NOT EXISTS email_subscribers (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  source TEXT DEFAULT 'map', -- map, submit_form, etc
+  subscribed_at TEXT DEFAULT (datetime('now')),
+  ip_address TEXT,
+  user_agent TEXT,
+  unsubscribed BOOLEAN DEFAULT FALSE,
+  unsubscribed_at TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_email_subscribers_email ON email_subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_email_subscribers_subscribed ON email_subscribers(unsubscribed);
+CREATE INDEX IF NOT EXISTS idx_email_subscribers_created ON email_subscribers(created_at DESC);
+
 -- Trigger to update updated_at timestamp
 CREATE TRIGGER IF NOT EXISTS update_pending_schools_timestamp
 AFTER UPDATE ON pending_schools

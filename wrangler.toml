@@ -2,11 +2,11 @@ name = "trade-schools"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "."
 
-# D1 Database binding (commented out until database is created)
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "trade-schools-db"
-# database_id = "" # Will be filled after creating database
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "trade-schools-db"
+database_id = "83c8d9a5-297a-41b4-b260-ea12c53aa050"
 
 # Environment variables (set via wrangler secrets)
 # RECAPTCHA_SECRET_KEY - Google reCAPTCHA secret key

@@ -275,3 +275,5 @@ The Trade Schools application now provides a fully responsive, touch-optimized e
 - ✅ Accessible to all users (WCAG AA compliant)
 
 
+
+

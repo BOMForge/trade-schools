@@ -146,3 +146,5 @@ The school detail pages provide comprehensive SEO optimization with:
 
 This implementation maximizes SEO potential while providing users with detailed, useful information about each trade school.
 
+
+

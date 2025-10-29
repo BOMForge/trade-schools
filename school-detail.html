@@ -509,7 +509,7 @@
                 <div class="logo">BOMForge</div>
                 <nav class="nav-links">
                     <a href="index.html" class="nav-link">Home</a>
-                    <a href="map.html" class="nav-link">Map</a>
+                    <a href="index.html" class="nav-link" id="mapLink">Map</a>
                     <a href="employer-hiring.html" class="nav-link">For Employers</a>
                     <a href="submit-school.html" class="nav-link">Submit School</a>
                 </nav>
@@ -523,7 +523,7 @@
             <div class="breadcrumb-content">
                 <a href="index.html">Home</a>
                 <span class="breadcrumb-separator">></span>
-                <a href="map.html">Trade Schools Map</a>
+                <a href="index.html" id="breadcrumbMapLink">Trade Schools Map</a>
                 <span class="breadcrumb-separator">></span>
                 <span id="breadcrumb-school">School Details</span>
             </div>
@@ -542,7 +542,7 @@
             <!-- Error State -->
             <div id="error" class="error" style="display: none;">
                 <h3>School Not Found</h3>
-                <p>We couldn't find the school you're looking for. Please check the URL or return to the <a href="map.html">map</a>.</p>
+                <p>We couldn't find the school you're looking for. Please check the URL or return to the <a href="index.html">map</a>.</p>
             </div>
             
             <!-- School Content -->
@@ -645,7 +645,7 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <a href="index.html">Home</a>
-                    <a href="map.html">Trade Schools Map</a>
+                    <a href="index.html">Trade Schools Map</a>
                     <a href="employer-hiring.html">For Employers</a>
                     <a href="submit-school.html">Submit School</a>
                 </div>
@@ -790,6 +790,16 @@
             document.getElementById('school-name').textContent = school.name;
             document.getElementById('location-text').textContent = `${school.city}, ${school.state}`;
             document.getElementById('breadcrumb-school').textContent = school.name;
+            
+            // Update map links with school name parameter
+            const mapLink = document.getElementById('mapLink');
+            const breadcrumbMapLink = document.getElementById('breadcrumbMapLink');
+            if (mapLink) {
+                mapLink.href = `index.html?school=${encodeURIComponent(school.name)}`;
+            }
+            if (breadcrumbMapLink) {
+                breadcrumbMapLink.href = `index.html?school=${encodeURIComponent(school.name)}`;
+            }
             
             // Update description
             const description = document.getElementById('school-description');

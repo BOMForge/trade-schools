@@ -312,3 +312,5 @@ High Diversity (2.8):
 **Remember:** The hex grid is **data aggregation** - it summarizes patterns at scale. For individual schools, zoom in or use the markers view!
 
 
+
+

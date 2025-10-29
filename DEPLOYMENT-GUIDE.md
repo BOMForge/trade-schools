@@ -126,3 +126,5 @@ Your Trade Schools Directory is live at: **https://trade-schools.pages.dev/clean
 
 The site should now work properly with real data or fallback to sample data if CSV files aren't accessible.
 
+
+
