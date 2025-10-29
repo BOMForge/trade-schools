@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
     <style>
         * {
@@ -332,6 +333,7 @@
             <div class="view-controls">
                 <button class="view-btn active" id="markersBtn" onclick="setView('markers')">Markers</button>
                 <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')">Heat Map</button>
+                <button class="view-btn" id="hexgridBtn" onclick="setView('hexgrid')">Hex Grid</button>
             </div>
             <div class="filter-group">
                 <label class="filter-label">Filter by State</label>
@@ -374,6 +376,7 @@
         let schoolMarkers = {};
         let markersLayer = L.layerGroup().addTo(map);
         let heatmapLayer = null;
+        let hexLayer = L.layerGroup();
         let selectedMarker = null;
         let currentView = 'markers';
         
@@ -687,10 +690,69 @@
                 if (heatmapLayer) {
                     map.removeLayer(heatmapLayer);
                 }
+                map.removeLayer(hexLayer);
             } else if (currentView === 'heatmap') {
                 addHeatmapToMap();
                 markersLayer.clearLayers();
+                map.removeLayer(hexLayer);
+            } else if (currentView === 'hexgrid') {
+                addHexGridToMap();
+                markersLayer.clearLayers();
+                if (heatmapLayer) {
+                    map.removeLayer(heatmapLayer);
+                }
             }
+        }
+        
+        // Add hex grid to map
+        function addHexGridToMap() {
+            hexLayer.clearLayers();
+            const hexData = {};
+            const resolution = 4;
+            
+            filteredSchools.forEach(school => {
+                const h3Index = h3.geoToH3(school.lat, school.lon, resolution);
+                if (!hexData[h3Index]) {
+                    hexData[h3Index] = {
+                        count: 0,
+                        schools: []
+                    };
+                }
+                hexData[h3Index].count++;
+                hexData[h3Index].schools.push(school);
+            });
+            
+            Object.entries(hexData).forEach(([h3Index, data]) => {
+                const boundary = h3.h3ToGeoBoundary(h3Index);
+                const coordinates = boundary.map(coord => [coord[0], coord[1]]);
+                
+                const opacity = Math.min(0.2 + (data.count / 50), 0.8);
+                const color = data.count > 20 ? '#ff6b6b' : 
+                             data.count > 10 ? '#ffd93d' : 
+                             data.count > 5 ? '#6bcf7f' : '#4ecdc4';
+                
+                const polygon = L.polygon(coordinates, {
+                    color: color,
+                    weight: 1,
+                    opacity: 0.8,
+                    fillColor: color,
+                    fillOpacity: opacity
+                });
+                
+                polygon.bindPopup(`
+                    <div style="min-width: 200px;">
+                        <strong style="color: #1d9bf0;">H3 Hexagon</strong><br>
+                        📊 Schools: ${data.count}<br>
+                        🔢 H3 Index: ${h3Index.substring(0,10)}...<br>
+                        📍 Density: ${(data.count / 10).toFixed(1)} per 100km²<br>
+                        ${data.schools.length > 0 ? `<br><strong>Sample Schools:</strong><br>${data.schools.slice(0, 3).map(s => s.name).join('<br>')}${data.schools.length > 3 ? '<br>...' : ''}` : ''}
+                    </div>
+                `);
+                
+                hexLayer.addLayer(polygon);
+            });
+            
+            map.addLayer(hexLayer);
         }
         
         // Add heatmap to map
@@ -729,6 +791,7 @@
             // Update button states
             document.getElementById('markersBtn').classList.toggle('active', view === 'markers');
             document.getElementById('heatmapBtn').classList.toggle('active', view === 'heatmap');
+            document.getElementById('hexgridBtn').classList.toggle('active', view === 'hexgrid');
             
             updateMapView();
         }
