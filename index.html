@@ -34,25 +34,19 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-            border-bottom: 3px solid #ff6b00;
-            color: #ffffff;
+            background: linear-gradient(90deg, #1d9bf0, #ff6b6b, #6bcf7f);
+            color: white;
             text-align: center;
-            padding: 12px 50px;
-            font-size: 13px;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            padding: 8px 40px;
+            font-size: 14px;
+            font-weight: 600;
             z-index: 2000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
-            background-image: 
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,107,0,0.03) 2px, rgba(255,107,0,0.03) 4px),
-                linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
         }
         
         .demo-banner.hidden {
@@ -64,51 +58,44 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
             flex-wrap: wrap;
         }
         
         .banner-links {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             align-items: center;
         }
         
         .banner-link {
-            color: #ff6b00;
+            color: white;
             text-decoration: none;
-            padding: 6px 16px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid #ff6b00;
-            border-radius: 0;
-            font-weight: 900;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            font-weight: 700;
             transition: all 0.2s ease;
-            box-shadow: inset 0 0 0 rgba(255,107,0,0.3);
         }
         
         .banner-link:hover {
-            background: #ff6b00;
-            color: #000000;
-            box-shadow: 0 0 10px rgba(255,107,0,0.6), inset 0 0 20px rgba(255,107,0,0.3);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.05);
         }
         
         .banner-close {
             position: absolute;
-            right: 15px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid #ff6b00;
-            color: #ff6b00;
-            width: 32px;
-            height: 32px;
-            border-radius: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 20px;
-            font-weight: 900;
+            font-size: 18px;
             line-height: 1;
             transition: all 0.2s ease;
             display: flex;
@@ -117,10 +104,14 @@
         }
         
         .banner-close:hover {
-            background: #ff6b00;
-            color: #000000;
-            box-shadow: 0 0 10px rgba(255,107,0,0.8);
-            transform: translateY(-50%) scale(1.05);
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
         }
         
         body {
@@ -1353,10 +1344,62 @@
         <div class="legend-items" id="legendItems"></div>
     </div>
     
-    <div id="sidebar" class="collapsed">
-        <div class="filters" style="padding: 20px;">
-            <h2 style="color: #e1e8ed; margin-bottom: 20px; font-size: 1.2em;">Filters</h2>
-            
+    <div id="sidebar">
+        <div class="header">
+            <div class="header-nav">
+                <a href="index.html" class="nav-link">🏠 Home</a>
+                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="clean-map.html" class="nav-link active">🗺️ Map</a>
+            </div>
+            <h1>🎓 Trade Schools Directory</h1>
+            <div class="stats">
+                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
+                    <div class="stat-value" id="totalSchools">0</div>
+                    <div class="stat-label">Schools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalStates">0</div>
+                    <div class="stat-label">States</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="visibleCount">0</div>
+                    <div class="stat-label">Visible</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <!-- Data Summary Widget -->
+            <div class="data-summary" id="dataSummary">
+                <div class="data-summary-title">📊 Live Data Overview</div>
+                <div class="data-summary-main" id="summaryMain">989 Schools in 50 States</div>
+                <div class="data-summary-programs" id="summaryPrograms">
+                    <strong>🎓 Top Programs:</strong> Welding (739), Diesel (592), HVAC (576)
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
+                <div class="view-controls">
+                    <button class="view-btn active" id="markersBtn" onclick="setView('markers')" title="Individual school markers with favicons">📍 Markers</button>
+                    <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
+                </div>
+                <div class="mode-indicator" id="modeIndicator" style="display: none;">
+                    <span id="modeText" class="mode-text"></span>
+                    <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">🗺️</span> Viewport Only</label>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="viewportOnlyToggle">
+                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit heat/hex calculations to visible map area</label>
+                </div>
+            </div>
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">📍</span> Filter by State</label>
                 <select class="filter-select" id="stateFilter">
@@ -1370,22 +1413,17 @@
                 </select>
             </div>
         </div>
-    </div>
-    
-    <script>
-        // Dummy elements to prevent JS errors
-        const submitForm = document.createElement('div');
-        submitForm.id = 'submitForm';
-        submitForm.style.display = 'none';
-        document.body.appendChild(submitForm);
-    </script>
-    
-    <script>
-        // Dummy element for backward compatibility
-        if (!document.getElementById('submitForm')) {
-            const dummy = document.createElement('div');
-            dummy.id = 'submitForm';
-            dummy.style.display = 'none';
+        
+        <div class="school-list" id="schoolList">
+            <div class="loading">Loading schools...</div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title" id="chartTitle">📊 Program Distribution</div>
+            <canvas id="programChart" class="chart-canvas"></canvas>
+        </div>
+        
+        <div class="submission-form" id="submitForm">
             <div class="form-title">🏫 Submit a School or Program</div>
             <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
             <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
@@ -1840,13 +1878,12 @@
             center: [39.8283, -98.5795],
             zoom: 4,
             minZoom: 3,
-            maxZoom: 18,
-            attributionControl: false
+            maxZoom: 18
         });
         
         // Add dark tile layer
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '',
+            attribution: '© OpenStreetMap contributors © CARTO',
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
