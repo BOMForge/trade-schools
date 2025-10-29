@@ -34,15 +34,14 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(90deg, #1d9bf0, #ff6b6b, #6bcf7f);
-            color: white;
+            background: #15202b;
+            border-bottom: 1px solid #38444d;
+            color: #e1e8ed;
             text-align: center;
-            padding: 8px 40px;
+            padding: 10px 40px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 2000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            animation: pulse 2s infinite;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -69,18 +68,18 @@
         }
         
         .banner-link {
-            color: white;
+            color: #1d9bf0;
             text-decoration: none;
             padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(29, 155, 240, 0.1);
             border-radius: 4px;
-            font-weight: 700;
+            font-weight: 500;
             transition: all 0.2s ease;
         }
         
         .banner-link:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(1.05);
+            background: rgba(29, 155, 240, 0.2);
+            color: #6bcf7f;
         }
         
         .banner-close {
@@ -1283,18 +1282,140 @@
                 height: 50vh;
             }
         }
+        
+        /* Email Gate Modal */
+        .email-gate-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .email-gate-modal {
+            background: #1e2936;
+            border: 1px solid #38444d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .email-gate-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #e1e8ed;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .email-gate-subtitle {
+            font-size: 1em;
+            color: #8899a6;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .email-gate-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .email-gate-input {
+            padding: 16px;
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            color: #e1e8ed;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .email-gate-input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+        }
+        
+        .email-gate-button {
+            padding: 16px;
+            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .email-gate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
+        }
+        
+        .email-gate-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .email-gate-privacy {
+            font-size: 0.85em;
+            color: #8899a6;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .email-gate-hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Email Gate Modal -->
+    <div class="email-gate-overlay email-gate-hidden" id="emailGate">
+        <div class="email-gate-modal">
+            <div class="email-gate-title">🎓 Welcome to Trade Schools Map</div>
+            <div class="email-gate-subtitle">
+                Enter your email to access our interactive map of 1000+ trade schools nationwide
+            </div>
+            <form class="email-gate-form" id="emailGateForm">
+                <input 
+                    type="email" 
+                    class="email-gate-input" 
+                    id="emailGateInput" 
+                    placeholder="your@email.com" 
+                    required
+                    autocomplete="email"
+                >
+                <button type="submit" class="email-gate-button" id="emailGateButton">
+                    Continue to Map
+                </button>
+            </form>
+            <div class="email-gate-privacy">
+                We respect your privacy. Your email is only used for access and updates.
+            </div>
+        </div>
+    </div>
+    
     <div class="demo-banner" id="demoBanner">
         <div class="banner-content">
             <div>
-                🚀 ENHANCED: Zoom-Adaptive Hex Grid | Smart Viewport Filtering | 989 Schools Mapped
-                <br>
-                ⬡ Hex Grid auto-adjusts resolution • 📍 Markers auto-filter at zoom 6+ • 🌡️ Heat Map shows all data
+                Trade Schools Directory • 1031 Schools Nationwide • Interactive Map & Search
             </div>
             <div class="banner-links">
-                <a href="https://bomforge.com/contact" target="_blank" class="banner-link">BOMForge</a>
+                <a href="https://bomforge.com" target="_blank" class="banner-link">BOMForge</a>
                 <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
             </div>
         </div>
@@ -1327,10 +1448,10 @@
     </div>
     
     <!-- Floating Submit Button -->
-    <button class="floating-submit" id="floatingSubmit" onclick="openSubmitModal()">
+    <a href="employer-hiring.html" class="floating-submit" id="floatingSubmit">
         <span>+</span>
         <span>Submit a School or Program</span>
-    </button>
+    </a>
     
     <!-- Program Legend -->
     <div class="legend-toggle" id="legendToggle" onclick="toggleLegend()">
@@ -1386,7 +1507,6 @@
                 <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
                 <div class="view-controls">
                     <button class="view-btn active" id="markersBtn" onclick="setView('markers')" title="Individual school markers with favicons">📍 Markers</button>
-                    <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
                 </div>
                 <div class="mode-indicator" id="modeIndicator" style="display: none;">
                     <span id="modeText" class="mode-text"></span>
@@ -1423,249 +1543,6 @@
             <canvas id="programChart" class="chart-canvas"></canvas>
         </div>
         
-        <div class="submission-form" id="submitForm">
-            <div class="form-title">🏫 Submit a School or Program</div>
-            <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
-            <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
-
-            <form id="schoolSubmissionForm" novalidate>
-                <!-- Section 1: Basic Info -->
-                <div class="form-section">
-                    <div class="form-section-header active" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>📝</span>
-                            <span>Basic Info</span>
-                            <span class="form-section-badge">2 Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content active">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">School Name</label>
-                                <input type="text" class="form-input" id="schoolName" name="schoolName" required minlength="2" maxlength="100" placeholder="Enter school name">
-                                <div class="field-error" id="schoolName-error"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label required">Street Address</label>
-                                <input type="text" class="form-input" id="streetAddress" name="streetAddress" placeholder="123 Main Street" required minlength="5" maxlength="200">
-                                <div class="field-hint">💡 Tip: Start typing for auto-complete suggestions</div>
-                                <div class="field-error" id="streetAddress-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 2: Location Details -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>📍</span>
-                            <span>Location Details</span>
-                            <span class="form-section-badge">3 Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">City</label>
-                                <input type="text" class="form-input" id="city" name="city" required minlength="2" maxlength="50" placeholder="City name">
-                                <div class="field-error" id="city-error"></div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group form-col-2">
-                                    <label class="form-label required">State</label>
-                                    <select class="form-input" id="state" name="state" required>
-                                        <option value="">Select State</option>
-                            <option value="AL">Alabama</option>
-                            <option value="AK">Alaska</option>
-                            <option value="AZ">Arizona</option>
-                            <option value="AR">Arkansas</option>
-                            <option value="CA">California</option>
-                            <option value="CO">Colorado</option>
-                            <option value="CT">Connecticut</option>
-                            <option value="DE">Delaware</option>
-                            <option value="FL">Florida</option>
-                            <option value="GA">Georgia</option>
-                            <option value="HI">Hawaii</option>
-                            <option value="ID">Idaho</option>
-                            <option value="IL">Illinois</option>
-                            <option value="IN">Indiana</option>
-                            <option value="IA">Iowa</option>
-                            <option value="KS">Kansas</option>
-                            <option value="KY">Kentucky</option>
-                            <option value="LA">Louisiana</option>
-                            <option value="ME">Maine</option>
-                            <option value="MD">Maryland</option>
-                            <option value="MA">Massachusetts</option>
-                            <option value="MI">Michigan</option>
-                            <option value="MN">Minnesota</option>
-                            <option value="MS">Mississippi</option>
-                            <option value="MO">Missouri</option>
-                            <option value="MT">Montana</option>
-                            <option value="NE">Nebraska</option>
-                            <option value="NV">Nevada</option>
-                            <option value="NH">New Hampshire</option>
-                            <option value="NJ">New Jersey</option>
-                            <option value="NM">New Mexico</option>
-                            <option value="NY">New York</option>
-                            <option value="NC">North Carolina</option>
-                            <option value="ND">North Dakota</option>
-                            <option value="OH">Ohio</option>
-                            <option value="OK">Oklahoma</option>
-                            <option value="OR">Oregon</option>
-                            <option value="PA">Pennsylvania</option>
-                            <option value="RI">Rhode Island</option>
-                            <option value="SC">South Carolina</option>
-                            <option value="SD">South Dakota</option>
-                            <option value="TN">Tennessee</option>
-                            <option value="TX">Texas</option>
-                            <option value="UT">Utah</option>
-                            <option value="VT">Vermont</option>
-                            <option value="VA">Virginia</option>
-                            <option value="WA">Washington</option>
-                            <option value="WV">West Virginia</option>
-                            <option value="WI">Wisconsin</option>
-                            <option value="WY">Wyoming</option>
-                                    </select>
-                                    <div class="field-error" id="state-error"></div>
-                                </div>
-
-                                <div class="form-group form-col-2">
-                                    <label class="form-label required">ZIP Code</label>
-                                    <input type="text" class="form-input" id="zipCode" name="zipCode" placeholder="12345" required pattern="^\d{5}(-\d{4})?$" maxlength="10">
-                                    <div class="field-error" id="zipCode-error"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 3: Contact Info -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>📞</span>
-                            <span>Contact Info</span>
-                            <span class="form-section-badge">2 Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">Contact Email</label>
-                                <input type="email" class="form-input" id="contactEmail" name="contactEmail" placeholder="info@school.edu" required>
-                                <div class="field-error" id="contactEmail-error"></div>
-                                <div class="field-hint">Primary contact email for the school</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label required">Phone Number</label>
-                                <input type="tel" class="form-input" id="phone" name="phone" placeholder="(555) 123-4567" required>
-                                <div class="field-error" id="phone-error"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Website</label>
-                                <input type="url" class="form-input" id="website" name="website" placeholder="https://www.school.edu">
-                                <div class="field-error" id="website-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 4: Programs Offered -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>🎓</span>
-                            <span>Programs Offered</span>
-                            <span class="form-section-badge">Required</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label required">Select Programs</label>
-                                <div class="multiselect-container" id="programsMultiselect">
-                                    <div class="multiselect-selected" onclick="toggleMultiselect()">
-                                        <div class="multiselect-tags" id="multiselectTags">
-                                            <span class="multiselect-placeholder">Click to select programs...</span>
-                                        </div>
-                                        <span>▼</span>
-                                    </div>
-                                    <div class="multiselect-dropdown" id="multiselectDropdown">
-                                        <div class="multiselect-search">
-                                            <input type="text" placeholder="Search programs..." id="programSearch" oninput="filterProgramOptions()">
-                                        </div>
-                                        <div class="multiselect-options" id="multiselectOptions">
-                                            <!-- Options will be populated by JavaScript -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" name="programs" id="programsHidden">
-                                <div class="field-error" id="programs-error"></div>
-                            </div>
-
-                            <div class="form-group" id="programOtherGroup" style="display: none;">
-                                <label class="form-label">Specify Other Program</label>
-                                <input type="text" class="form-input" id="programOther" name="programOther" placeholder="Enter program name" maxlength="100">
-                                <div class="field-error" id="programOther-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 5: Optional Details -->
-                <div class="form-section">
-                    <div class="form-section-header" onclick="toggleFormSection(this)">
-                        <div class="form-section-title">
-                            <span>✏️</span>
-                            <span>Optional Details</span>
-                            <span class="form-section-badge">Optional</span>
-                        </div>
-                        <span class="form-section-toggle">▼</span>
-                    </div>
-                    <div class="form-section-content">
-                        <div class="form-section-body">
-                            <div class="form-group">
-                                <label class="form-label">School Description</label>
-                                <textarea class="form-textarea" id="schoolDescription" name="schoolDescription" placeholder="Brief description of the school and its offerings..." maxlength="500" rows="3"></textarea>
-                                <div class="field-hint"><span id="descriptionCount">0</span>/500 characters</div>
-                                <div class="field-error" id="schoolDescription-error"></div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Your Name</label>
-                                <input type="text" class="form-input" id="submitterName" name="submitterName" placeholder="For contact purposes" maxlength="100">
-                                <div class="field-error" id="submitterName-error"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recaptcha-notice">
-                    This site is protected by reCAPTCHA and the Google
-                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
-                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
-                </div>
-
-                <div class="submit-btn-container">
-                    <button type="submit" class="submit-btn" id="submitBtn">
-                        <span id="submitBtnText">✅ Submit School</span>
-                        <span id="submitBtnLoading" style="display: none;">⏳ Submitting...</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <script>
         // Program color mapping - Updated to match interface legend
         const PROGRAM_COLORS = {
             'Welding': '#ff5959',
@@ -1855,23 +1732,6 @@
             setTimeout(() => map.invalidateSize(), 300);
         }
         
-        // Open submit school modal (scroll sidebar to form section)
-        function openSubmitModal() {
-            const sidebar = document.getElementById('sidebar');
-            const submitForm = document.getElementById('submitForm');
-            
-            // Expand sidebar if collapsed
-            if (sidebar.classList.contains('collapsed')) {
-                toggleSidebar();
-            }
-            
-            // Wait for animation, then scroll to form
-            setTimeout(() => {
-                if (submitForm) {
-                    submitForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 350);
-        }
         
         // Initialize map
         const map = L.map('map', {
@@ -1901,6 +1761,47 @@
         
         // Check if banner was previously dismissed
         window.addEventListener('DOMContentLoaded', function() {
+            // Email Gate functionality
+            function checkEmailGate() {
+                const userEmail = localStorage.getItem('userEmail');
+                const emailGate = document.getElementById('emailGate');
+                
+                if (!userEmail) {
+                    // Show email gate if no email stored
+                    emailGate.classList.remove('email-gate-hidden');
+                }
+            }
+            
+            // Handle email gate form submission
+            const emailGateForm = document.getElementById('emailGateForm');
+            if (emailGateForm) {
+                emailGateForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const emailInput = document.getElementById('emailGateInput');
+                    const email = emailInput.value.trim();
+                    
+                    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        // Store email in localStorage
+                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('emailSubmittedAt', new Date().toISOString());
+                        
+                        // Track with Google Analytics
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'email_gate_submit', {
+                                'event_category': 'engagement',
+                                'event_label': 'email_collected'
+                            });
+                        }
+                        
+                        // Hide the gate
+                        document.getElementById('emailGate').classList.add('email-gate-hidden');
+                    }
+                });
+            }
+            
+            // Check email gate first
+            checkEmailGate();
+            
             if (localStorage.getItem('bannerDismissed') === 'true') {
                 const banner = document.getElementById('demoBanner');
                 banner.classList.add('hidden');
