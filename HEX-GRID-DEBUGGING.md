@@ -189,3 +189,4 @@ If hex grid still doesn't work after following this guide:
 - [x] No silent failures
 - [x] Graceful degradation with error messages
 
+

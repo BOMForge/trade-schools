@@ -151,3 +151,4 @@ Added on top of existing logic:
 **Lines Added**: ~130 (emoji mappings + helper function + UI updates)
 **Testing**: Manual verification recommended in hex grid mode
 
+

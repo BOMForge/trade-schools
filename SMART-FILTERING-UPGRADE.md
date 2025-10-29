@@ -291,3 +291,4 @@ This is **convention over configuration** at its best.
 **Lines Changed**: ~50 (added intelligent logic, removed manual toggle)  
 **User Impact**: Massive UX improvement with zero learning curve
 
+

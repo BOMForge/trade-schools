@@ -1,0 +1,248 @@
+<!DOCTYPE HTML><html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      <title>404 Not Found | Lake Washington Institute of Technology</title>
+      <link rel="canonical" href="https://www.lwtech.edu/404.aspx">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <style>
+			#cms-inline-editor-id a[data-region-style="button"][role="button"].ou-btn.edit-source, a[data-region-style="button"][role="button"].ou-btn.edit-source {
+			display: none !important;
+			visibility: hidden !important;
+			}
+		</style>
+      
+<!-- this is the headcode include -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css"/>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"/>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="/_resources/css/dataTables.bootstrap5.min.css"/>
+
+<!-- Global Styles -->
+<link rel="stylesheet" href="/_resources/css/oustyles.css"/>
+<link rel="stylesheet" href="/_resources/css/fonts.css"/>
+<link rel="stylesheet" href="/_resources/css/header.css"/>
+<link rel="stylesheet" href="/_resources/css/footer.css"/>
+<link rel="stylesheet" href="/_resources/css/global.css"/>
+
+
+
+<!-- Responsive Styles - Alwyas load at the end -->
+<link rel="stylesheet" href="/_resources/css/global-responsive.css"/>
+
+<!-- Bugherd -->
+<script type="text/javascript" src="https://www.bugherd.com/sidebarv2.js?apikey=espmgjyfx0foaor6bztesw" async="true"></script>
+<!-- Insert google analytics here -->
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NCF28JV');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QVPQ6TJPSW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'G-QVPQ6TJPSW');
+</script>
+</head>
+   <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NCF28JV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<header class="main-header"><a href="#mainContent" class="skip-btn d-link link-bold-underline">Skip to Main Content</a><a href="#mainFooter" class="skip-btn d-link link-bold-underline">Skip to Footer</a><div class="container-fluid">
+      <div class="header-top-nav">
+         <div><a href="/admissions/campus-tour.aspx" class="top-nav-link">Visit</a><a href="/foundation/bright-futures/index.aspx" class="top-nav-link">Give</a><a href="/admissions/get-started-at-lwtech.aspx" class="d-btn d-btn-arrow btn-highlight">Get Started</a></div>
+      </div>
+      <div class="row">
+         <div class="col-6 col-lg-3 d-flex align-items-center">
+            <div class="header-logo"><a href="/index.aspx"><span class="visually-hidden">logo</span><img src="/_resources/img/header-logo.svg" alt="LWTech Logo Link to Home page"></a></div>
+         </div>
+         <div class="col-6 col-lg-9 d-flex align-items-end">
+            <div class="header-nav">
+               <form class="header-search" id="search-form" name="search" action="/search/search.aspx" method="get">
+                  <div class="input-group header-search d-none d-lg-flex"><input name="q" type="search" class="form-control" placeholder="Search..." aria-label="Search"><div class="input-group-append"><button class="site-search__submit" type="submit"><span class="sr-only">search button</span><span class="fa-solid fa-magnifying-glass fa-lg"></span></button></div>
+                  </div>
+               </form><button type="button" class="header-menu-icon" id="headerToggleSubmenu"> 
+                  								Menu <span class="fa-solid fa-bars fa-lg pt-1 px-2" id="headerMenuIcon"></span></button></div>
+         </div>
+      </div>
+   </div>
+   <div class="header-submenu" id="headerSubmenu">
+      <div class="container">
+         <form class="header-search" id="search-form" name="search" action="/search/search.aspx" method="get">
+            <div class="input-group header-search d-flex d-lg-none"><input name="q" type="search" class="form-control" placeholder="Search..." aria-label="Search"><div class="input-group-append"><button class="site-search__submit" type="submit"><span class="sr-only">search button</span><span class="fa-solid fa-magnifying-glass fa-lg"></span></button></div>
+            </div>
+         </form>
+         <div class="accordion" id="headerAccordion">
+            <div class="accordion-item">
+               <h2 class="accordion-header" id="heading1"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">Students</button></h2>
+               <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="heading1" data-bs-parent="#headerAccordion">
+                  <div class="accordion-body collapsed">
+                     <div class="header-submenu-links"><a href="/students/index.aspx">Student Info Page</a><a href="/admissions/advising/index.aspx">Advising</a><a href="/campus-services/bookstore.aspx">Bookstore</a><a href="/students/mental-health-counseling/index.aspx">Student Support</a></div>
+                  </div>
+               </div>
+            </div>
+            <div class="accordion-item">
+               <h2 class="accordion-header" id="heading2"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Employees</button></h2>
+               <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#headerAccordion">
+                  <div class="accordion-body collapsed">
+                     <div class="header-submenu-links"><a href="/employees/index.aspx">Info for Employees</a><a href="/employees/25live-room-reservation/index.aspx">25 Live</a><a href="/employees/human-resources/index.aspx">Human Resources</a><a href="/campus-services/requests.aspx">Requests</a></div>
+                  </div>
+               </div>
+            </div>
+            <div class="accordion-item">
+               <h2 class="accordion-header" id="heading3"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">Community</button></h2>
+               <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#headerAccordion">
+                  <div class="accordion-body collapsed">
+                     <div class="header-submenu-links"><a href="/about-us/community/index.aspx">Info for the Community</a><a href="/about-us/index.aspx">About Us</a><a href="/foundation/give.aspx">Give</a></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="header-quick-links">
+            <p class="title">Quicklinks</p>
+            <div class="header-submenu-links"><a href="/calendar/index.aspx">Academic Calendar</a><a href="https://lwtech.instructure.com/">Canvas</a><a href="https://csprd.ctclink.us/psc/csprd/EMPLOYEE/SA/s/WEBLIB_HCX_GN.H_SPRINGBOARD.FieldFormula.IScript_Main?institution=WA260&amp;">ctcLink (LionsLink)</a><a href="https://lwtech.okta.com/app/lwtech_legendokta_1/exkdbmh8bgjnONWpF4x7/sso/saml">Legend</a><a href="https://lwtech.okta.com/">Okta Dashboard</a><a href="https://my.lwtech.edu:444/identity/passwordreset">Reset Password</a><a href="https://www.outlook.com/lwtech.edu">Webmail</a></div>
+         </div><a href="#" class="sr-only" id="headerMenuClose">Menu Closed</a></div>
+   </div>
+</header>
+      <main class="main-content" id="mainContent">
+         <div class="container-fluid">
+            <div class="breadcrumb-container">
+               <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                     <li class="breadcrumb-item"><a href="https://www.lwtech.edu/">Home</a></li>
+                     <li class="breadcrumb-item active">404</li>
+                  </ol>
+               </nav>
+            </div>
+         </div>
+         <div class="page-title-conatiner">
+            <div class="container-fluid">
+               <h1 class="page-title">404 Not Found</h1>
+            </div>
+         </div>
+         <div class="container my-5">
+            <div class="row">
+               <div class="col-12 col-lg-3">
+                  <div class="sidenav-tier">
+                     <p class="sidenav-tier-title">Navigation</p>
+                     <div class="sidenav-tier-accordion accordion" id="accordionPanelsStayOpenExample">
+                        <div class="accordion-item">
+                           <h2 class="accordion-header" id="tierAccordion-heading1"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#tierAccordion-1" aria-expanded="true" aria-controls="tierAccordion-1">
+                                 					Current Section
+                                 				</button></h2>
+                           <div id="tierAccordion-1" class="accordion-collapse collapse show" aria-labelledby="tierAccordion-heading1">
+                              <div class="accordion-body">
+                                 <div class="sidenav-tier-links" data-nav-path=""><li><a href="/about-us/index.aspx">About LWTech</a></li> 
+<li><a href="/academics/index.aspx">Academics</a></li> 
+<li><a href="/admissions/index.aspx">Admissions &amp; Registration</a></li> 
+<li><a href="/campus-services/index.aspx">Campus Services</a></li> 
+<li><a href="/employees/index.aspx">Employees</a></li> 
+<li><a href="/foundation/index.aspx">LWTech Foundation</a></li> 
+<li><a href="/students/index.aspx">Student Landing Page</a></li> 
+</div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-12 col-lg-9 ps-lg-5">
+                  <div class="container">
+                     <div class="introductory-box">
+                        <p class="introductory-top-title"></p>
+                        <h2 class="introductory-title">404 Not Found</h2>
+                        <p class="introductory-text">
+                           <description>With the launch of our new site some outside links may take a while to update. We've
+                              included links below to help you find your intended destination!</description>
+                        </p>
+                     </div>
+                  </div>
+                  
+                  <p>&nbsp;</p>
+                  
+                  <div class="container">
+                     <div class="d-group-btns">
+                        <div class="row g-0"><a class="col-12 col-md-4" href="/students/index.aspx">Student Landing Page</a><a class="col-12 col-md-4" href="/academics/index.aspx">Academics</a><a class="col-12 col-md-4" href="/admissions/index.aspx">Admissions</a></div>
+                     </div>
+                     <div class="divider-gap"></div>
+                     <div class="d-group-btns">
+                        <div class="row g-0"><a class="col-12 col-md-4" href="/campus-services/index.aspx">Campus Services</a><a class="col-12 col-md-4" href="/calendar/index.aspx">Calendar</a><a class="col-12 col-md-4" href="/about-us/index.aspx">About Us</a></div>
+                     </div>
+                  </div>
+                  
+                  <p>&nbsp;</p>
+               </div>
+            </div>
+         </div>
+      </main>
+      <footer class="main-footer" id="mainFooter">
+   <div class="footer-content">
+      <div class="container-fluid">
+         <p class="footer-title">The Future Begins With YOU</p>
+         <div class="footer-columns-container">
+            <div class="footer-columns">
+               <div>
+                  <div class="footer-logo"><img src="/_resources/img/footer-logo.svg" alt="footer logo"></div>
+                  <div class="mb-2"><a href="/about-us/directions.aspx">11605 132nd Avenue NE<br>Kirkland, WA 98034</a></div>
+                  <div class="font-black"><a href="tel:(425) 739-8100">(425) 739-8100</a></div>
+               </div>
+            </div>
+            <div class="footer-columns">
+               <div class="footer-links-container">
+                  <div class="footer-links">
+                     <p class="footer-links-title">Quick Links</p><a title="Link to external site" href="https://lwtech.instructure.com/" target="_blank" rel="noopener">Canvas</a><a title="Link to external site" href="https://csprd.ctclink.us/psc/csprd/EMPLOYEE/SA/s/WEBLIB_HCX_GN.H_SPRINGBOARD.FieldFormula.IScript_Main?institution=WA260&amp;" target="_blank" rel="noopener">ctcLink (LionsLink)</a><a title="Link to external site" href="https://lwtech.okta.com/home/lwtech_legendokta_1/0oadbmh8bhMF7cnA14x7/alndbmkxtf1V2KZE84x7" target="_blank" rel="noopener">Legend</a><a title="Link to external site" href="https://lwtech.okta.com/" target="_blank" rel="noopener">Okta Dashboard</a><a title="Link to external site" href="https://www.outlook.com/lwtech.edu" target="_blank" rel="noopener">Webmail</a></div>
+                  <div class="footer-links">
+                     <p class="footer-links-title">Resources</p><a href="/about-us/digital-accessibility/index.aspx">Digital Accessibility</a><a href="/employees/human-resources/jobs.aspx">LWTech Jobs</a><a href="/about-us/shared-governance/policies-and-procedures/non-discrimination-notice.aspx">Non-Discrimination Notice</a><a href="/about-us/shared-governance/policies-and-procedures/index.aspx">Policies &amp; Procedures</a><a href="/about-us/shared-governance/policies-and-procedures/website-privacy-policy.aspx">Website Privacy Policy</a></div>
+                  <div class="footer-links">
+                     <p class="footer-links-title">Information</p><a href="/students/index.aspx">Student Info Page</a><a href="/employees/index.aspx">Employee Info Page</a><a href="/calendar/index.aspx">Calendar</a><a href="/about-us/directory/index.aspx">Directory</a><a href="/campus-services/it-services/guides/language-translation-tools.aspx">Translation Tools</a></div>
+               </div>
+            </div>
+            <div class="footer-columns">
+               <div>
+                  <div class="footer-report"><a href="/campus-services/campus-safety/incident-reporting/report-something.aspx" class="d-btn d-btn-arrow btn-highlight">Report Something</a></div>
+                  <div class="footer-social"><a href="https://www.facebook.com/TheLWTech"><span class="sr-only">facebook</span><span class="fa-brands fa-facebook-f"></span></a><a href="https://www.instagram.com/thelwtech/"><span class="sr-only">instagram</span><span class="fa-brands fa-instagram"></span></a><a href="https://www.linkedin.com/school/lake-washington-institute-of-technology/"><span class="sr-only">linkedin</span><span class="fa-brands fa-linkedin-in"></span></a><a href="https://www.youtube.com/channel/UCqx_PeebgqtKpAoyySzigBA"><span class="sr-only">youtube</span><span class="fa-brands fa-youtube"></span></a><a href="https://www.flickr.com/photos/lwitech/"><span class="sr-only">flickr</span><span class="fa-brands fa-flickr"></span></a></div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="footer-copyright">
+      <div class="copyright">Last Updated: <span id="directedit">&nbsp;</span> | 2025 Copyright © Lake Washington Institute of Technology</div>
+   </div>
+</footer>
+<!-- Jquery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+<!-- BootStrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+<!-- DataTables -->
+<script src="/_resources/js/jquery.dataTables.min.js"></script>
+<script src="/_resources/js/dataTables.bootstrap5.min.js"></script>
+
+
+<!-- Pagination.js -->
+<script src="/_resources/js/pagination.min.js"></script>
+
+<!-- Custom -->
+<script src="/_resources/js/scripts.js"></script>
+<script src="/_resources/js/navigation.js"></script>
+      <div id="ou-hidden" style="display:none;"><a id="de" href="https://a.cms.omniupdate.com/11/?skin=oucampus&amp;account=lwtech&amp;site=www&amp;action=de&amp;path=/404.pcf" >11/19/24</a></div><script>
+			if(document.getElementById("de") != null && document.getElementById("directedit")) {
+				var link = document.getElementById("de").parentNode.innerHTML;
+				document.getElementById("de").parentNode.innerHTML = "";
+				document.getElementById("directedit").innerHTML = link.replace(/^\s+|\s+$/gm,'');
+			}
+		</script></body>
+</html>

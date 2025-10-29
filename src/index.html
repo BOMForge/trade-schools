@@ -34,18 +34,20 @@
             top: 0;
             left: 0;
             right: 0;
-            background: #15202b;
-            border-bottom: 1px solid #38444d;
-            color: #e1e8ed;
+            background: linear-gradient(135deg, #1a1f2e 0%, #2a3340 100%);
+            color: white;
             text-align: center;
-            padding: 10px 40px;
+            padding: 8px 40px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             z-index: 2000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 20px;
+            border-bottom: 2px solid #3d4855;
         }
         
         .demo-banner.hidden {
@@ -68,18 +70,33 @@
         }
         
         .banner-link {
-            color: #1d9bf0;
+            color: white;
             text-decoration: none;
             padding: 4px 12px;
-            background: rgba(29, 155, 240, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
-            font-weight: 500;
+            font-weight: 700;
             transition: all 0.2s ease;
         }
         
         .banner-link:hover {
-            background: rgba(29, 155, 240, 0.2);
-            color: #6bcf7f;
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.05);
+        }
+        
+        .contact-link {
+            color: #10b981;
+            text-decoration: none;
+            padding: 4px 12px;
+            background: rgba(16, 185, 129, 0.15);
+            border-radius: 4px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        
+        .contact-link:hover {
+            background: rgba(16, 185, 129, 0.25);
+            transform: scale(1.05);
         }
         
         .banner-close {
@@ -884,7 +901,7 @@
             background: rgba(21, 32, 43, 0.95);
             border: 1px solid #38444d;
             border-radius: 12px;
-            padding: 12px 16px;
+            padding: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -892,9 +909,25 @@
             user-select: none;
         }
         
-        .stats-badge:active {
-            cursor: grabbing;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        .stats-badge.dragging {
+            opacity: 0.8;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        
+        .stats-badge-handle {
+            background: rgba(29, 155, 240, 0.2);
+            padding: 6px 12px;
+            border-bottom: 1px solid #38444d;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            font-size: 14px;
+            color: #8899a6;
+            cursor: move;
+        }
+        
+        .stats-badge-handle:hover {
+            background: rgba(29, 155, 240, 0.3);
+            color: #1d9bf0;
         }
         
         .stats-badge-content {
@@ -902,6 +935,7 @@
             gap: 16px;
             align-items: center;
             font-size: 13px;
+            padding: 12px 16px;
         }
         
         .stats-badge-item {
@@ -1282,175 +1316,27 @@
             
             #sidebar {
                 width: 100%;
-                height: auto;
-                max-height: 60vh;
-            }
-            
-            #sidebar.collapsed {
-                transform: translateY(100%);
+                height: 50vh;
             }
             
             #map {
-                height: 100vh;
+                height: 50vh;
             }
-            
-            .sidebar-toggle {
-                bottom: 20px;
-                right: 20px;
-                top: auto;
-            }
-            
-            .stats-badge {
-                top: 10px;
-                left: 10px;
-                font-size: 11px;
-            }
-            
-            .stats-badge-value {
-                font-size: 16px;
-            }
-            
-            .floating-submit {
-                bottom: 80px;
-                right: 10px;
-                padding: 12px 20px;
-                font-size: 14px;
-            }
-        }
-        
-        /* Email Gate Modal */
-        .email-gate-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .email-gate-modal {
-            background: #1e2936;
-            border: 1px solid #38444d;
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 480px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-        
-        .email-gate-title {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #e1e8ed;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        
-        .email-gate-subtitle {
-            font-size: 1em;
-            color: #8899a6;
-            margin-bottom: 30px;
-            text-align: center;
-            line-height: 1.5;
-        }
-        
-        .email-gate-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .email-gate-input {
-            padding: 16px;
-            background: #15202b;
-            border: 1px solid #38444d;
-            border-radius: 8px;
-            color: #e1e8ed;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-        
-        .email-gate-input:focus {
-            outline: none;
-            border-color: #1d9bf0;
-            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
-        }
-        
-        .email-gate-button {
-            padding: 16px;
-            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .email-gate-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
-        }
-        
-        .email-gate-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .email-gate-privacy {
-            font-size: 0.85em;
-            color: #8899a6;
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .email-gate-hidden {
-            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Email Gate Modal -->
-    <div class="email-gate-overlay email-gate-hidden" id="emailGate">
-        <div class="email-gate-modal">
-            <div class="email-gate-title">🎓 Welcome to Trade Schools Map</div>
-            <div class="email-gate-subtitle">
-                Enter your email to access our interactive map of 1000+ trade schools nationwide
-            </div>
-            <form class="email-gate-form" id="emailGateForm">
-                <input 
-                    type="email" 
-                    class="email-gate-input" 
-                    id="emailGateInput" 
-                    placeholder="your@email.com" 
-                    required
-                    autocomplete="email"
-                >
-                <button type="submit" class="email-gate-button" id="emailGateButton">
-                    Continue to Map
-                </button>
-            </form>
-            <div class="email-gate-privacy">
-                We respect your privacy. Your email is only used for access and updates.
-            </div>
-        </div>
-    </div>
-    
     <div class="demo-banner" id="demoBanner">
         <div class="banner-content">
             <div>
-                Trade Schools Directory • 1031 Schools Nationwide • Interactive Map & Search
+                🚀 ENHANCED: Zoom-Adaptive Hex Grid | Smart Viewport Filtering | 989 Schools Mapped
+                <br>
+                ⬡ Hex Grid auto-adjusts resolution • 📍 Markers auto-filter at zoom 6+ • 🌡️ Heat Map shows all data
             </div>
             <div class="banner-links">
-                <a href="https://bomforge.com" target="_blank" class="banner-link">BOMForge</a>
+                <a href="submit-school.html" class="banner-link">Submit a School</a>
+                <a href="mailto:tom@bomforge.com" class="contact-link">Contact Us</a>
+                <a href="https://bomforge.com/contact" target="_blank" class="banner-link">BOMForge</a>
                 <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
             </div>
         </div>
@@ -1466,6 +1352,7 @@
     
     <!-- Stats Badge -->
     <div class="stats-badge" id="statsBadge">
+        <div class="stats-badge-handle">☰</div>
         <div class="stats-badge-content">
             <div class="stats-badge-item">
                 <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
@@ -1483,10 +1370,10 @@
     </div>
     
     <!-- Floating Submit Button -->
-    <a href="submit-school.html" class="floating-submit" id="floatingSubmit">
+    <button class="floating-submit" id="floatingSubmit" onclick="openSubmitModal()">
         <span>+</span>
         <span>Submit a School or Program</span>
-    </a>
+    </button>
     
     <!-- Program Legend -->
     <div class="legend-toggle" id="legendToggle" onclick="toggleLegend()">
@@ -1500,10 +1387,62 @@
         <div class="legend-items" id="legendItems"></div>
     </div>
     
-    <div id="sidebar" class="collapsed">
-        <div class="filters" style="padding: 20px;">
-            <h2 style="color: #e1e8ed; margin-bottom: 20px; font-size: 1.2em;">Filters</h2>
-            
+    <div id="sidebar">
+        <div class="header">
+            <div class="header-nav">
+                <a href="index.html" class="nav-link">🏠 Home</a>
+                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+                <a href="clean-map.html" class="nav-link active">🗺️ Map</a>
+            </div>
+            <h1>🎓 Trade Schools Directory</h1>
+            <div class="stats">
+                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
+                    <div class="stat-value" id="totalSchools">0</div>
+                    <div class="stat-label">Schools</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalStates">0</div>
+                    <div class="stat-label">States</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="visibleCount">0</div>
+                    <div class="stat-label">Visible</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <!-- Data Summary Widget -->
+            <div class="data-summary" id="dataSummary">
+                <div class="data-summary-title">📊 Live Data Overview</div>
+                <div class="data-summary-main" id="summaryMain">989 Schools in 50 States</div>
+                <div class="data-summary-programs" id="summaryPrograms">
+                    <strong>🎓 Top Programs:</strong> Welding (739), Diesel (592), HVAC (576)
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
+                <div class="view-controls">
+                    <button class="view-btn active" id="markersBtn" onclick="setView('markers')" title="Individual school markers with favicons">📍 Markers</button>
+                    <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
+                </div>
+                <div class="mode-indicator" id="modeIndicator" style="display: none;">
+                    <span id="modeText" class="mode-text"></span>
+                    <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">🗺️</span> Viewport Only</label>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="viewportOnlyToggle">
+                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit heat/hex calculations to visible map area</label>
+                </div>
+            </div>
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">📍</span> Filter by State</label>
                 <select class="filter-select" id="stateFilter">
@@ -1516,6 +1455,256 @@
                     <option value="">All Programs</option>
                 </select>
             </div>
+        </div>
+        
+        <div class="school-list" id="schoolList">
+            <div class="loading">Loading schools...</div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title" id="chartTitle">📊 Program Distribution</div>
+            <canvas id="programChart" class="chart-canvas"></canvas>
+        </div>
+        
+        <div class="submission-form" id="submitForm">
+            <div class="form-title">🏫 Submit a School or Program</div>
+            <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
+            <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
+
+            <form id="schoolSubmissionForm" novalidate>
+                <!-- Section 1: Basic Info -->
+                <div class="form-section">
+                    <div class="form-section-header active" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>📝</span>
+                            <span>Basic Info</span>
+                            <span class="form-section-badge">2 Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content active">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">School Name</label>
+                                <input type="text" class="form-input" id="schoolName" name="schoolName" required minlength="2" maxlength="100" placeholder="Enter school name">
+                                <div class="field-error" id="schoolName-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">Street Address</label>
+                                <input type="text" class="form-input" id="streetAddress" name="streetAddress" placeholder="123 Main Street" required minlength="5" maxlength="200">
+                                <div class="field-hint">💡 Tip: Start typing for auto-complete suggestions</div>
+                                <div class="field-error" id="streetAddress-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Location Details -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>📍</span>
+                            <span>Location Details</span>
+                            <span class="form-section-badge">3 Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">City</label>
+                                <input type="text" class="form-input" id="city" name="city" required minlength="2" maxlength="50" placeholder="City name">
+                                <div class="field-error" id="city-error"></div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-col-2">
+                                    <label class="form-label required">State</label>
+                                    <select class="form-input" id="state" name="state" required>
+                                        <option value="">Select State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                                    </select>
+                                    <div class="field-error" id="state-error"></div>
+                                </div>
+
+                                <div class="form-group form-col-2">
+                                    <label class="form-label required">ZIP Code</label>
+                                    <input type="text" class="form-input" id="zipCode" name="zipCode" placeholder="12345" required pattern="^\d{5}(-\d{4})?$" maxlength="10">
+                                    <div class="field-error" id="zipCode-error"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Contact Info -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>📞</span>
+                            <span>Contact Info</span>
+                            <span class="form-section-badge">2 Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">Contact Email</label>
+                                <input type="email" class="form-input" id="contactEmail" name="contactEmail" placeholder="info@school.edu" required>
+                                <div class="field-error" id="contactEmail-error"></div>
+                                <div class="field-hint">Primary contact email for the school</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label required">Phone Number</label>
+                                <input type="tel" class="form-input" id="phone" name="phone" placeholder="(555) 123-4567" required>
+                                <div class="field-error" id="phone-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Website</label>
+                                <input type="url" class="form-input" id="website" name="website" placeholder="https://www.school.edu">
+                                <div class="field-error" id="website-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Programs Offered -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>🎓</span>
+                            <span>Programs Offered</span>
+                            <span class="form-section-badge">Required</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label required">Select Programs</label>
+                                <div class="multiselect-container" id="programsMultiselect">
+                                    <div class="multiselect-selected" onclick="toggleMultiselect()">
+                                        <div class="multiselect-tags" id="multiselectTags">
+                                            <span class="multiselect-placeholder">Click to select programs...</span>
+                                        </div>
+                                        <span>▼</span>
+                                    </div>
+                                    <div class="multiselect-dropdown" id="multiselectDropdown">
+                                        <div class="multiselect-search">
+                                            <input type="text" placeholder="Search programs..." id="programSearch" oninput="filterProgramOptions()">
+                                        </div>
+                                        <div class="multiselect-options" id="multiselectOptions">
+                                            <!-- Options will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="programs" id="programsHidden">
+                                <div class="field-error" id="programs-error"></div>
+                            </div>
+
+                            <div class="form-group" id="programOtherGroup" style="display: none;">
+                                <label class="form-label">Specify Other Program</label>
+                                <input type="text" class="form-input" id="programOther" name="programOther" placeholder="Enter program name" maxlength="100">
+                                <div class="field-error" id="programOther-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Optional Details -->
+                <div class="form-section">
+                    <div class="form-section-header" onclick="toggleFormSection(this)">
+                        <div class="form-section-title">
+                            <span>✏️</span>
+                            <span>Optional Details</span>
+                            <span class="form-section-badge">Optional</span>
+                        </div>
+                        <span class="form-section-toggle">▼</span>
+                    </div>
+                    <div class="form-section-content">
+                        <div class="form-section-body">
+                            <div class="form-group">
+                                <label class="form-label">School Description</label>
+                                <textarea class="form-textarea" id="schoolDescription" name="schoolDescription" placeholder="Brief description of the school and its offerings..." maxlength="500" rows="3"></textarea>
+                                <div class="field-hint"><span id="descriptionCount">0</span>/500 characters</div>
+                                <div class="field-error" id="schoolDescription-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" class="form-input" id="submitterName" name="submitterName" placeholder="For contact purposes" maxlength="100">
+                                <div class="field-error" id="submitterName-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recaptcha-notice">
+                    This site is protected by reCAPTCHA and the Google
+                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
+                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+                </div>
+
+                <div class="submit-btn-container">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span id="submitBtnText">✅ Submit School</span>
+                        <span id="submitBtnLoading" style="display: none;">⏳ Submitting...</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
     
@@ -1709,6 +1898,23 @@
             setTimeout(() => map.invalidateSize(), 300);
         }
         
+        // Open submit school modal (scroll sidebar to form section)
+        function openSubmitModal() {
+            const sidebar = document.getElementById('sidebar');
+            const submitForm = document.getElementById('submitForm');
+            
+            // Expand sidebar if collapsed
+            if (sidebar.classList.contains('collapsed')) {
+                toggleSidebar();
+            }
+            
+            // Wait for animation, then scroll to form
+            setTimeout(() => {
+                if (submitForm) {
+                    submitForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 350);
+        }
         
         // Initialize map
         const map = L.map('map', {
@@ -1737,100 +1943,7 @@
         }
         
         // Check if banner was previously dismissed
-        // Make element draggable
-        function makeDraggable(element) {
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            
-            element.onmousedown = dragMouseDown;
-            element.ontouchstart = dragTouchStart;
-            
-            function dragMouseDown(e) {
-                e.preventDefault();
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
-            }
-            
-            function dragTouchStart(e) {
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-                document.ontouchend = closeDragElement;
-                document.ontouchmove = elementDragTouch;
-            }
-            
-            function elementDrag(e) {
-                e.preventDefault();
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                element.style.top = (element.offsetTop - pos2) + "px";
-                element.style.left = (element.offsetLeft - pos1) + "px";
-            }
-            
-            function elementDragTouch(e) {
-                pos1 = pos3 - e.touches[0].clientX;
-                pos2 = pos4 - e.touches[0].clientY;
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-                element.style.top = (element.offsetTop - pos2) + "px";
-                element.style.left = (element.offsetLeft - pos1) + "px";
-            }
-            
-            function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-                document.ontouchend = null;
-                document.ontouchmove = null;
-            }
-        }
-        
         window.addEventListener('DOMContentLoaded', function() {
-            // Make stats badge and submit button draggable
-            makeDraggable(document.getElementById('statsBadge'));
-            
-            // Email Gate functionality
-            function checkEmailGate() {
-                const userEmail = localStorage.getItem('userEmail');
-                const emailGate = document.getElementById('emailGate');
-                
-                if (!userEmail) {
-                    // Show email gate if no email stored
-                    emailGate.classList.remove('email-gate-hidden');
-                }
-            }
-            
-            // Handle email gate form submission
-            const emailGateForm = document.getElementById('emailGateForm');
-            if (emailGateForm) {
-                emailGateForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const emailInput = document.getElementById('emailGateInput');
-                    const email = emailInput.value.trim();
-                    
-                    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                        // Store email in localStorage
-                        localStorage.setItem('userEmail', email);
-                        localStorage.setItem('emailSubmittedAt', new Date().toISOString());
-                        
-                        // Track with Google Analytics
-                        if (typeof gtag !== 'undefined') {
-                            gtag('event', 'email_gate_submit', {
-                                'event_category': 'engagement',
-                                'event_label': 'email_collected'
-                            });
-                        }
-                        
-                        // Hide the gate
-                        document.getElementById('emailGate').classList.add('email-gate-hidden');
-                    }
-                });
-            }
-            
-            // Check email gate first
-            // checkEmailGate(); // Temporarily disabled
-            
             if (localStorage.getItem('bannerDismissed') === 'true') {
                 const banner = document.getElementById('demoBanner');
                 banner.classList.add('hidden');
@@ -2236,10 +2349,9 @@
                         domain = school.website.replace(/^https?:\/\//, '').split('/')[0];
                     }
                     
-                    // Try local favicon first, then Google's service, then emoji
-                    const localFavicon = `assets/favicons/${domain}.png`;
-                    iconHtml = `<img src="${localFavicon}" 
-                                     onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${domain}&sz=32'; this.onerror=function(){this.style.display='none'; this.parentElement.innerHTML='🎓';};" 
+                    // Use Google's favicon service with fallback to emoji
+                    iconHtml = `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=32" 
+                                     onerror="this.style.display='none'; this.parentElement.innerHTML='🎓';" 
                                      style="width: 24px; height: 24px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">`;
                 } else {
                     // No website, use emoji fallback
@@ -2278,14 +2390,9 @@
                     }
                 }
                 
-                // Try local favicon first for popup
-                const popupFaviconHtml = faviconDomain ? 
-                    `<img src="assets/favicons/${faviconDomain}.png" class="popup-favicon" onerror="this.onerror=null; this.src='https://www.google.com/s2/favicons?domain=${faviconDomain}&sz=64'; this.onerror=function(){this.style.display='none'};">` : 
-                    '<span style="font-size: 20px;">🎓</span>';
-                
                 const popupContent = `
                     <div class="popup-header">
-                        ${popupFaviconHtml}
+                        ${faviconDomain ? `<img src="https://www.google.com/s2/favicons?domain=${faviconDomain}&sz=64" class="popup-favicon" onerror="this.style.display='none'">` : '<span style="font-size: 20px;">🎓</span>'}
                         <div class="popup-title">${school.name}</div>
                     </div>
                     <div style="color: #8899a6; font-size: 13px; margin-bottom: 6px;">📍 ${school.city}, ${school.state}</div>
@@ -2362,12 +2469,9 @@
             applyFilters();
         });
         
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', function(e) {
-                applyFilters();
-            });
-        }
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            applyFilters();
+        });
         
         // Apply filters
         function applyFilters() {
@@ -3359,6 +3463,94 @@
         // Add viewport change listeners
         map.on('moveend', updateViewportFiltering);
         map.on('zoomend', updateViewportFiltering);
+        
+        // Make stats badge draggable
+        (function() {
+            const statsBadge = document.getElementById('statsBadge');
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+            
+            // Load saved position
+            const savedPos = localStorage.getItem('statsBadgePosition');
+            if (savedPos) {
+                const pos = JSON.parse(savedPos);
+                statsBadge.style.left = pos.x + 'px';
+                statsBadge.style.top = pos.y + 'px';
+            }
+            
+            statsBadge.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            statsBadge.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+            
+            function dragStart(e) {
+                if (e.type === "touchstart") {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+                
+                if (e.target === statsBadge || e.target.classList.contains('stats-badge-handle')) {
+                    isDragging = true;
+                    statsBadge.classList.add('dragging');
+                }
+            }
+            
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    
+                    if (e.type === "touchmove") {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+                    
+                    xOffset = currentX;
+                    yOffset = currentY;
+                    
+                    setTranslate(currentX, currentY, statsBadge);
+                }
+            }
+            
+            function dragEnd(e) {
+                if (isDragging) {
+                    initialX = currentX;
+                    initialY = currentY;
+                    isDragging = false;
+                    statsBadge.classList.remove('dragging');
+                    
+                    // Save position
+                    const rect = statsBadge.getBoundingClientRect();
+                    localStorage.setItem('statsBadgePosition', JSON.stringify({
+                        x: rect.left,
+                        y: rect.top
+                    }));
+                }
+            }
+            
+            function setTranslate(xPos, yPos, el) {
+                const rect = el.getBoundingClientRect();
+                const newLeft = rect.left + (xPos - xOffset);
+                const newTop = rect.top + (yPos - yOffset);
+                
+                el.style.left = newLeft + 'px';
+                el.style.top = newTop + 'px';
+                el.style.transform = 'none';
+            }
+        })();
 
         // Viewport-only toggle handler
         const viewportToggleEl = document.getElementById('viewportOnlyToggle');

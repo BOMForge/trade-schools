@@ -22,3 +22,4 @@ Allow: /submit-school.html
 
 # Allow data files for SEO
 Allow: /data/production/
+
