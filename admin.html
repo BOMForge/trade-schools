@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Trade Schools Submissions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #3b82f6;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        .submission {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .submission-title {
+            font-size: 18px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .submission-meta {
+            color: #888;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .submission-field {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .submission-field strong {
+            color: #ccc;
+            margin-right: 8px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .approve-btn {
+            background: #10b981;
+            color: white;
+        }
+        
+        .approve-btn:hover {
+            background: #059669;
+        }
+        
+        .reject-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .reject-btn:hover {
+            background: #dc2626;
+        }
+        
+        .export-btn {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background: #2563eb;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+        }
+        
+        .quick-add {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-approved {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Trade Schools Admin Panel</h1>
+        
+        <!-- Quick Add Section -->
+        <div class="section">
+            <h2>Quick Add School</h2>
+            <div class="quick-add">
+                <form id="quickAddForm">
+                    <div class="form-row">
+                        <input type="text" id="quickName" placeholder="School Name *" required>
+                        <input type="text" id="quickCity" placeholder="City *" required>
+                        <select id="quickState" required>
+                            <option value="">State *</option>
+                            <option value="AL">AL</option>
+                            <option value="AK">AK</option>
+                            <option value="AZ">AZ</option>
+                            <option value="AR">AR</option>
+                            <option value="CA">CA</option>
+                            <option value="CO">CO</option>
+                            <option value="CT">CT</option>
+                            <option value="DE">DE</option>
+                            <option value="FL">FL</option>
+                            <option value="GA">GA</option>
+                            <option value="HI">HI</option>
+                            <option value="ID">ID</option>
+                            <option value="IL">IL</option>
+                            <option value="IN">IN</option>
+                            <option value="IA">IA</option>
+                            <option value="KS">KS</option>
+                            <option value="KY">KY</option>
+                            <option value="LA">LA</option>
+                            <option value="ME">ME</option>
+                            <option value="MD">MD</option>
+                            <option value="MA">MA</option>
+                            <option value="MI">MI</option>
+                            <option value="MN">MN</option>
+                            <option value="MS">MS</option>
+                            <option value="MO">MO</option>
+                            <option value="MT">MT</option>
+                            <option value="NE">NE</option>
+                            <option value="NV">NV</option>
+                            <option value="NH">NH</option>
+                            <option value="NJ">NJ</option>
+                            <option value="NM">NM</option>
+                            <option value="NY">NY</option>
+                            <option value="NC">NC</option>
+                            <option value="ND">ND</option>
+                            <option value="OH">OH</option>
+                            <option value="OK">OK</option>
+                            <option value="OR">OR</option>
+                            <option value="PA">PA</option>
+                            <option value="RI">RI</option>
+                            <option value="SC">SC</option>
+                            <option value="SD">SD</option>
+                            <option value="TN">TN</option>
+                            <option value="TX">TX</option>
+                            <option value="UT">UT</option>
+                            <option value="VT">VT</option>
+                            <option value="VA">VA</option>
+                            <option value="WA">WA</option>
+                            <option value="WV">WV</option>
+                            <option value="WI">WI</option>
+                            <option value="WY">WY</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="url" id="quickWebsite" placeholder="Website (optional)">
+                        <input type="text" id="quickPrograms" placeholder="Programs (comma-separated)">
+                    </div>
+                    <button type="submit" class="approve-btn">Add to CSV</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Pending Submissions -->
+        <div class="section">
+            <h2>Pending Submissions</h2>
+            <div id="pendingSubmissions">
+                <div class="empty-state">No pending submissions</div>
+            </div>
+        </div>
+        
+        <!-- Approved Schools -->
+        <div class="section">
+            <h2>Recently Approved</h2>
+            <div id="approvedSchools">
+                <div class="empty-state">No recently approved schools</div>
+            </div>
+        </div>
+        
+        <!-- Export Section -->
+        <div class="section">
+            <h2>Export Data</h2>
+            <div class="actions">
+                <button class="export-btn" onclick="exportToCSV()">Export Approved to CSV</button>
+                <button class="export-btn" onclick="appendToMainCSV()">Append to Main Dataset</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load submissions from localStorage (simple backend simulation)
+        let submissions = JSON.parse(localStorage.getItem('schoolSubmissions') || '{"pending":[],"approved":[]}');
+        
+        function renderSubmissions() {
+            // Render pending
+            const pendingDiv = document.getElementById('pendingSubmissions');
+            if (submissions.pending.length === 0) {
+                pendingDiv.innerHTML = '<div class="empty-state">No pending submissions</div>';
+            } else {
+                pendingDiv.innerHTML = submissions.pending.map((sub, idx) => `
+                    <div class="submission">
+                        <div class="submission-header">
+                            <div>
+                                <div class="submission-title">${sub.schoolName}</div>
+                                <div class="submission-meta">${sub.schoolCity}, ${sub.schoolState}</div>
+                                <div class="submission-meta">Submitted: ${new Date(sub.timestamp).toLocaleDateString()}</div>
+                            </div>
+                            <span class="status status-pending">PENDING</span>
+                        </div>
+                        <div class="submission-field"><strong>Website:</strong> ${sub.schoolWebsite || 'Not provided'}</div>
+                        <div class="submission-field"><strong>Programs:</strong> ${sub.schoolPrograms || 'Not provided'}</div>
+                        <div class="submission-field"><strong>Submitted by:</strong> ${sub.submitterEmail || 'Anonymous'}</div>
+                        <div class="actions">
+                            <button class="approve-btn" onclick="approveSubmission(${idx})">Approve</button>
+                            <button class="reject-btn" onclick="rejectSubmission(${idx})">Reject</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Render approved
+            const approvedDiv = document.getElementById('approvedSchools');
+            if (submissions.approved.length === 0) {
+                approvedDiv.innerHTML = '<div class="empty-state">No recently approved schools</div>';
+            } else {
+                approvedDiv.innerHTML = submissions.approved.slice(-5).reverse().map(sub => `
+                    <div class="submission">
+                        <div class="submission-header">
+                            <div>
+                                <div class="submission-title">${sub.schoolName}</div>
+                                <div class="submission-meta">${sub.schoolCity}, ${sub.schoolState}</div>
+                                <div class="submission-meta">Approved: ${new Date(sub.approvedAt).toLocaleDateString()}</div>
+                            </div>
+                            <span class="status status-approved">APPROVED</span>
+                        </div>
+                        <div class="submission-field"><strong>Website:</strong> ${sub.schoolWebsite || 'Not provided'}</div>
+                        <div class="submission-field"><strong>Programs:</strong> ${sub.schoolPrograms || 'Not provided'}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function approveSubmission(idx) {
+            const sub = submissions.pending[idx];
+            sub.approvedAt = new Date().toISOString();
+            submissions.approved.push(sub);
+            submissions.pending.splice(idx, 1);
+            saveSubmissions();
+            renderSubmissions();
+            alert(`Approved: ${sub.schoolName}`);
+        }
+        
+        function rejectSubmission(idx) {
+            const sub = submissions.pending[idx];
+            if (confirm(`Reject ${sub.schoolName}?`)) {
+                submissions.pending.splice(idx, 1);
+                saveSubmissions();
+                renderSubmissions();
+            }
+        }
+        
+        function saveSubmissions() {
+            localStorage.setItem('schoolSubmissions', JSON.stringify(submissions));
+        }
+        
+        // Quick Add Form
+        document.getElementById('quickAddForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newSchool = {
+                schoolName: document.getElementById('quickName').value,
+                schoolCity: document.getElementById('quickCity').value,
+                schoolState: document.getElementById('quickState').value,
+                schoolWebsite: document.getElementById('quickWebsite').value,
+                schoolPrograms: document.getElementById('quickPrograms').value,
+                timestamp: new Date().toISOString(),
+                approvedAt: new Date().toISOString(),
+                addedViaAdmin: true
+            };
+            
+            submissions.approved.push(newSchool);
+            saveSubmissions();
+            renderSubmissions();
+            
+            // Clear form
+            document.getElementById('quickAddForm').reset();
+            alert(`Added: ${newSchool.schoolName}`);
+        });
+        
+        function exportToCSV() {
+            if (submissions.approved.length === 0) {
+                alert('No approved schools to export');
+                return;
+            }
+            
+            // Create CSV content
+            const headers = ['Institution Name', 'State', 'City', 'Website', 'Programs', 'Approved Date'];
+            const rows = submissions.approved.map(s => [
+                s.schoolName,
+                s.schoolState,
+                s.schoolCity,
+                s.schoolWebsite || '',
+                s.schoolPrograms || '',
+                new Date(s.approvedAt).toLocaleDateString()
+            ]);
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(r => r.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `approved_schools_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function appendToMainCSV() {
+            if (submissions.approved.length === 0) {
+                alert('No approved schools to append');
+                return;
+            }
+            
+            alert(`Ready to append ${submissions.approved.length} schools to main dataset.\n\nInstructions:\n1. Export the approved schools\n2. Open the CSV file\n3. Copy the rows (excluding header)\n4. Paste into schools/trade_schools_geocoded_fixed.csv\n5. Run: python scripts/geocode-missing.py`);
+            
+            exportToCSV();
+        }
+        
+        // Initialize
+        renderSubmissions();
+        
+        // Listen for submissions from the main site
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'schoolSubmissions') {
+                submissions = JSON.parse(e.newValue || '{"pending":[],"approved":[]}');
+                renderSubmissions();
+            }
+        });
+    </script>
+</body>
+</html>

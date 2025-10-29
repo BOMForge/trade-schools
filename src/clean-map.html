@@ -3236,12 +3236,6 @@
             updateDataSummary();
         };
 
-        // Override processData to cache results
-        const originalProcessData = processData;
-        processData = function(geoData, matchData) {
-            originalProcessData(geoData, matchData);
-            cacheSchoolData();
-        };
 
         // Initialize from URL params (view mode)
         (function initializeViewFromUrl() {
