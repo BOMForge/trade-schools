@@ -183,6 +183,87 @@
             max-height: 300px;
         }
         
+        .submission-form {
+            margin-top: 20px;
+            padding: 15px;
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+        }
+        
+        .form-title {
+            color: #e1e8ed;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #8899a6;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 12px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 8px;
+            background: #253341;
+            border: 1px solid #38444d;
+            border-radius: 6px;
+            color: #e1e8ed;
+            font-size: 12px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #1d9bf0;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background: #1d9bf0;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background: #0d8bd9;
+        }
+        
+        .submit-btn:disabled {
+            background: #38444d;
+            cursor: not-allowed;
+        }
+        
         .school-list {
             flex: 1;
             overflow-y: auto;
@@ -232,6 +313,13 @@
             border-radius: 12px;
             font-size: 11px;
             font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .program-tag:hover {
+            background: #0d8bd9;
+            transform: scale(1.05);
         }
         
         .school-contact {
@@ -373,6 +461,33 @@
         <div class="chart-container">
             <div class="chart-title">📊 Program Distribution</div>
             <canvas id="programChart" class="chart-canvas"></canvas>
+        </div>
+        
+        <div class="submission-form">
+            <div class="form-title">🏫 Submit a School</div>
+            <form id="schoolSubmissionForm">
+                <div class="form-group">
+                    <label class="form-label">School Name *</label>
+                    <input type="text" class="form-input" id="schoolName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City, State *</label>
+                    <input type="text" class="form-input" id="schoolLocation" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Website</label>
+                    <input type="url" class="form-input" id="schoolWebsite">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Programs Offered</label>
+                    <textarea class="form-textarea" id="schoolPrograms" placeholder="List programs separated by commas..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Email</label>
+                    <input type="email" class="form-input" id="submitterEmail">
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit School</button>
+            </form>
         </div>
         
         <div class="school-list" id="schoolList">
@@ -572,10 +687,10 @@
                         ${school.programs.length > 0 ? `
                             <div class="school-programs">
                                 ${school.programs.slice(0, 4).map(p => 
-                                    `<span class="program-tag">${p}</span>`
+                                    `<span class="program-tag" onclick="filterByProgram('${p}')">${p}</span>`
                                 ).join('')}
                                 ${school.programs.length > 4 ? 
-                                    `<span class="program-tag">+${school.programs.length - 4} more</span>` : ''}
+                                    `<span class="program-tag" onclick="showAllPrograms('${school.name}')">+${school.programs.length - 4} more</span>` : ''}
                             </div>
                         ` : ''}
                         ${websiteUrl ? `
@@ -870,6 +985,13 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const program = sortedPrograms[index][0];
+                            filterByProgram(program);
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: false
@@ -903,6 +1025,68 @@
                 }
             });
         }
+        
+        // Filter by program
+        function filterByProgram(program) {
+            document.getElementById('programFilter').value = program;
+            applyFilters();
+        }
+        
+        // Show all programs for a school
+        function showAllPrograms(schoolName) {
+            const school = filteredSchools.find(s => s.name === schoolName);
+            if (school) {
+                alert(`All programs at ${schoolName}:\n\n${school.programs.join(', ')}`);
+            }
+        }
+        
+        // Handle school submission
+        document.getElementById('schoolSubmissionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Collect form data
+            const formData = {
+                schoolName: document.getElementById('schoolName').value,
+                schoolLocation: document.getElementById('schoolLocation').value,
+                schoolWebsite: document.getElementById('schoolWebsite').value,
+                schoolPrograms: document.getElementById('schoolPrograms').value,
+                submitterEmail: document.getElementById('submitterEmail').value,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+            
+            // Send email using mailto link
+            const subject = `New Trade School Submission: ${formData.schoolName}`;
+            const body = `New trade school submission:\n\n` +
+                        `School Name: ${formData.schoolName}\n` +
+                        `Location: ${formData.schoolLocation}\n` +
+                        `Website: ${formData.schoolWebsite || 'Not provided'}\n` +
+                        `Programs: ${formData.schoolPrograms || 'Not provided'}\n` +
+                        `Submitted by: ${formData.submitterEmail || 'Anonymous'}\n` +
+                        `Submitted at: ${formData.timestamp}\n` +
+                        `User Agent: ${formData.userAgent}`;
+            
+            // Create mailto link
+            const mailtoLink = `mailto:tom@bomforge.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+            
+            // Reset form after a delay
+            setTimeout(() => {
+                document.getElementById('schoolSubmissionForm').reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                alert('Thank you! Your email client should open with the submission details. Please send the email to complete the submission.');
+            }, 1000);
+        });
         
         // Initialize
         loadGeocodedData();
