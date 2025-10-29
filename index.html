@@ -1283,9 +1283,133 @@
                 height: 50vh;
             }
         }
+        
+        /* Email Gate Modal */
+        .email-gate-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .email-gate-modal {
+            background: #1e2936;
+            border: 1px solid #38444d;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .email-gate-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #e1e8ed;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .email-gate-subtitle {
+            font-size: 1em;
+            color: #8899a6;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .email-gate-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .email-gate-input {
+            padding: 16px;
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            color: #e1e8ed;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .email-gate-input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+        }
+        
+        .email-gate-button {
+            padding: 16px;
+            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .email-gate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
+        }
+        
+        .email-gate-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .email-gate-privacy {
+            font-size: 0.85em;
+            color: #8899a6;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .email-gate-hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Email Gate Modal -->
+    <div class="email-gate-overlay email-gate-hidden" id="emailGate">
+        <div class="email-gate-modal">
+            <div class="email-gate-title">🎓 Welcome to Trade Schools Map</div>
+            <div class="email-gate-subtitle">
+                Enter your email to access our interactive map of 1000+ trade schools nationwide
+            </div>
+            <form class="email-gate-form" id="emailGateForm">
+                <input 
+                    type="email" 
+                    class="email-gate-input" 
+                    id="emailGateInput" 
+                    placeholder="your@email.com" 
+                    required
+                    autocomplete="email"
+                >
+                <button type="submit" class="email-gate-button" id="emailGateButton">
+                    Continue to Map
+                </button>
+            </form>
+            <div class="email-gate-privacy">
+                We respect your privacy. Your email is only used for access and updates.
+            </div>
+        </div>
+    </div>
+    
     <div class="demo-banner" id="demoBanner">
         <div class="banner-content">
             <div>
@@ -1900,7 +2024,45 @@
         }
         
         // Check if banner was previously dismissed
+        // Email Gate functionality
+        function checkEmailGate() {
+            const userEmail = localStorage.getItem('userEmail');
+            const emailGate = document.getElementById('emailGate');
+            
+            if (!userEmail) {
+                // Show email gate if no email stored
+                emailGate.classList.remove('email-gate-hidden');
+            }
+        }
+        
+        // Handle email gate form submission
+        document.getElementById('emailGateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('emailGateInput');
+            const email = emailInput.value.trim();
+            
+            if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                // Store email in localStorage
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('emailSubmittedAt', new Date().toISOString());
+                
+                // Track with Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'email_gate_submit', {
+                        'event_category': 'engagement',
+                        'event_label': 'email_collected'
+                    });
+                }
+                
+                // Hide the gate
+                document.getElementById('emailGate').classList.add('email-gate-hidden');
+            }
+        });
+        
         window.addEventListener('DOMContentLoaded', function() {
+            // Check email gate first
+            checkEmailGate();
+            
             if (localStorage.getItem('bannerDismissed') === 'true') {
                 const banner = document.getElementById('demoBanner');
                 banner.classList.add('hidden');
