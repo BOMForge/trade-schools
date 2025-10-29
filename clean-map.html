@@ -1414,12 +1414,16 @@
             </div>
         </div>
         
+        <div class="school-list" id="schoolList">
+            <div class="loading">Loading schools...</div>
+        </div>
+        
         <div class="chart-container">
             <div class="chart-title" id="chartTitle">📊 Program Distribution</div>
             <canvas id="programChart" class="chart-canvas"></canvas>
         </div>
         
-        <div class="submission-form">
+        <div class="submission-form" id="submitForm">
             <div class="form-title">🏫 Submit a School or Program</div>
             <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
             <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
@@ -1658,10 +1662,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-        
-        <div class="school-list" id="schoolList">
-            <div class="loading">Loading schools...</div>
         </div>
     </div>
     
