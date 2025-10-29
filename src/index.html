@@ -17,7 +17,6 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="https://unpkg.com/h3-js@4.1.0"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1347,19 +1346,17 @@
         </div>
     </div>
     
-    <!-- Floating Submit Button -->
-    <button class="floating-submit" id="floatingSubmit" onclick="openSubmitModal()">
-        <span>+</span>
-        <span>Submit a School</span>
-    </button>
     
     
-    
-    <div id="sidebar" class="collapsed">
+    <div id="sidebar">
         <div class="header">
             <div class="header-nav">
-                <a href="index.html" class="nav-link">🏠 Home</a>
-                <a href="index.html" class="nav-link active">📊 Dashboard</a>
+                <a href="submit-school.html" class="nav-link">
+                    ➕ Submit School
+                </a>
+                <a href="https://bomforge.com/contact" target="_blank" class="nav-link">
+                    📧 Contact Us
+                </a>
             </div>
             <h1>🎓 Trade Schools Directory</h1>
             <div class="stats">
@@ -1390,22 +1387,15 @@
                 <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
             </div>
-            <div class="filter-group">
-                <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
-                <div class="view-controls">
-                    <button class="view-btn active" id="markersBtn" onclick="setView('markers')" title="Individual school markers with favicons">📍 Markers</button>
-                    <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
-                </div>
-                <div class="mode-indicator" id="modeIndicator" style="display: none;">
-                    <span id="modeText" class="mode-text"></span>
-                    <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
-                </div>
+            <div class="mode-indicator" id="modeIndicator" style="display: none;">
+                <span id="modeText" class="mode-text"></span>
+                <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
             </div>
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">🗺️</span> Viewport Only</label>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <input type="checkbox" id="viewportOnlyToggle">
-                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit heat/hex calculations to visible map area</label>
+                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit hex calculations to visible map area</label>
                 </div>
             </div>
             <div class="filter-group">
@@ -1424,19 +1414,6 @@
         
         <div class="school-list" id="schoolList">
             <div class="loading">Loading schools...</div>
-        </div>
-        
-        <div class="chart-container collapsed" id="programChartContainer">
-            <div class="chart-header" onclick="toggleProgramChart()">
-                <div class="chart-title">
-                    <span>📊</span>
-                    <span id="chartTitle">Program Distribution</span>
-                </div>
-                <span class="chart-toggle">▼</span>
-            </div>
-            <div class="chart-content">
-                <canvas id="programChart" class="chart-canvas"></canvas>
-            </div>
         </div>
     </div>
     
@@ -1596,22 +1573,9 @@
             setTimeout(() => map.invalidateSize(), 300);
         }
         
-        // Open submit school modal (scroll sidebar to form section)
+        // Open submit school modal (redirect to submit page)
         function openSubmitModal() {
-            const sidebar = document.getElementById('sidebar');
-            const submitForm = document.getElementById('submitForm');
-            
-            // Expand sidebar if collapsed
-            if (sidebar.classList.contains('collapsed')) {
-                toggleSidebar();
-            }
-            
-            // Wait for animation, then scroll to form
-            setTimeout(() => {
-                if (submitForm) {
-                    submitForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 350);
+            window.location.href = 'submit-school.html';
         }
         
         // Initialize map
@@ -1628,20 +1592,6 @@
             subdomains: 'abcd',
             maxZoom: 19
         }).addTo(map);
-        
-        // Chart instance
-        let programChart = null;
-        
-        // Toggle program chart visibility
-        function toggleProgramChart() {
-            const container = document.getElementById('programChartContainer');
-            container.classList.toggle('collapsed');
-            
-            // Update chart when expanding
-            if (!container.classList.contains('collapsed')) {
-                updateProgramChart();
-            }
-        }
         
         // Banner dismissal functionality
         function dismissBanner() {
@@ -1695,7 +1645,6 @@
         let viewportSchools = []; // Schools visible in current viewport
         let schoolMarkers = {};
         let markersLayer = L.layerGroup().addTo(map);
-        let heatmapLayer = null;
         let hexLayer = L.layerGroup();
         let selectedMarker = null;
         let currentView = 'markers'; // Default to markers view
@@ -1832,10 +1781,18 @@
             
             // Initialize UI with sample data
             populateFilters();
-            updateStats();
-            displaySchools();
-            updateMapView();
-            updateProgramChart();
+            
+            // Apply state filter from URL if present
+            const urlParams = new URLSearchParams(window.location.search);
+            const stateParam = urlParams.get('state');
+            if (stateParam && stateFilterEl) {
+                stateFilterEl.value = stateParam;
+                applyFilters();
+            } else {
+                updateStats();
+                displaySchools();
+                updateMapView();
+            }
             
             // Ensure hex grid shows with sample data
             console.log(`Sample data loaded: ${allSchools.length} schools, rendering initial view...`);
@@ -1930,10 +1887,18 @@
             // Initialize UI
             filteredSchools = [...allSchools];
             populateFilters();
-            updateStats();
-            displaySchools();
-            updateMapView();
-            updateProgramChart();
+            
+            // Apply state filter from URL if present
+            const urlParams = new URLSearchParams(window.location.search);
+            const stateParam = urlParams.get('state');
+            if (stateParam && stateFilterEl) {
+                stateFilterEl.value = stateParam;
+                applyFilters();
+            } else {
+                updateStats();
+                displaySchools();
+                updateMapView();
+            }
             
             // Ensure initial view is rendered
             console.log(`Initializing with ${allSchools.length} schools, default view: ${currentView}`);
@@ -1961,25 +1926,31 @@
             
             // Populate state filter
             const stateFilter = document.getElementById('stateFilter');
-            Object.entries(states)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([state, count]) => {
-                    const option = document.createElement('option');
-                    option.value = state;
-                    option.textContent = `${state} (${count})`;
-                    stateFilter.appendChild(option);
-                });
+            if (stateFilter) {
+                Object.entries(states)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([state, count]) => {
+                        const option = document.createElement('option');
+                        option.value = state;
+                        option.textContent = `${state} (${count})`;
+                        stateFilter.appendChild(option);
+                    });
+                
+            }
             
-            // Populate program filter
+            // Populate program filter (only programs with 10+ schools)
             const programFilter = document.getElementById('programFilter');
-            Object.entries(programs)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([program, count]) => {
-                    const option = document.createElement('option');
-                    option.value = program;
-                    option.textContent = `${program} (${count})`;
-                    programFilter.appendChild(option);
-                });
+            if (programFilter) {
+                Object.entries(programs)
+                    .filter(([program, count]) => count >= 10)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([program, count]) => {
+                        const option = document.createElement('option');
+                        option.value = program;
+                        option.textContent = `${program} (${count})`;
+                        programFilter.appendChild(option);
+                    });
+            }
         }
         
         // Update statistics
@@ -2145,38 +2116,91 @@
         
         // Select school
         function selectSchool(schoolName) {
-            const school = getViewportSchools().find(s => s.name === schoolName);
+            // Search in all schools, not just viewport
+            const school = allSchools.find(s => s.name === schoolName);
             if (!school) return;
             
-            // Update marker styles
-            Object.values(schoolMarkers).forEach(marker => {
-                marker.setStyle({
-                    radius: 6,
-                    fillColor: '#1d9bf0',
-                    color: 'white'
-                });
+            // Switch to markers view if not already there
+            if (currentView !== 'markers') {
+                setView('markers');
+            }
+            
+            // Zoom in closer to the school with smooth animation
+            map.flyTo([school.lat, school.lon], 14, {
+                duration: 0.8,
+                easeLinearity: 0.25
             });
             
-            if (schoolMarkers[schoolName]) {
-                schoolMarkers[schoolName].setStyle({
-                    radius: 10,
-                    fillColor: '#ff6b6b',
-                    color: 'white'
+            // Wait for markers to render, then highlight and open popup
+            setTimeout(() => {
+                // Update marker styles
+                Object.values(schoolMarkers).forEach(marker => {
+                    marker.setStyle({
+                        radius: 6,
+                        fillColor: '#1d9bf0',
+                        color: 'white'
+                    });
                 });
                 
-                // Center map on school
-                map.setView([school.lat, school.lon], 10);
-                schoolMarkers[schoolName].openPopup();
-            }
-            
-            // Highlight card
-            document.querySelectorAll('.school-card').forEach(card => {
-                card.style.borderColor = '#38444d';
-            });
-            const selectedCard = document.querySelector(`[data-name="${schoolName}"]`);
-            if (selectedCard) {
-                selectedCard.style.borderColor = '#1d9bf0';
-            }
+                // Create marker if it doesn't exist yet (when school is outside viewport)
+                if (!schoolMarkers[schoolName]) {
+                    const marker = L.circleMarker([school.lat, school.lon], {
+                        radius: 10,
+                        fillColor: '#ff6b6b',
+                        color: 'white',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+                    
+                    // Build popup content
+                    const websiteUrl = school.website ? 
+                        (school.website.startsWith('http') ? school.website : `https://${school.website}`) : '';
+                    let websiteDisplay = school.website || '';
+                    if (websiteDisplay) {
+                        websiteDisplay = websiteDisplay.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                    }
+                    
+                    const popupContent = `
+                        <div style="max-width: 300px;">
+                            <div style="font-weight: 600; font-size: 16px; margin-bottom: 6px; color: #1d9bf0;">${school.name}</div>
+                            <div style="color: #8899a6; font-size: 13px; margin-bottom: 6px;">📍 ${school.city}, ${school.state}</div>
+                            ${websiteUrl ? `<div style="margin-bottom: 8px;"><a href="${websiteUrl}" target="_blank" style="color: #1d9bf0; text-decoration: none; font-size: 13px;">🌐 ${websiteDisplay}</a></div>` : ''}
+                            ${school.programs.length > 0 ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #38444d;"><strong style="font-size: 12px; color: #8899a6;">Programs:</strong><div style="font-size: 12px; color: #e1e8ed; margin-top: 4px;">${school.programs.slice(0, 5).join(', ')}${school.programs.length > 5 ? '...' : ''}</div></div>` : ''}
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                    markersLayer.addLayer(marker);
+                    schoolMarkers[schoolName] = marker;
+                }
+                
+                // Highlight selected marker
+                if (schoolMarkers[schoolName]) {
+                    schoolMarkers[schoolName].setStyle({
+                        radius: 12,
+                        fillColor: '#ff6b6b',
+                        color: '#ffffff',
+                        weight: 3
+                    });
+                    
+                    schoolMarkers[schoolName].openPopup();
+                    
+                    // Scroll to card in sidebar if visible
+                    const card = document.querySelector(`[data-name="${schoolName}"]`);
+                    if (card) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+                
+                // Highlight card in sidebar
+                document.querySelectorAll('.school-card').forEach(card => {
+                    card.style.borderColor = '#38444d';
+                });
+                const selectedCard = document.querySelector(`[data-name="${schoolName}"]`);
+                if (selectedCard) {
+                    selectedCard.style.borderColor = '#1d9bf0';
+                }
+            }, 400);
         }
         
         // Zoom to full map view
@@ -2202,23 +2226,45 @@
         }
         
         // Filter handlers
-        document.getElementById('stateFilter').addEventListener('change', function(e) {
-            applyFilters();
-        });
+        const stateFilterEl = document.getElementById('stateFilter');
+        const programFilterEl = document.getElementById('programFilter');
+        const searchInputEl = document.getElementById('searchInput');
         
-        document.getElementById('programFilter').addEventListener('change', function(e) {
-            applyFilters();
-        });
+        if (stateFilterEl) {
+            stateFilterEl.addEventListener('change', function(e) {
+                // Update URL with state parameter
+                const url = new URL(window.location);
+                if (e.target.value && e.target.value !== '') {
+                    url.searchParams.set('state', e.target.value);
+                } else {
+                    url.searchParams.delete('state');
+                }
+                window.history.replaceState({}, '', url);
+                applyFilters();
+            });
+        }
         
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            applyFilters();
-        });
+        if (programFilterEl) {
+            programFilterEl.addEventListener('change', function(e) {
+                applyFilters();
+            });
+        }
+        
+        if (searchInputEl) {
+            searchInputEl.addEventListener('input', function(e) {
+                applyFilters();
+            });
+        }
         
         // Apply filters
         function applyFilters() {
-            const stateFilter = document.getElementById('stateFilter').value;
-            const programFilter = document.getElementById('programFilter').value;
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const stateFilterEl = document.getElementById('stateFilter');
+            const programFilterEl = document.getElementById('programFilter');
+            const searchInputEl = document.getElementById('searchInput');
+            
+            const stateFilter = stateFilterEl ? stateFilterEl.value : '';
+            const programFilter = programFilterEl ? programFilterEl.value : '';
+            const searchTerm = searchInputEl ? searchInputEl.value.toLowerCase() : '';
             
             filteredSchools = allSchools.filter(school => {
                 const stateMatch = !stateFilter || school.state === stateFilter;
@@ -2234,7 +2280,6 @@
             updateStats();
             displaySchools();
             updateMapView();
-            updateProgramChart();
             
             // Adjust map view to show filtered schools
             if (filteredSchools.length > 0) {
@@ -2252,10 +2297,6 @@
             if (map.hasLayer(markersLayer)) {
                 map.removeLayer(markersLayer);
             }
-            if (heatmapLayer) {
-                map.removeLayer(heatmapLayer);
-                heatmapLayer = null;
-            }
             if (hexLayer) {
                 map.removeLayer(hexLayer);
             }
@@ -2265,9 +2306,6 @@
                 console.log('Adding markers layer');
                 map.addLayer(markersLayer);
                 addMarkersToMap();
-            } else if (currentView === 'heatmap') {
-                console.log('Adding heatmap layer');
-                addHeatmapToMap();
             } else if (currentView === 'hexgrid') {
                 console.log('Adding hex grid layer');
                 addHexGridToMap();
@@ -2691,43 +2729,6 @@
             console.log(`Hex grid rendered with ${Object.keys(hexData).length} cells`);
         }
         
-        // Add heatmap to map
-        function addHeatmapToMap() {
-            if (heatmapLayer) {
-                map.removeLayer(heatmapLayer);
-            }
-            
-            if (!L.heatLayer) {
-                console.error('Leaflet.heat not available');
-                alert('Heat map failed to render. Please reload the page.');
-                return;
-            }
-            const heatPoints = [];
-            const sourceSchools = viewportOnly ? getSchoolsInBounds() : filteredSchools;
-            sourceSchools.forEach(school => {
-                heatPoints.push([school.lat, school.lon, 1]);
-            });
-            
-            if (heatPoints.length > 0) {
-                heatmapLayer = L.heatLayer(heatPoints, {
-                    radius: 25,
-                    blur: 15,
-                    maxZoom: 17,
-                    max: 1.0,
-                    gradient: {
-                        0.4: 'blue',
-                        0.6: 'cyan',
-                        0.7: 'lime',
-                        0.8: 'yellow',
-                        1.0: 'red'
-                    }
-                });
-                map.addLayer(heatmapLayer);
-            } else {
-                alert('No data in current view to render a heat map.');
-            }
-        }
-        
         // Update mode indicator
         function updateModeIndicator() {
             const zoom = map.getZoom();
@@ -2741,9 +2742,6 @@
                 indicator.style.display = 'block';
                 const res = getH3Resolution();
                 modeText.textContent = `⬡ H3 Resolution ${res} • Multi-program blending • Diversity metrics • Click hexes for analytics`;
-            } else if (currentView === 'heatmap') {
-                indicator.style.display = 'block';
-                modeText.textContent = `🌡️ Showing all ${filteredSchools.length} schools as density map`;
             } else {
                 indicator.style.display = 'block';
                 modeText.textContent = `📍 Showing all ${filteredSchools.length} schools`;
@@ -2755,183 +2753,17 @@
             console.log(`Setting view to: ${view}`);
             currentView = view;
             
-            // Update button states
-            document.getElementById('markersBtn').classList.toggle('active', view === 'markers');
-            document.getElementById('heatmapBtn').classList.toggle('active', view === 'heatmap');
-            
             updateModeIndicator();
             updateMapView();
         }
         
-        // Update program distribution chart - stacked by state
-        function updateProgramChart() {
-            // Destroy existing chart if it exists
-            if (programChart) {
-                programChart.destroy();
-            }
-            
-            // Get schools to show
-            const schoolsToShow = getViewportSchools();
-            
-            // Build state-program matrix
-            const stateProgramMatrix = {};
-            const allStates = new Set();
-            const allPrograms = new Set();
-            
-            schoolsToShow.forEach(school => {
-                allStates.add(school.state);
-                school.programs.forEach(program => {
-                    allPrograms.add(program);
-                    const key = `${school.state}-${program}`;
-                    stateProgramMatrix[key] = (stateProgramMatrix[key] || 0) + 1;
-                });
-            });
-            
-            // Get top 8 programs by total count
-            const programTotals = {};
-            allPrograms.forEach(program => {
-                programTotals[program] = 0;
-                allStates.forEach(state => {
-                    const key = `${state}-${program}`;
-                    programTotals[program] += (stateProgramMatrix[key] || 0);
-                });
-            });
-            
-            const topPrograms = Object.entries(programTotals)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 8)
-                .map(([name]) => name);
-            
-            // Get top 5 states by school count
-            const stateCounts = {};
-            allStates.forEach(state => {
-                stateCounts[state] = schoolsToShow.filter(s => s.state === state).length;
-            });
-            
-            const topStates = Object.entries(stateCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5)
-                .map(([state]) => state);
-            
-            // Build datasets for stacked bar chart
-            const stateColors = {
-                'CA': '#ff6b6b',
-                'TX': '#1d9bf0',
-                'FL': '#ffd93d',
-                'NY': '#6bcf7f',
-                'PA': '#a8e6cf'
-            };
-            
-            const datasets = topStates.map((state, idx) => {
-                const color = stateColors[state] || `hsl(${(idx * 60) + 200}, 70%, ${50 + (idx * 5)}%)`;
-                return {
-                    label: state,
-                    data: topPrograms.map(program => {
-                        const key = `${state}-${program}`;
-                        return stateProgramMatrix[key] || 0;
-                    }),
-                    backgroundColor: color,
-                    borderColor: '#38444d',
-                    borderWidth: 1
-                };
-            });
-            
-            // Update chart title
-            const chartTitle = document.getElementById('chartTitle');
-            chartTitle.innerHTML = `📊 Programs by State <span style="color: #8899a6; font-size: 11px;">(${schoolsToShow.length} schools)</span>`;
-            
-            // Create stacked bar chart
-            const ctx = document.getElementById('programChart').getContext('2d');
-            programChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: topPrograms.map(name => 
-                        name.length > 15 ? name.substring(0, 12) + '...' : name
-                    ),
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    onClick: (event, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            const program = topPrograms[index];
-                            filterByProgram(program);
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#8899a6',
-                                font: {
-                                    size: 10
-                                },
-                                padding: 5,
-                                boxWidth: 12,
-                                boxHeight: 12
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#15202b',
-                            titleColor: '#e1e8ed',
-                            bodyColor: '#e1e8ed',
-                            borderColor: '#38444d',
-                            borderWidth: 1,
-                            cornerRadius: 8,
-                            callbacks: {
-                                title: function(context) {
-                                    return topPrograms[context[0].dataIndex];
-                                },
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y} schools`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            stacked: true,
-                            ticks: {
-                                color: '#8899a6',
-                                font: {
-                                    size: 9,
-                                    weight: '500'
-                                },
-                                maxRotation: 45,
-                                minRotation: 45
-                            },
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#8899a6',
-                                font: {
-                                    size: 10,
-                                    weight: '500'
-                                },
-                                stepSize: 1
-                            },
-                            grid: {
-                                color: '#38444d',
-                                drawBorder: false
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
         // Filter by program
         function filterByProgram(program) {
-            document.getElementById('programFilter').value = program;
-            applyFilters();
+            const programFilter = document.getElementById('programFilter');
+            if (programFilter) {
+                programFilter.value = program;
+                applyFilters();
+            }
         }
         
         // Show all programs for a school
@@ -2942,59 +2774,7 @@
             }
         }
         
-        // Handle school submission
-        document.getElementById('schoolSubmissionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.textContent;
-            
-            // Disable button and show loading
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            
-            // Collect form data
-            const schoolCity = document.getElementById('schoolCity').value;
-            const schoolState = document.getElementById('schoolState').value;
-            const formData = {
-                schoolName: document.getElementById('schoolName').value,
-                schoolCity: schoolCity,
-                schoolState: schoolState,
-                schoolLocation: `${schoolCity}, ${schoolState}`,
-                schoolWebsite: document.getElementById('schoolWebsite').value,
-                schoolPrograms: document.getElementById('schoolPrograms').value,
-                submitterEmail: document.getElementById('submitterEmail').value,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent
-            };
-            
-            // Send email using mailto link
-            const subject = `New Trade School Submission: ${formData.schoolName}`;
-            const body = `New trade school submission:\n\n` +
-                        `School Name: ${formData.schoolName}\n` +
-                        `City: ${formData.schoolCity}\n` +
-                        `State: ${formData.schoolState}\n` +
-                        `Location: ${formData.schoolLocation}\n` +
-                        `Website: ${formData.schoolWebsite || 'Not provided'}\n` +
-                        `Programs: ${formData.schoolPrograms || 'Not provided'}\n` +
-                        `Submitted by: ${formData.submitterEmail || 'Anonymous'}\n` +
-                        `Submitted at: ${formData.timestamp}\n` +
-                        `User Agent: ${formData.userAgent}`;
-            
-            // Create mailto link
-            const mailtoLink = `mailto:tom@bomforge.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            // Open email client
-            window.location.href = mailtoLink;
-            
-            // Reset form after a delay
-            setTimeout(() => {
-                document.getElementById('schoolSubmissionForm').reset();
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                alert('Thank you! Your email client should open with the submission details. Please send the email to complete the submission.');
-            }, 1000);
-        });
+        // Form submission handler removed - form moved to submit-school.html
         
         // Helper: filter schools to current map bounds
         function getSchoolsInBounds() {
@@ -3019,7 +2799,6 @@
         function updateViewportFiltering() {
             updateStats();
             displaySchools();
-            updateProgramChart();
             updateModeIndicator();
             
             // Re-render hex grid if active (zoom-dependent resolution)
@@ -3214,19 +2993,44 @@
             updateDataSummary();
         };
 
-        // Override processData to cache results
+        // Function to zoom to school from URL parameter
+        function zoomToSchoolFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const schoolName = params.get('school');
+            if (schoolName && allSchools.length > 0) {
+                // Wait a bit for map to be ready
+                setTimeout(() => {
+                    const decodedName = decodeURIComponent(schoolName);
+                    selectSchool(decodedName);
+                }, 500);
+            }
+        }
+
+        // Override processData to cache results and check for school parameter
         const originalProcessData = processData;
         processData = function(geoData, matchData) {
             originalProcessData(geoData, matchData);
             cacheSchoolData();
+            // Check for school parameter after data is loaded
+            zoomToSchoolFromUrl();
         };
 
-        // Initialize from URL params (view mode)
-        (function initializeViewFromUrl() {
+        // Initialize from URL params (view mode and state)
+        (function initializeFromUrl() {
             const params = new URLSearchParams(window.location.search);
+            
+            // Handle view parameter
             const view = params.get('view');
-            if (view === 'markers' || view === 'heatmap' || view === 'hexgrid') {
+            if (view === 'markers' || view === 'hexgrid') {
                 setView(view);
+            }
+            
+            // Handle state parameter
+            const state = params.get('state');
+            if (state && stateFilterEl) {
+                // Set the state dropdown to the URL parameter value
+                stateFilterEl.value = state;
+                // The filter will be applied when data loads
             }
         })();
 
@@ -3237,10 +3041,21 @@
             allSchools = cachedData;
             filteredSchools = [...allSchools];
             populateFilters();
-            updateStats();
-            displaySchools();
-            updateMapView();
-            updateProgramChart();
+            
+            // Apply state filter from URL if present
+            const urlParams = new URLSearchParams(window.location.search);
+            const stateParam = urlParams.get('state');
+            if (stateParam && stateFilterEl) {
+                stateFilterEl.value = stateParam;
+                applyFilters();
+            } else {
+                updateStats();
+                displaySchools();
+                updateMapView();
+            }
+            
+            // Check for school parameter from cached data
+            zoomToSchoolFromUrl();
             
             // Still load fresh data in background
             setTimeout(() => loadGeocodedData(), 100);
