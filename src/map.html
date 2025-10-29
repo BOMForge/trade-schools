@@ -17,11 +17,15 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="https://unpkg.com/h3-js@4.1.0"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY"></script>
+    <script src="assets/js/form-submission.js"></script>
     <style>
         * {
             margin: 0;
@@ -37,75 +41,12 @@
             background: linear-gradient(90deg, #1d9bf0, #ff6b6b, #6bcf7f);
             color: white;
             text-align: center;
-            padding: 8px 40px;
+            padding: 8px;
             font-size: 14px;
             font-weight: 600;
             z-index: 2000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
             animation: pulse 2s infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-        
-        .demo-banner.hidden {
-            display: none;
-        }
-        
-        .banner-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .banner-links {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .banner-link {
-            color: white;
-            text-decoration: none;
-            padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-        
-        .banner-link:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(1.05);
-        }
-        
-        .banner-close {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.3);
-            border: none;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            line-height: 1;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .banner-close:hover {
-            background: rgba(0, 0, 0, 0.5);
-            transform: translateY(-50%) scale(1.1);
         }
         
         @keyframes pulse {
@@ -137,14 +78,6 @@
             border-left: 1px solid #38444d;
             overflow: hidden;
             box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, width 0.3s ease;
-            position: relative;
-            z-index: 1000;
-        }
-        
-        #sidebar.collapsed {
-            transform: translateX(400px);
-            width: 0;
         }
         
         .header {
@@ -673,71 +606,107 @@
             box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2);
         }
         
-        /* Popup styles */
-        .leaflet-popup-content-wrapper {
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-        
-        .leaflet-popup-content {
-            margin: 14px;
-            color: #e1e8ed;
-            min-width: 220px;
-        }
-        
-        .leaflet-popup-tip {
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-        }
-        
-        .popup-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        
-        .popup-favicon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            object-fit: contain;
-            background: white;
-            padding: 2px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .popup-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1d9bf0;
-            flex: 1;
-        }
-        
-        /* Emoji marker styles */
-        .emoji-marker {
-            background: none;
-            border: none;
-            font-size: 24px;
-            text-align: center;
-            line-height: 24px;
-            cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
+        /* Favicon markers - circular with icons inside */
+        .favicon-marker {
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: white;
+            border: 3px solid #1d9bf0;
+            border-radius: 50%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+            overflow: hidden;
+            transition: all 0.2s ease;
         }
         
-        .emoji-marker:hover {
-            transform: scale(1.3);
-            filter: drop-shadow(0 0 8px rgba(29, 155, 240, 0.8));
+        .favicon-marker:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
         
-        .emoji-marker img {
+        .favicon-marker.selected {
+            border-color: #ff6b6b;
+            border-width: 4px;
+            width: 42px;
+            height: 42px;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.3), 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .favicon-marker img {
+            width: 24px;
+            height: 24px;
             object-fit: contain;
+        }
+        
+        .favicon-marker.no-favicon {
+            background: #1d9bf0;
+            border-color: white;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .favicon-marker.no-favicon.selected {
+            background: #ff6b6b;
+            border-color: white;
+        }
+        
+        /* Marker cluster styling */
+        .marker-cluster {
+            background: rgba(29, 155, 240, 0.6);
+            border: 3px solid rgba(29, 155, 240, 0.9);
+        }
+        
+        .marker-cluster div {
+            background: rgba(29, 155, 240, 0.8);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 50%;
+        }
+        
+        .marker-cluster-small {
+            background: rgba(29, 155, 240, 0.6);
+        }
+        
+        .marker-cluster-small div {
+            background: rgba(29, 155, 240, 0.8);
+        }
+        
+        .marker-cluster-medium {
+            background: rgba(255, 165, 0, 0.6);
+        }
+        
+        .marker-cluster-medium div {
+            background: rgba(255, 165, 0, 0.8);
+        }
+        
+        .marker-cluster-large {
+            background: rgba(255, 107, 107, 0.6);
+        }
+        
+        .marker-cluster-large div {
+            background: rgba(255, 107, 107, 0.8);
+        }
+        
+        /* Popup styles */
+        .leaflet-popup-content-wrapper {
+            background: #15202b;
+            border: 1px solid #38444d;
+            border-radius: 12px;
+        }
+        
+        .leaflet-popup-content {
+            margin: 12px;
+            color: #e1e8ed;
+        }
+        
+        .leaflet-popup-tip {
+            background: #15202b;
+            border: 1px solid #38444d;
         }
         
         /* Hex label styles */
@@ -820,101 +789,6 @@
             font-size: 12px;
             color: #e1e8ed;
             transition: all 0.2s;
-        }
-        
-        .sidebar-toggle {
-            position: fixed;
-            top: 60px;
-            right: 20px;
-            background: rgba(29, 155, 240, 0.95);
-            border: none;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            z-index: 1001;
-            cursor: pointer;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-        
-        .sidebar-toggle:hover {
-            background: rgba(29, 155, 240, 1);
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
-        }
-        
-        .sidebar-toggle.collapsed {
-            right: 20px;
-        }
-        
-        .floating-submit {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
-            border: none;
-            border-radius: 50px;
-            padding: 16px 28px;
-            z-index: 1001;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .floating-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(29, 155, 240, 0.6);
-        }
-        
-        .stats-badge {
-            position: fixed;
-            top: 60px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 12px;
-            padding: 12px 16px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        .stats-badge-content {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            font-size: 13px;
-        }
-        
-        .stats-badge-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .stats-badge-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1d9bf0;
-        }
-        
-        .stats-badge-label {
-            font-size: 11px;
-            color: #8899a6;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
         .legend-toggle:hover {
@@ -1269,67 +1143,361 @@
             100% { background-position: -200% 0; }
         }
         
+        /* Mobile Toggle Button */
+        .mobile-sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1500;
+            background: #1d9bf0;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(29, 155, 240, 0.4);
+            transition: all 0.3s;
+        }
+
+        .mobile-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
+                padding-top: 40px;
             }
             
-            #sidebar {
-                width: 100%;
-                height: 50vh;
+            .demo-banner {
+                font-size: 11px;
+                padding: 6px;
+                line-height: 1.4;
             }
             
             #map {
-                height: 50vh;
+                height: 100vh;
+                width: 100%;
+                position: fixed;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+            
+            #sidebar {
+                position: fixed;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: auto;
+                max-height: calc(100vh - 40px);
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+                z-index: 1400;
+                border-left: none;
+                border-top: 2px solid #38444d;
+            }
+            
+            #sidebar.mobile-open {
+                transform: translateY(0);
+            }
+            
+            .mobile-sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Make controls touch-friendly */
+            .control, .toggle-btn, .filter-btn {
+                min-height: 44px;
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+            
+            .search-input {
+                min-height: 44px;
+                font-size: 16px;
+            }
+            
+            /* Adjust header for mobile */
+            .header {
+                padding: 15px;
+            }
+            
+            .header-nav {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .nav-link {
+                font-size: 0.85em;
+                padding: 6px 10px;
+            }
+            
+            /* Stats more compact */
+            .stats {
+                gap: 10px;
+                padding: 12px;
+            }
+            
+            .stat {
+                padding: 8px;
+            }
+            
+            .stat-number {
+                font-size: 1.3em;
+            }
+            
+            .stat-label {
+                font-size: 0.75em;
+            }
+            
+            /* Filters */
+            .filters {
+                padding: 12px;
+                gap: 12px;
+            }
+            
+            .filter-group {
+                gap: 8px;
+            }
+            
+            .filter-label {
+                font-size: 0.85em;
+            }
+            
+            /* School cards more compact */
+            .school-card {
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+            
+            .school-name {
+                font-size: 1em;
+            }
+            
+            .school-info {
+                font-size: 0.85em;
+            }
+            
+            .program-tag {
+                font-size: 0.75em;
+                padding: 3px 8px;
+            }
+            
+            /* View controls */
+            .view-controls {
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 12px;
+            }
+            
+            .view-btn {
+                flex: 1;
+                min-width: calc(33.33% - 6px);
+                font-size: 0.85em;
+                padding: 10px 8px;
+            }
+            
+            /* Legend */
+            .legend-toggle {
+                bottom: 90px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 0.85em;
+            }
+            
+            .legend-panel {
+                max-width: calc(100vw - 40px);
+                max-height: 60vh;
+                bottom: 90px;
+                right: 10px;
+            }
+            
+            /* Mode indicator */
+            .mode-indicator {
+                top: 50px;
+                left: 10px;
+                right: 10px;
+                padding: 10px 12px;
+                font-size: 0.8em;
+            }
+            
+            /* Charts */
+            .chart-container {
+                padding: 12px;
+                max-height: 300px;
+            }
+            
+            /* School list */
+            .school-list {
+                padding: 12px;
+            }
+            
+            /* Modals */
+            .modal-content {
+                width: 95%;
+                max-width: 100%;
+                max-height: 90vh;
+                margin: 20px;
+            }
+            
+            .modal-header h3 {
+                font-size: 1.1em;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+            
+            /* Form inputs */
+            .form-input, .form-select, .form-textarea {
+                min-height: 44px;
+                font-size: 16px;
+            }
+            
+            .form-textarea {
+                min-height: 100px;
+            }
+            
+            /* Accordion sections */
+            .form-section-header {
+                min-height: 44px;
+                font-size: 0.95em;
+            }
+            
+            /* Multiselect */
+            .multiselect-dropdown {
+                max-height: 200px;
+            }
+            
+            .multiselect-option {
+                min-height: 40px;
+                font-size: 0.9em;
+            }
+            
+            /* Hide hover effects on mobile */
+            .school-card-actions {
+                display: flex !important;
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 8px;
+                justify-content: flex-end;
+            }
+            
+            /* Better touch targets */
+            .close-btn {
+                min-width: 44px;
+                min-height: 44px;
+                font-size: 24px;
+            }
+            
+            /* Scrollable content */
+            .school-list {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* Small phones */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.4em;
+            }
+            
+            .header {
+                padding: 12px;
+            }
+            
+            .demo-banner {
+                font-size: 10px;
+                padding: 5px;
+            }
+            
+            .view-btn {
+                min-width: calc(50% - 4px);
+                font-size: 0.8em;
+            }
+            
+            .stat {
+                padding: 6px;
+            }
+            
+            .stat-number {
+                font-size: 1.1em;
+            }
+            
+            .stat-label {
+                font-size: 0.7em;
+            }
+            
+            .mobile-sidebar-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .legend-toggle {
+                padding: 8px 12px;
+                font-size: 0.75em;
+            }
+        }
+        
+        /* Landscape mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .demo-banner {
+                padding: 4px;
+                font-size: 10px;
+            }
+            
+            #sidebar.mobile-open {
+                max-height: calc(100vh - 30px);
+            }
+            
+            .header {
+                padding: 10px;
+            }
+            
+            .stats {
+                padding: 8px;
+            }
+        }
+        
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            #sidebar {
+                width: 350px;
+            }
+            
+            .header {
+                padding: 16px;
+            }
+            
+            .school-card {
+                padding: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="demo-banner" id="demoBanner">
-        <div class="banner-content">
-            <div>
-                🚀 ENHANCED: Zoom-Adaptive Hex Grid | Smart Viewport Filtering | 989 Schools Mapped
-                <br>
-                ⬡ Hex Grid auto-adjusts resolution • 📍 Markers auto-filter at zoom 6+ • 🌡️ Heat Map shows all data
-            </div>
-            <div class="banner-links">
-                <a href="https://bomforge.com/contact" target="_blank" class="banner-link">BOMForge</a>
-                <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
-            </div>
-        </div>
-        <button class="banner-close" onclick="dismissBanner()" aria-label="Dismiss banner">×</button>
+    <div class="demo-banner">
+        🚀 ENHANCED: Zoom-Adaptive Visualization | Smart Clustering | 989 Schools Mapped<br>
+        ⬡ Hex Grid (zoom 3-5) • 📍 Clustered Icons (zoom 6-7) • 🎯 Favicons (zoom 8+) • 🌡️ Heat Map
     </div>
     
     <div id="map"></div>
     
-    <!-- Sidebar Toggle Button -->
-    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+    <!-- Mobile Sidebar Toggle -->
+    <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" onclick="toggleMobileSidebar()" aria-label="Toggle sidebar">
         ☰
-    </button>
-    
-    <!-- Stats Badge -->
-    <div class="stats-badge" id="statsBadge">
-        <div class="stats-badge-content">
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
-                <div class="stats-badge-label">Schools</div>
-            </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeStates">50</div>
-                <div class="stats-badge-label">States</div>
-            </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeVisible">1031</div>
-                <div class="stats-badge-label">Visible</div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Floating Submit Button -->
-    <button class="floating-submit" id="floatingSubmit" onclick="openSubmitModal()">
-        <span>+</span>
-        <span>Submit a School or Program</span>
     </button>
     
     <!-- Program Legend -->
@@ -1385,19 +1553,13 @@
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
                 <div class="view-controls">
-                    <button class="view-btn active" id="markersBtn" onclick="setView('markers')" title="Individual school markers with favicons">📍 Markers</button>
+                    <button class="view-btn" id="markersBtn" onclick="setView('markers')" title="Smart markers: Clustered at zoom 6-7, favicons at zoom 8+">📍 Markers</button>
                     <button class="view-btn" id="heatmapBtn" onclick="setView('heatmap')" title="Density heatmap showing concentration">🌡️ Heat Map</button>
+                    <button class="view-btn active" id="hexgridBtn" onclick="setView('hexgrid')" title="Program-coded hexagons with zoom-adaptive resolution">⬡ Hex Grid</button>
                 </div>
                 <div class="mode-indicator" id="modeIndicator" style="display: none;">
                     <span id="modeText" class="mode-text"></span>
                     <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
-                </div>
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><span class="filter-icon">🗺️</span> Viewport Only</label>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <input type="checkbox" id="viewportOnlyToggle">
-                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit heat/hex calculations to visible map area</label>
                 </div>
             </div>
             <div class="filter-group">
@@ -1420,7 +1582,7 @@
         </div>
         
         <div class="submission-form">
-            <div class="form-title">🏫 Submit a School or Program</div>
+            <div class="form-title">🏫 Submit a School</div>
             <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
             <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
 
@@ -1693,33 +1855,6 @@
             'default': '#8899a6'
         };
         
-        // Program emoji mapping for visual clusters
-        const PROGRAM_EMOJIS = {
-            'Welding': '🔥',
-            'HVAC': '❄️',
-            'HVAC (Heating, Ventilation, and Air Conditioning)': '❄️',
-            'Construction': '🏗️',
-            'Construction & Building Technology': '🏗️',
-            'CAD/CAM Drafting': '📐',
-            'CAD/CAM Drafting & Design': '📐',
-            'Woodworking & Carpentry': '🪵',
-            'Mechatronics': '🤖',
-            'Diesel & Automotive Tech': '🚗',
-            'Diesel & Automotive Technology': '🚗',
-            'Machine & Mechanical Systems': '⚙️',
-            'Machine Tool Technology & Mechanical Systems': '⚙️',
-            'Electronics': '⚡',
-            'Electronics Technology': '⚡',
-            'Plumbing & Pipefitting': '🔧',
-            'Machining': '🔩',
-            'Machining & CNC': '🔩',
-            'Electrical Technology': '💡',
-            'Industrial Maintenance': '🛠️',
-            'Robotics & Automation': '🤖',
-            'Manufacturing Technology': '🏭',
-            'default': '🎓'
-        };
-        
         // Get color for a program with improved matching
         function getProgramColor(program) {
             if (!program) return PROGRAM_COLORS['default'];
@@ -1766,43 +1901,6 @@
             return PROGRAM_COLORS['default'];
         }
         
-        // Get emoji for a program with improved matching
-        function getProgramEmoji(program) {
-            if (!program) return PROGRAM_EMOJIS['default'];
-            
-            // Direct match first
-            if (PROGRAM_EMOJIS[program]) {
-                return PROGRAM_EMOJIS[program];
-            }
-            
-            // Try partial matching for common variations
-            const programLower = program.toLowerCase();
-            for (const [key, emoji] of Object.entries(PROGRAM_EMOJIS)) {
-                if (key === 'default') continue;
-                
-                const keyLower = key.toLowerCase();
-                if (programLower.includes(keyLower) || keyLower.includes(programLower)) {
-                    return emoji;
-                }
-            }
-            
-            // Fuzzy matching for common terms
-            if (programLower.includes('weld')) return '🔥';
-            if (programLower.includes('hvac') || programLower.includes('air conditioning')) return '❄️';
-            if (programLower.includes('construction') || programLower.includes('building')) return '🏗️';
-            if (programLower.includes('wood') || programLower.includes('carpentry')) return '🪵';
-            if (programLower.includes('auto') || programLower.includes('diesel')) return '🚗';
-            if (programLower.includes('electric') && !programLower.includes('electronics')) return '💡';
-            if (programLower.includes('electronic')) return '⚡';
-            if (programLower.includes('plumb') || programLower.includes('pipe')) return '🔧';
-            if (programLower.includes('machine') || programLower.includes('cnc')) return '🔩';
-            if (programLower.includes('robot')) return '🤖';
-            if (programLower.includes('manufacturing') || programLower.includes('industrial')) return '🏭';
-            if (programLower.includes('cad') || programLower.includes('draft')) return '📐';
-            
-            return PROGRAM_EMOJIS['default'];
-        }
-        
         // Get top N programs across all schools
         function getTopPrograms(schools, n = 10) {
             const programCounts = {};
@@ -1839,38 +1937,33 @@
             toggle.textContent = legend.classList.contains('active') ? '🎨 Hide Legend' : '🎨 Show Legend';
         }
         
-        // Toggle sidebar visibility
-        function toggleSidebar() {
+        // Toggle mobile sidebar
+        function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
-            const toggle = document.getElementById('sidebarToggle');
-            const isCollapsed = sidebar.classList.toggle('collapsed');
-            
-            toggle.innerHTML = isCollapsed ? '☰' : '×';
-            toggle.classList.toggle('collapsed', isCollapsed);
-            
-            // Save state to localStorage
-            localStorage.setItem('sidebarCollapsed', isCollapsed);
-            
-            // Trigger map resize to adjust to new container size
-            setTimeout(() => map.invalidateSize(), 300);
+            const toggle = document.getElementById('mobileSidebarToggle');
+            sidebar.classList.toggle('mobile-open');
+            if (sidebar.classList.contains('mobile-open')) {
+                toggle.textContent = '✕';
+                toggle.setAttribute('aria-label', 'Close sidebar');
+            } else {
+                toggle.textContent = '☰';
+                toggle.setAttribute('aria-label', 'Open sidebar');
+            }
         }
         
-        // Open submit school modal (scroll sidebar to form section)
-        function openSubmitModal() {
-            const sidebar = document.getElementById('sidebar');
-            const submitForm = document.getElementById('submitForm');
-            
-            // Expand sidebar if collapsed
-            if (sidebar.classList.contains('collapsed')) {
-                toggleSidebar();
-            }
-            
-            // Wait for animation, then scroll to form
-            setTimeout(() => {
-                if (submitForm) {
-                    submitForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Close mobile sidebar when clicking on map (on mobile)
+        if (window.innerWidth <= 768) {
+            document.addEventListener('DOMContentLoaded', function() {
+                const mapDiv = document.getElementById('map');
+                if (mapDiv) {
+                    mapDiv.addEventListener('click', function() {
+                        const sidebar = document.getElementById('sidebar');
+                        if (sidebar && sidebar.classList.contains('mobile-open')) {
+                            toggleMobileSidebar();
+                        }
+                    });
                 }
-            }, 350);
+            });
         }
         
         // Initialize map
@@ -1891,43 +1984,22 @@
         // Chart instance
         let programChart = null;
         
-        // Banner dismissal functionality
-        function dismissBanner() {
-            const banner = document.getElementById('demoBanner');
-            banner.classList.add('hidden');
-            document.body.style.paddingTop = '0';
-            localStorage.setItem('bannerDismissed', 'true');
-        }
-        
-        // Check if banner was previously dismissed
-        window.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('bannerDismissed') === 'true') {
-                const banner = document.getElementById('demoBanner');
-                banner.classList.add('hidden');
-                document.body.style.paddingTop = '0';
-            }
-            
-            // Restore sidebar state
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
-                const sidebar = document.getElementById('sidebar');
-                const toggle = document.getElementById('sidebarToggle');
-                sidebar.classList.add('collapsed');
-                toggle.innerHTML = '☰';
-                toggle.classList.add('collapsed');
-            }
-        });
-        
         // Data storage
         let allSchools = [];
         let filteredSchools = [];
         let viewportSchools = []; // Schools visible in current viewport
         let schoolMarkers = {};
-        let markersLayer = L.layerGroup().addTo(map);
+        let markersLayer = L.markerClusterGroup({
+            maxClusterRadius: 80,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            disableClusteringAtZoom: 8  // Individual markers at zoom 8+
+        }).addTo(map);
         let heatmapLayer = null;
         let hexLayer = L.layerGroup();
         let selectedMarker = null;
-        let currentView = 'markers'; // Default to markers view
-        let viewportOnly = false; // Limit aggregations to visible area
+        let currentView = 'hexgrid'; // Default to hex grid view
         
         // Load geocoded data with improved error handling
         function loadGeocodedData() {
@@ -1935,9 +2007,10 @@
             
             // Try multiple file paths for deployment compatibility
             const csvPaths = [
-                'schools/trade_schools_geocoded_fixed.csv',
-                './schools/trade_schools_geocoded_fixed.csv',
-                'trade_schools_geocoded_fixed.csv'
+                '../data/production/trade_schools_geocoded_fixed.csv',
+                'data/production/trade_schools_geocoded_fixed.csv',
+                '/data/production/trade_schools_geocoded_fixed.csv',
+                'schools/trade_schools_geocoded_fixed.csv'  // Legacy fallback
             ];
             
             const matchmakingPaths = [
@@ -2226,15 +2299,9 @@
             const stateCount = new Set(usSchools.map(s => s.state)).size;
             const viewportStateCount = new Set(usSchoolsInViewport.map(s => s.state)).size;
             
-            // Update sidebar stats
             document.getElementById('totalSchools').textContent = allSchools.length;
             document.getElementById('totalStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
             document.getElementById('visibleCount').textContent = schoolsToShow.length;
-            
-            // Update stats badge
-            document.getElementById('statsBadgeSchools').textContent = allSchools.length;
-            document.getElementById('statsBadgeStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
-            document.getElementById('statsBadgeVisible').textContent = schoolsToShow.length;
         }
         
         // Display schools in sidebar
@@ -2288,44 +2355,80 @@
             }).join('');
         }
         
+        // Helper function to get local and remote favicon URLs from website
+        function getFaviconUrls(website) {
+            if (!website) return null;
+            try {
+                let url = website.trim();
+                if (!url.startsWith('http')) {
+                    url = 'https://' + url;
+                }
+                const urlObj = new URL(url);
+                const domain = urlObj.hostname;
+                const localUrl = `/assets/favicons/${domain}.png`;
+                const remoteUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+                return { localUrl, remoteUrl };
+            } catch (e) {
+                return null;
+            }
+        }
+        
         // Add markers to map
         function addMarkersToMap() {
             markersLayer.clearLayers();
             schoolMarkers = {};
             
+            const zoom = map.getZoom();
+            console.log(`Adding ${filteredSchools.length} markers to map at zoom level ${zoom}`);
+            
             filteredSchools.forEach(school => {
-                // Create custom favicon icon
-                let iconHtml;
-                if (school.website) {
-                    // Extract domain from website
-                    let domain = school.website;
-                    try {
-                        domain = new URL(school.website.startsWith('http') ? school.website : 'https://' + school.website).hostname;
-                    } catch (e) {
-                        // Fallback if URL parsing fails
-                        domain = school.website.replace(/^https?:\/\//, '').split('/')[0];
-                    }
+                const favicon = getFaviconUrls(school.website);
+                
+                let marker;
+                
+                // Only show full favicons at zoom 8+, simpler icons at lower zooms
+                if (zoom >= 8 && favicon) {
+                    // High zoom: Show actual favicons
+                    const iconHtml = `
+                        <div class="favicon-marker" data-school="${school.name}">
+                            <img src="${favicon.localUrl}" 
+                                 alt="${school.name}" 
+                                 onerror="if (this.dataset.fallbackApplied !== '1') { this.dataset.fallbackApplied='1'; this.src='${favicon.remoteUrl}'; } else { this.parentElement.classList.add('no-favicon'); this.style.display='none'; this.parentElement.innerHTML='🎓'; }"
+                            />
+                        </div>
+                    `;
                     
-                    // Use Google's favicon service with fallback to emoji
-                    iconHtml = `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=32" 
-                                     onerror="this.style.display='none'; this.parentElement.innerHTML='🎓';" 
-                                     style="width: 24px; height: 24px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">`;
+                    const customIcon = L.divIcon({
+                        html: iconHtml,
+                        className: '',
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18],
+                        popupAnchor: [0, -18]
+                    });
+                    
+                    marker = L.marker([school.lat, school.lon], { icon: customIcon });
                 } else {
-                    // No website, use emoji fallback
-                    iconHtml = '🎓';
+                    // Lower zoom or no favicon: Simple circle with program icon
+                    const programIcon = school.programs[0] === 'Welding' ? '🔧' : 
+                                      school.programs[0] === 'Diesel' ? '🚛' :
+                                      school.programs[0] === 'HVAC' ? '❄️' : '🎓';
+                    
+                    const iconHtml = `
+                        <div class="favicon-marker no-favicon" data-school="${school.name}" style="width: 28px; height: 28px; font-size: 14px;">
+                            ${programIcon}
+                        </div>
+                    `;
+                    
+                    const customIcon = L.divIcon({
+                        html: iconHtml,
+                        className: '',
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14],
+                        popupAnchor: [0, -14]
+                    });
+                    
+                    marker = L.marker([school.lat, school.lon], { icon: customIcon });
                 }
-                
-                const faviconIcon = L.divIcon({
-                    className: 'emoji-marker',
-                    html: iconHtml,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12],
-                    popupAnchor: [0, -12]
-                });
-                
-                const marker = L.marker([school.lat, school.lon], {
-                    icon: faviconIcon
-                });
                 
                 // Create popup
                 const websiteUrl = school.website ? 
@@ -2337,24 +2440,13 @@
                     websiteDisplay = websiteDisplay.replace(/^https?:\/\//, '').replace(/\/$/, '');
                 }
                 
-                // Get favicon domain for popup
-                let faviconDomain = '';
-                if (school.website) {
-                    try {
-                        faviconDomain = new URL(school.website.startsWith('http') ? school.website : 'https://' + school.website).hostname;
-                    } catch (e) {
-                        faviconDomain = school.website.replace(/^https?:\/\//, '').split('/')[0];
-                    }
-                }
-                
                 const popupContent = `
-                    <div class="popup-header">
-                        ${faviconDomain ? `<img src="https://www.google.com/s2/favicons?domain=${faviconDomain}&sz=64" class="popup-favicon" onerror="this.style.display='none'">` : '<span style="font-size: 20px;">🎓</span>'}
-                        <div class="popup-title">${school.name}</div>
+                    <div style="min-width: 200px;">
+                        <strong style="color: #1d9bf0;">${school.name}</strong><br>
+                        📍 ${school.city}, ${school.state}<br>
+                        ${websiteUrl ? `🌐 <a href="${websiteUrl}" target="_blank">${websiteDisplay}</a><br>` : ''}
+                        ${school.programs.length > 0 ? `<br><strong>Programs:</strong><br>${school.programs.join(', ')}` : ''}
                     </div>
-                    <div style="color: #8899a6; font-size: 13px; margin-bottom: 6px;">📍 ${school.city}, ${school.state}</div>
-                    ${websiteUrl ? `<div style="margin-bottom: 8px;"><a href="${websiteUrl}" target="_blank" style="color: #1d9bf0; text-decoration: none; font-size: 13px;">🌐 ${websiteDisplay}</a></div>` : ''}
-                    ${school.programs.length > 0 ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #38444d;"><strong style="font-size: 12px; color: #8899a6;">Programs:</strong><div style="font-size: 12px; color: #e1e8ed; margin-top: 4px;">${school.programs.slice(0, 5).join(', ')}${school.programs.length > 5 ? '...' : ''}</div></div>` : ''}
                 `;
                 
                 marker.bindPopup(popupContent);
@@ -2378,25 +2470,31 @@
             const school = getViewportSchools().find(s => s.name === schoolName);
             if (!school) return;
             
-            // Update marker styles
+            // Update marker styles - remove selected class from all markers
             Object.values(schoolMarkers).forEach(marker => {
-                marker.setStyle({
-                    radius: 6,
-                    fillColor: '#1d9bf0',
-                    color: 'white'
-                });
+                const icon = marker.getElement();
+                if (icon) {
+                    const faviconDiv = icon.querySelector('.favicon-marker');
+                    if (faviconDiv) {
+                        faviconDiv.classList.remove('selected');
+                    }
+                }
             });
             
             if (schoolMarkers[schoolName]) {
-                schoolMarkers[schoolName].setStyle({
-                    radius: 10,
-                    fillColor: '#ff6b6b',
-                    color: 'white'
-                });
+                // Add selected class to the chosen marker
+                const selectedMarker = schoolMarkers[schoolName];
+                const icon = selectedMarker.getElement();
+                if (icon) {
+                    const faviconDiv = icon.querySelector('.favicon-marker');
+                    if (faviconDiv) {
+                        faviconDiv.classList.add('selected');
+                    }
+                }
                 
                 // Center map on school
                 map.setView([school.lat, school.lon], 10);
-                schoolMarkers[schoolName].openPopup();
+                selectedMarker.openPopup();
             }
             
             // Highlight card
@@ -2465,9 +2563,6 @@
             
             // Clear all layers first
             markersLayer.clearLayers();
-            if (map.hasLayer(markersLayer)) {
-                map.removeLayer(markersLayer);
-            }
             if (heatmapLayer) {
                 map.removeLayer(heatmapLayer);
                 heatmapLayer = null;
@@ -2479,7 +2574,6 @@
             // Add the appropriate layer based on current view
             if (currentView === 'markers') {
                 console.log('Adding markers layer');
-                map.addLayer(markersLayer);
                 addMarkersToMap();
             } else if (currentView === 'heatmap') {
                 console.log('Adding heatmap layer');
@@ -2577,9 +2671,10 @@
             // Verify H3 library is loaded
             if (typeof h3 === 'undefined') {
                 console.error('H3 library not loaded! Cannot render hex grid.');
-                alert('Hex grid failed to render. Please reload the page.');
+                alert('Error: H3 mapping library failed to load. Please refresh the page.');
                 return;
             }
+            
             hexLayer.clearLayers();
             const hexData = {};
             const resolution = getH3Resolution();
@@ -2587,10 +2682,27 @@
             console.log(`Creating hex grid with resolution ${resolution} for ${filteredSchools.length} schools`);
             
             // STEP 1: Aggregate schools into hex bins with detailed metrics
-            const sourceSchools = viewportOnly ? getSchoolsInBounds() : filteredSchools;
-            sourceSchools.forEach(school => {
+            let successCount = 0;
+            let errorCount = 0;
+            filteredSchools.forEach(school => {
                 try {
-                    const h3Index = h3.latLngToCell(school.lat, school.lon, resolution);
+                    // Validate coordinates
+                    if (!school.lat || !school.lon || isNaN(parseFloat(school.lat)) || isNaN(parseFloat(school.lon))) {
+                        console.warn('Invalid coordinates for school:', school.name, 'lat:', school.lat, 'lon:', school.lon);
+                        errorCount++;
+                        return;
+                    }
+                    
+                    const lat = parseFloat(school.lat);
+                    const lon = parseFloat(school.lon);
+                    
+                    const h3Index = h3.latLngToCell(lat, lon, resolution);
+                    if (!h3Index) {
+                        console.warn('Failed to get H3 index for:', school.name);
+                        errorCount++;
+                        return;
+                    }
+                    
                     if (!hexData[h3Index]) {
                         hexData[h3Index] = {
                             count: 0,
@@ -2607,10 +2719,14 @@
                         hexData[h3Index].programs[program] = (hexData[h3Index].programs[program] || 0) + 1;
                         hexData[h3Index].programInstances++;
                     });
+                    successCount++;
                 } catch (e) {
                     console.warn('Failed to process school for hex grid:', school.name, e);
+                    errorCount++;
                 }
             });
+            
+            console.log(`Hex aggregation: ${successCount} schools successful, ${errorCount} errors`);
             
             // STEP 2: Calculate derived metrics for each hex
             Object.keys(hexData).forEach(h3Index => {
@@ -2621,9 +2737,17 @@
                 data.avgProgramsPerSchool = (data.programInstances / data.count).toFixed(1);
             });
             
-            console.log(`Created ${Object.keys(hexData).length} hex cells with enhanced metrics`);
+            const hexCount = Object.keys(hexData).length;
+            console.log(`Created ${hexCount} hex cells with enhanced metrics`);
+            
+            if (hexCount === 0) {
+                console.warn('⚠️ No hex cells created! Check if schools have valid coordinates.');
+                return;
+            }
             
             // STEP 3: Render hexagons with multi-program visualization
+            let renderedCount = 0;
+            let renderErrors = 0;
             Object.entries(hexData).forEach(([h3Index, data]) => {
                 try {
                     const boundary = h3.cellToBoundary(h3Index, true);
@@ -2694,9 +2818,6 @@
                         borderStyle = `border: 3px solid #666; box-shadow: 0 4px 8px rgba(0,0,0,0.4);`;
                     }
                     
-                    // Get dominant program emoji for cluster visualization
-                    const programEmoji = topProgram ? getProgramEmoji(topProgram.program) : '🎓';
-                    
                     // Diversity indicator icon
                     const diversityIcon = data.diversity > 2.5 ? '🌈' : 
                                         data.diversity > 1.5 ? '◐' : '';
@@ -2719,9 +2840,8 @@
                             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
                             position: relative;
                             ">
-                            <div style="font-size: ${Math.max(14, fontSize - 2)}px; line-height: 1; margin-bottom: 1px;">${programEmoji}</div>
-                            <div style="font-size: ${Math.max(11, fontSize - 3)}px; line-height: 1; font-weight: 900;">${data.count}</div>
-                            ${diversityIcon ? `<div style="font-size: ${Math.max(9, fontSize - 6)}px; line-height: 1; margin-top: 1px;">${diversityIcon}</div>` : ''}
+                            <div style="font-size: ${fontSize}px; line-height: 1;">${data.count}</div>
+                            ${diversityIcon ? `<div style="font-size: ${Math.max(10, fontSize - 4)}px; line-height: 1; margin-top: 2px;">${diversityIcon}</div>` : ''}
                         </div>`,
                         iconSize: [size, size],
                         iconAnchor: [size/2, size/2]
@@ -2750,18 +2870,14 @@
                                           data.diversity > 1.0 ? '#ffd93d' :
                                           '#8899a6';
                     
-                    // Create enhanced program bars with percentages and emojis
+                    // Create enhanced program bars with percentages
                     const programBarsHtml = data.topPrograms.map(({ program, count, percentage }) => {
                         const shortName = program.length > 23 ? program.substring(0, 20) + '...' : program;
                         const barColor = getProgramColor(program);
-                        const emoji = getProgramEmoji(program);
                         return `
                             <div style="margin-bottom: 6px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #e1e8ed; margin-bottom: 3px;">
-                                    <span style="font-weight: 500; display: flex; align-items: center; gap: 4px;">
-                                        <span style="font-size: 13px;">${emoji}</span>
-                                        ${shortName}
-                                    </span>
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #e1e8ed; margin-bottom: 3px;">
+                                    <span style="font-weight: 500;">${shortName}</span>
                                     <span style="color: #1d9bf0; font-weight: 600;">${percentage}%</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -2775,9 +2891,6 @@
                         `;
                     }).join('');
                     
-                    // Build program cluster emoji summary
-                    const clusterEmojis = data.topPrograms.slice(0, 3).map(p => getProgramEmoji(p.program)).join(' ');
-                    
                     // Build comprehensive popup
                     const popupHtml = `
                         <div style="min-width: 320px; max-width: 420px; background: #15202b; padding: 14px;">
@@ -2787,9 +2900,7 @@
                                     <strong style="color: #1d9bf0; font-size: 17px; display: flex; align-items: center; gap: 6px;">
                                         <span>⬡</span> Hex Zone Analytics
                                     </strong>
-                                    <div style="color: #8899a6; font-size: 10px; margin-top: 4px;">
-                                        Resolution ${resolution} • Cluster: ${clusterEmojis || '🎓'}
-                                    </div>
+                                    <div style="color: #8899a6; font-size: 10px; margin-top: 2px;">Resolution ${resolution}</div>
                                 </div>
                                 <span style="background: linear-gradient(135deg, ${fillColor} 0%, ${fillColor}dd 100%); 
                                              color: white; padding: 6px 12px; border-radius: 16px; font-size: 16px; 
@@ -2824,10 +2935,7 @@
                                         <div style="color: #8899a6; font-size: 10px; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;">
                                             👑 Dominant Program
                                         </div>
-                                        <div style="color: #e1e8ed; font-size: 15px; font-weight: 700; line-height: 1.3; display: flex; align-items: center; gap: 6px;">
-                                            <span style="font-size: 18px;">${getProgramEmoji(topProgram.program)}</span>
-                                            ${topProgram.program}
-                                        </div>
+                                        <div style="color: #e1e8ed; font-size: 15px; font-weight: 700; line-height: 1.3;">${topProgram.program}</div>
                                         <div style="color: #8899a6; font-size: 11px; margin-top: 4px;">
                                             ${topProgram.count} schools • ${topProgram.percentage}% market share
                                         </div>
@@ -2898,13 +3006,20 @@
                     });
                     
                     hexLayer.addLayer(polygon);
+                    renderedCount++;
                 } catch (e) {
-                    console.warn('Failed to create hex cell:', h3Index, e);
+                    console.error('Failed to create hex cell:', h3Index, e);
+                    renderErrors++;
                 }
             });
             
             map.addLayer(hexLayer);
-            console.log(`Hex grid rendered with ${Object.keys(hexData).length} cells`);
+            console.log(`✅ Hex grid rendered: ${renderedCount} cells successful, ${renderErrors} errors`);
+            
+            if (renderedCount === 0) {
+                console.error('❌ No hex cells were rendered! Check browser console for errors.');
+                alert('Hex grid failed to render. Please check the browser console for details.');
+            }
         }
         
         // Add heatmap to map
@@ -2913,14 +3028,8 @@
                 map.removeLayer(heatmapLayer);
             }
             
-            if (!L.heatLayer) {
-                console.error('Leaflet.heat not available');
-                alert('Heat map failed to render. Please reload the page.');
-                return;
-            }
             const heatPoints = [];
-            const sourceSchools = viewportOnly ? getSchoolsInBounds() : filteredSchools;
-            sourceSchools.forEach(school => {
+            filteredSchools.forEach(school => {
                 heatPoints.push([school.lat, school.lon, 1]);
             });
             
@@ -2939,8 +3048,6 @@
                     }
                 });
                 map.addLayer(heatmapLayer);
-            } else {
-                alert('No data in current view to render a heat map.');
             }
         }
         
@@ -2974,6 +3081,18 @@
             // Update button states
             document.getElementById('markersBtn').classList.toggle('active', view === 'markers');
             document.getElementById('heatmapBtn').classList.toggle('active', view === 'heatmap');
+            document.getElementById('hexgridBtn').classList.toggle('active', view === 'hexgrid');
+            
+            // Auto-show legend when hex grid is active
+            const legend = document.getElementById('programLegend');
+            const toggle = document.getElementById('legendToggle');
+            if (view === 'hexgrid') {
+                legend.classList.add('active');
+                toggle.textContent = '🎨 Hide Legend';
+            } else {
+                legend.classList.remove('active');
+                toggle.textContent = '🎨 Show Legend';
+            }
             
             updateModeIndicator();
             updateMapView();
@@ -3162,22 +3281,24 @@
             }, 1000);
         });
         
-        // Helper: filter schools to current map bounds
-        function getSchoolsInBounds() {
-            const bounds = map.getBounds();
-            return filteredSchools.filter(school => bounds.contains([school.lat, school.lon]));
-        }
-
         // Get schools visible in current viewport
+        // Smart filtering: only applies to markers view for performance
         function getViewportSchools() {
-            if (viewportOnly) {
-                return getSchoolsInBounds();
+            // For hex grid and heatmap, always show all filtered data (aggregation handles it)
+            if (currentView === 'hexgrid' || currentView === 'heatmap') {
+                return filteredSchools;
             }
-            // Existing behavior: auto-limit markers at high zoom
+            
+            // For markers view at high zoom, show viewport only to avoid clutter
             const zoom = map.getZoom();
             if (currentView === 'markers' && zoom >= 6) {
-                return getSchoolsInBounds();
+                const bounds = map.getBounds();
+                return filteredSchools.filter(school => {
+                    return bounds.contains([school.lat, school.lon]);
+                });
             }
+            
+            // At national zoom level, show all
             return filteredSchools;
         }
         
@@ -3188,12 +3309,19 @@
             updateProgramChart();
             updateModeIndicator();
             
+            const zoom = map.getZoom();
+            
             // Re-render hex grid if active (zoom-dependent resolution)
             if (currentView === 'hexgrid') {
-                const zoom = map.getZoom();
                 const resolution = getH3Resolution();
                 console.log(`Zoom changed to ${zoom}, updating hex grid with resolution ${resolution}`);
                 addHexGridToMap();
+            }
+            
+            // Re-render markers on zoom change to update favicon visibility
+            if (currentView === 'markers') {
+                console.log(`Zoom changed to ${zoom}, refreshing markers`);
+                addMarkersToMap();
             }
         }
         
@@ -3388,47 +3516,43 @@
             cacheSchoolData();
         };
 
-        // Initialize from URL params (view mode)
-        (function initializeViewFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            const view = params.get('view');
-            if (view === 'markers' || view === 'heatmap' || view === 'hexgrid') {
-                setView(view);
+        // Wait for H3 library to load before initializing
+        function initializeWhenReady() {
+            if (typeof h3 === 'undefined') {
+                console.log('Waiting for H3 library to load...');
+                setTimeout(initializeWhenReady, 100);
+                return;
             }
-        })();
-
-        // Try to load cached data first
-        const cachedData = loadCachedData();
-        if (cachedData && cachedData.length > 0) {
-            console.log('Loading from cache:', cachedData.length, 'schools');
-            allSchools = cachedData;
-            filteredSchools = [...allSchools];
-            populateFilters();
-            updateStats();
-            displaySchools();
-            updateMapView();
-            updateProgramChart();
-            initializeLegend();
             
-            // Still load fresh data in background
-            setTimeout(() => loadGeocodedData(), 100);
-        } else {
-            // Initialize normally
-            loadGeocodedData();
+            console.log('✅ H3 library loaded successfully');
+            
+            // Try to load cached data first
+            const cachedData = loadCachedData();
+            if (cachedData && cachedData.length > 0) {
+                console.log('Loading from cache:', cachedData.length, 'schools');
+                allSchools = cachedData;
+                filteredSchools = [...allSchools];
+                populateFilters();
+                updateStats();
+                displaySchools();
+                updateMapView();
+                updateProgramChart();
+                initializeLegend();
+                
+                // Still load fresh data in background
+                setTimeout(() => loadGeocodedData(), 100);
+            } else {
+                // Initialize normally
+                loadGeocodedData();
+            }
+            
+            // Add viewport change listeners
+            map.on('moveend', updateViewportFiltering);
+            map.on('zoomend', updateViewportFiltering);
         }
         
-        // Add viewport change listeners
-        map.on('moveend', updateViewportFiltering);
-        map.on('zoomend', updateViewportFiltering);
-
-        // Viewport-only toggle handler
-        const viewportToggleEl = document.getElementById('viewportOnlyToggle');
-        if (viewportToggleEl) {
-            viewportToggleEl.addEventListener('change', function(e) {
-                viewportOnly = !!e.target.checked;
-                updateMapView();
-            });
-        }
+        // Start initialization when ready
+        initializeWhenReady();
     </script>
 </body>
 </html>
