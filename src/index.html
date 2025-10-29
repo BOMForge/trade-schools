@@ -773,70 +773,7 @@
             border: 2px solid #1d9bf0;
         }
         
-        /* Program Legend */
-        .program-legend {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 12px;
-            padding: 15px;
-            z-index: 1000;
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
         
-        .program-legend.active {
-            display: block;
-        }
-        
-        .legend-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e1e8ed;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .legend-items {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #8899a6;
-        }
-        
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid #38444d;
-        }
-        
-        .legend-toggle {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 8px;
-            padding: 8px 12px;
-            z-index: 999;
-            cursor: pointer;
-            font-size: 12px;
-            color: #e1e8ed;
-            transition: all 0.2s;
-        }
         
         .sidebar-toggle {
             position: fixed;
@@ -909,6 +846,10 @@
             user-select: none;
         }
         
+        .stats-badge.collapsed {
+            cursor: default;
+        }
+        
         .stats-badge.dragging {
             opacity: 0.8;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -925,6 +866,12 @@
             cursor: move;
         }
         
+        .stats-badge.collapsed .stats-badge-handle {
+            border-radius: 12px;
+            border-bottom: none;
+            cursor: pointer;
+        }
+        
         .stats-badge-handle:hover {
             background: rgba(29, 155, 240, 0.3);
             color: #1d9bf0;
@@ -936,6 +883,10 @@
             align-items: center;
             font-size: 13px;
             padding: 12px 16px;
+        }
+        
+        .stats-badge.collapsed .stats-badge-content {
+            display: none;
         }
         
         .stats-badge-item {
@@ -989,12 +940,11 @@
         }
 
         .data-summary-programs {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.7;
+            margin-top: 0;
+            padding-top: 4px;
         }
 
         .data-summary-programs strong {
@@ -1328,14 +1278,8 @@
 <body>
     <div class="demo-banner" id="demoBanner">
         <div class="banner-content">
-            <div>
-                🚀 ENHANCED: Zoom-Adaptive Hex Grid | Smart Viewport Filtering | 989 Schools Mapped
-                <br>
-                ⬡ Hex Grid auto-adjusts resolution • 📍 Markers auto-filter at zoom 6+ • 🌡️ Heat Map shows all data
-            </div>
             <div class="banner-links">
                 <a href="submit-school.html" class="banner-link">Submit a School</a>
-                <a href="mailto:tom@bomforge.com" class="contact-link">Contact Us</a>
                 <a href="https://bomforge.com/contact" target="_blank" class="banner-link">BOMForge</a>
                 <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
             </div>
@@ -1352,7 +1296,7 @@
     
     <!-- Stats Badge -->
     <div class="stats-badge" id="statsBadge">
-        <div class="stats-badge-handle">☰</div>
+        <div class="stats-badge-handle" onclick="toggleStatsBadge()" title="Toggle stats">☰</div>
         <div class="stats-badge-content">
             <div class="stats-badge-item">
                 <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
@@ -1372,27 +1316,16 @@
     <!-- Floating Submit Button -->
     <button class="floating-submit" id="floatingSubmit" onclick="openSubmitModal()">
         <span>+</span>
-        <span>Submit a School or Program</span>
+        <span>Submit a School</span>
     </button>
     
-    <!-- Program Legend -->
-    <div class="legend-toggle" id="legendToggle" onclick="toggleLegend()">
-        🎨 Show Legend
-    </div>
-    <div class="program-legend" id="programLegend">
-        <div class="legend-title">
-            <span>🎨</span>
-            <span>Program Colors</span>
-        </div>
-        <div class="legend-items" id="legendItems"></div>
-    </div>
     
-    <div id="sidebar">
+    
+    <div id="sidebar" class="collapsed">
         <div class="header">
             <div class="header-nav">
                 <a href="index.html" class="nav-link">🏠 Home</a>
-                <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
-                <a href="clean-map.html" class="nav-link active">🗺️ Map</a>
+                <a href="index.html" class="nav-link active">📊 Dashboard</a>
             </div>
             <h1>🎓 Trade Schools Directory</h1>
             <div class="stats">
@@ -1412,12 +1345,10 @@
         </div>
         
         <div class="filters">
-            <!-- Data Summary Widget -->
+            <!-- Top Programs Widget -->
             <div class="data-summary" id="dataSummary">
-                <div class="data-summary-title">📊 Live Data Overview</div>
-                <div class="data-summary-main" id="summaryMain">989 Schools in 50 States</div>
                 <div class="data-summary-programs" id="summaryPrograms">
-                    <strong>🎓 Top Programs:</strong> Welding (739), Diesel (592), HVAC (576)
+                    <strong>🎓 Top Programs</strong>
                 </div>
             </div>
 
@@ -1467,7 +1398,7 @@
         </div>
         
         <div class="submission-form" id="submitForm">
-            <div class="form-title">🏫 Submit a School or Program</div>
+            <div class="form-title">🏫 Submit a School</div>
             <div id="formSuccessMessage" class="form-message form-success" style="display: none;"></div>
             <div id="formErrorMessage" class="form-message form-error" style="display: none;"></div>
 
@@ -1846,41 +1777,7 @@
             return PROGRAM_EMOJIS['default'];
         }
         
-        // Get top N programs across all schools
-        function getTopPrograms(schools, n = 10) {
-            const programCounts = {};
-            schools.forEach(school => {
-                school.programs.forEach(program => {
-                    programCounts[program] = (programCounts[program] || 0) + 1;
-                });
-            });
-            return Object.entries(programCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, n);
-        }
         
-        // Initialize legend
-        function initializeLegend() {
-            const topPrograms = getTopPrograms(allSchools, 12);
-            const legendItems = document.getElementById('legendItems');
-            legendItems.innerHTML = topPrograms.map(([program, count]) => {
-                const shortName = program.length > 20 ? program.substring(0, 17) + '...' : program;
-                return `
-                    <div class="legend-item" title="${program}">
-                        <div class="legend-color" style="background: ${getProgramColor(program)}"></div>
-                        <span>${shortName}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        // Toggle legend visibility
-        function toggleLegend() {
-            const legend = document.getElementById('programLegend');
-            const toggle = document.getElementById('legendToggle');
-            legend.classList.toggle('active');
-            toggle.textContent = legend.classList.contains('active') ? '🎨 Hide Legend' : '🎨 Show Legend';
-        }
         
         // Toggle sidebar visibility
         function toggleSidebar() {
@@ -1950,13 +1847,33 @@
                 document.body.style.paddingTop = '0';
             }
             
-            // Restore sidebar state
-            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            // Restore sidebar state (default collapsed when not set)
+            (function() {
+                const saved = localStorage.getItem('sidebarCollapsed');
                 const sidebar = document.getElementById('sidebar');
                 const toggle = document.getElementById('sidebarToggle');
-                sidebar.classList.add('collapsed');
-                toggle.innerHTML = '☰';
-                toggle.classList.add('collapsed');
+                if (!sidebar || !toggle) return;
+                if (saved === 'false') {
+                    sidebar.classList.remove('collapsed');
+                    toggle.innerHTML = '×';
+                    toggle.classList.remove('collapsed');
+                } else {
+                    sidebar.classList.add('collapsed');
+                    toggle.innerHTML = '☰';
+                    toggle.classList.add('collapsed');
+                }
+            })();
+
+            // Make the floating stats badge a quick reset-and-zoom control
+            const statsBadgeContent = document.querySelector('.stats-badge-content');
+            if (statsBadgeContent) {
+                statsBadgeContent.style.cursor = 'pointer';
+                statsBadgeContent.title = 'Click to show all schools on the map';
+                statsBadgeContent.addEventListener('click', function() {
+                    if (typeof resetFiltersAndZoom === 'function') {
+                        resetFiltersAndZoom();
+                    }
+                });
             }
         });
         
@@ -2107,7 +2024,6 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
-            initializeLegend();
             
             // Ensure hex grid shows with sample data
             console.log(`Sample data loaded: ${allSchools.length} schools, rendering initial view...`);
@@ -2206,7 +2122,6 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
-            initializeLegend();
             
             // Ensure initial view is rendered
             console.log(`Initializing with ${allSchools.length} schools, default view: ${currentView}`);
@@ -2458,6 +2373,20 @@
                 const bounds = L.latLngBounds(allSchools.map(s => [s.lat, s.lon]));
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
+        }
+        
+        // Clear all filters and zoom to show every school
+        function resetFiltersAndZoom() {
+            const stateFilterEl = document.getElementById('stateFilter');
+            const programFilterEl = document.getElementById('programFilter');
+            const searchInputEl = document.getElementById('searchInput');
+            
+            if (stateFilterEl) stateFilterEl.value = '';
+            if (programFilterEl) programFilterEl.value = '';
+            if (searchInputEl) searchInputEl.value = '';
+            
+            applyFilters();
+            zoomToFullMap();
         }
         
         // Filter handlers
@@ -3364,16 +3293,15 @@
             
             const topPrograms = Object.entries(programCounts)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 3);
+                .slice(0, 12);
             
-            document.getElementById('summaryMain').textContent = 
-                `${allSchools.length} Schools in ${stateCount} States`;
-            
-            if (topPrograms.length > 0) {
-                document.getElementById('summaryPrograms').innerHTML = 
-                    `<strong>🎓 Top Programs:</strong> ${topPrograms.map(([prog, count]) => 
-                        `${prog.split(' ')[0]} (${count})`
-                    ).join(', ')}`;
+            const programsEl = document.getElementById('summaryPrograms');
+            if (programsEl) {
+                if (topPrograms.length > 0) {
+                    programsEl.innerHTML = `<strong>🎓 Top Programs:</strong> ${topPrograms.map(([prog, count]) => `${prog} (${count})`).join(', ')}`;
+                } else {
+                    programsEl.innerHTML = `<strong>🎓 Top Programs:</strong> —`;
+                }
             }
         }
 
@@ -3451,7 +3379,6 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
-            initializeLegend();
             
             // Still load fresh data in background
             setTimeout(() => loadGeocodedData(), 100);
@@ -3465,91 +3392,107 @@
         map.on('zoomend', updateViewportFiltering);
         
         // Make stats badge draggable
+        function toggleStatsBadge() {
+            const el = document.getElementById('statsBadge');
+            if (!el) return;
+            el.classList.toggle('collapsed');
+            localStorage.setItem('statsBadgeCollapsed', el.classList.contains('collapsed') ? '1' : '0');
+        }
+        
         (function() {
             const statsBadge = document.getElementById('statsBadge');
             let isDragging = false;
-            let currentX;
-            let currentY;
-            let initialX;
-            let initialY;
-            let xOffset = 0;
-            let yOffset = 0;
+            let startX, startY, initialLeft, initialTop;
+            let mapState = null;
             
             // Load saved position
             const savedPos = localStorage.getItem('statsBadgePosition');
             if (savedPos) {
-                const pos = JSON.parse(savedPos);
-                statsBadge.style.left = pos.x + 'px';
-                statsBadge.style.top = pos.y + 'px';
+                try {
+                    const pos = JSON.parse(savedPos);
+                    statsBadge.style.left = pos.x + 'px';
+                    statsBadge.style.top = pos.y + 'px';
+                } catch (_) {}
+            }
+            
+            function getPos(e) {
+                if (e.touches && e.touches.length > 0) {
+                    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+                return { x: e.clientX, y: e.clientY };
+            }
+            
+            function dragStart(e) {
+                if (!statsBadge || !statsBadge.contains(e.target)) return;
+                if (e.target && e.target.closest && e.target.closest('.stats-badge-handle')) return;
+                isDragging = true;
+                statsBadge.classList.add('dragging');
+                const pos = getPos(e);
+                startX = pos.x;
+                startY = pos.y;
+                const rect = statsBadge.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+                
+                // Temporarily disable map interactions while dragging
+                if (window.map && map && map.dragging) {
+                    mapState = {
+                        dragging: map.dragging.enabled(),
+                        boxZoom: map.boxZoom && map.boxZoom.enabled ? map.boxZoom.enabled() : false,
+                        doubleClickZoom: map.doubleClickZoom && map.doubleClickZoom.enabled ? map.doubleClickZoom.enabled() : false
+                    };
+                    if (map.dragging.enabled()) map.dragging.disable();
+                    if (map.boxZoom && map.boxZoom.disable) map.boxZoom.disable();
+                    if (map.doubleClickZoom && map.doubleClickZoom.disable) map.doubleClickZoom.disable();
+                }
+                e.preventDefault();
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                const deltaX = pos.x - startX;
+                const deltaY = pos.y - startY;
+                
+                let newLeft = initialLeft + deltaX;
+                let newTop = initialTop + deltaY;
+                
+                // Constrain within viewport
+                const maxLeft = window.innerWidth - statsBadge.offsetWidth - 4;
+                const maxTop = window.innerHeight - statsBadge.offsetHeight - 4;
+                if (newLeft < 4) newLeft = 4;
+                if (newTop < 4) newTop = 4;
+                if (newLeft > maxLeft) newLeft = maxLeft;
+                if (newTop > maxTop) newTop = maxTop;
+                
+                statsBadge.style.left = newLeft + 'px';
+                statsBadge.style.top = newTop + 'px';
+            }
+            
+            function dragEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                statsBadge.classList.remove('dragging');
+                
+                // Re-enable map interactions
+                if (mapState && window.map && map) {
+                    if (map.dragging && mapState.dragging) map.dragging.enable();
+                    if (map.boxZoom && mapState.boxZoom && map.boxZoom.enable) map.boxZoom.enable();
+                    if (map.doubleClickZoom && mapState.doubleClickZoom && map.doubleClickZoom.enable) map.doubleClickZoom.enable();
+                    mapState = null;
+                }
+                
+                const rect = statsBadge.getBoundingClientRect();
+                localStorage.setItem('statsBadgePosition', JSON.stringify({ x: rect.left, y: rect.top }));
             }
             
             statsBadge.addEventListener('mousedown', dragStart);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', dragEnd);
-            
-            statsBadge.addEventListener('touchstart', dragStart);
-            document.addEventListener('touchmove', drag);
+            statsBadge.addEventListener('touchstart', dragStart, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
             document.addEventListener('touchend', dragEnd);
-            
-            function dragStart(e) {
-                if (e.type === "touchstart") {
-                    initialX = e.touches[0].clientX - xOffset;
-                    initialY = e.touches[0].clientY - yOffset;
-                } else {
-                    initialX = e.clientX - xOffset;
-                    initialY = e.clientY - yOffset;
-                }
-                
-                if (e.target === statsBadge || e.target.classList.contains('stats-badge-handle')) {
-                    isDragging = true;
-                    statsBadge.classList.add('dragging');
-                }
-            }
-            
-            function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    
-                    if (e.type === "touchmove") {
-                        currentX = e.touches[0].clientX - initialX;
-                        currentY = e.touches[0].clientY - initialY;
-                    } else {
-                        currentX = e.clientX - initialX;
-                        currentY = e.clientY - initialY;
-                    }
-                    
-                    xOffset = currentX;
-                    yOffset = currentY;
-                    
-                    setTranslate(currentX, currentY, statsBadge);
-                }
-            }
-            
-            function dragEnd(e) {
-                if (isDragging) {
-                    initialX = currentX;
-                    initialY = currentY;
-                    isDragging = false;
-                    statsBadge.classList.remove('dragging');
-                    
-                    // Save position
-                    const rect = statsBadge.getBoundingClientRect();
-                    localStorage.setItem('statsBadgePosition', JSON.stringify({
-                        x: rect.left,
-                        y: rect.top
-                    }));
-                }
-            }
-            
-            function setTranslate(xPos, yPos, el) {
-                const rect = el.getBoundingClientRect();
-                const newLeft = rect.left + (xPos - xOffset);
-                const newTop = rect.top + (yPos - yOffset);
-                
-                el.style.left = newLeft + 'px';
-                el.style.top = newTop + 'px';
-                el.style.transform = 'none';
-            }
         })();
 
         // Viewport-only toggle handler
