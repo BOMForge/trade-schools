@@ -3038,59 +3038,6 @@
             }
         }
         
-        // Handle school submission
-        document.getElementById('schoolSubmissionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.textContent;
-            
-            // Disable button and show loading
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            
-            // Collect form data
-            const schoolCity = document.getElementById('schoolCity').value;
-            const schoolState = document.getElementById('schoolState').value;
-            const formData = {
-                schoolName: document.getElementById('schoolName').value,
-                schoolCity: schoolCity,
-                schoolState: schoolState,
-                schoolLocation: `${schoolCity}, ${schoolState}`,
-                schoolWebsite: document.getElementById('schoolWebsite').value,
-                schoolPrograms: document.getElementById('schoolPrograms').value,
-                submitterEmail: document.getElementById('submitterEmail').value,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent
-            };
-            
-            // Send email using mailto link
-            const subject = `New Trade School Submission: ${formData.schoolName}`;
-            const body = `New trade school submission:\n\n` +
-                        `School Name: ${formData.schoolName}\n` +
-                        `City: ${formData.schoolCity}\n` +
-                        `State: ${formData.schoolState}\n` +
-                        `Location: ${formData.schoolLocation}\n` +
-                        `Website: ${formData.schoolWebsite || 'Not provided'}\n` +
-                        `Programs: ${formData.schoolPrograms || 'Not provided'}\n` +
-                        `Submitted by: ${formData.submitterEmail || 'Anonymous'}\n` +
-                        `Submitted at: ${formData.timestamp}\n` +
-                        `User Agent: ${formData.userAgent}`;
-            
-            // Create mailto link
-            const mailtoLink = `mailto:tom@bomforge.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            // Open email client
-            window.location.href = mailtoLink;
-            
-            // Reset form after a delay
-            setTimeout(() => {
-                document.getElementById('schoolSubmissionForm').reset();
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                alert('Thank you! Your email client should open with the submission details. Please send the email to complete the submission.');
-            }, 1000);
-        });
         
         // Helper: filter schools to current map bounds
         function getSchoolsInBounds() {
@@ -3227,14 +3174,6 @@
             });
         }
 
-        // Close multiselect when clicking outside
-        document.addEventListener('click', function(e) {
-            const multiselect = document.getElementById('programsMultiselect');
-            const dropdown = document.getElementById('multiselectDropdown');
-            if (multiselect && !multiselect.contains(e.target)) {
-                dropdown.classList.remove('active');
-            }
-        });
 
         // Update Data Summary Widget
         function updateDataSummary() {
@@ -3289,20 +3228,6 @@
             return null;
         }
 
-        // Character counter for description
-        document.addEventListener('DOMContentLoaded', function() {
-            const descTextarea = document.getElementById('schoolDescription');
-            const countSpan = document.getElementById('descriptionCount');
-            
-            if (descTextarea && countSpan) {
-                descTextarea.addEventListener('input', function() {
-                    countSpan.textContent = this.value.length;
-                });
-            }
-            
-            // Initialize multi-select
-            initializeProgramMultiselect();
-        });
 
         // Override the original updateStats to also update summary
         const originalUpdateStats = updateStats;
