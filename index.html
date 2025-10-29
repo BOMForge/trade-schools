@@ -158,7 +158,7 @@
             position: relative;
             z-index: 1000;
             clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, width 0.3s ease;
         }
         
         #sidebar::before {
@@ -180,7 +180,7 @@
         
         #sidebar.collapsed {
             transform: translateX(400px);
-            width: 0;
+            width: 400px;
         }
         
         .header {
@@ -1075,6 +1075,7 @@
             z-index: 1001;
             cursor: pointer;
             font-size: 24px;
+            line-height: 1;
             color: #cccccc;
             box-shadow: 
                 0 4px 12px rgba(0, 0, 0, 0.5),
@@ -1101,6 +1102,10 @@
         
         .sidebar-toggle.collapsed {
             right: 20px;
+        }
+        
+        .sidebar-toggle:not(.collapsed) {
+            right: 420px;
         }
         
         .floating-submit {
@@ -1285,45 +1290,6 @@
         .legend-toggle:hover {
             background: #1d9bf0;
             border-color: #1d9bf0;
-        }
-
-        /* Data Summary Widget */
-        .data-summary {
-            padding: 15px;
-            background: linear-gradient(135deg, #1d9bf0 0%, #0d8bd9 100%);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(29, 155, 240, 0.3);
-        }
-
-        .data-summary-title {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .data-summary-main {
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
-
-        .data-summary-programs {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .data-summary-programs strong {
-            font-weight: 600;
         }
 
         /* Accordion Form Sections */
@@ -1873,10 +1839,29 @@
         <button class="banner-close" onclick="dismissBanner()" aria-label="Dismiss banner">×</button>
     </div>
     
+    <!-- Email Button -->
+    <button id="emailButton" onclick="showEmailWidget()" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #1d9bf0 0%, #1a8cd8 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(29, 155, 240, 0.3);
+        transition: all 0.3s ease;
+        z-index: 999;
+    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        📧 Get Updates
+    </button>
     <div id="map"></div>
     
     <!-- Email Collection Widget -->
-    <div class="email-widget" id="emailWidget">
+    <div class="email-widget hidden" id="emailWidget">
         <div class="email-widget-header">
             <div class="email-widget-title">
                 📧 Get Updates
@@ -1897,7 +1882,8 @@
         </form>
         <div class="email-widget-message" id="emailMessage" style="display: none;"></div>
         <div class="email-widget-footer">
-            Stay updated on new trade schools and programs
+            <div>Stay updated on new trade schools and programs</div>
+            <div style="margin-top: 8px; font-size: 16px;">🇺🇸 Made in USA</div>
         </div>
     </div>
     
@@ -1922,9 +1908,9 @@
                 <div class="stats-badge-value" id="statsBadgeVisible">1031</div>
                 <div class="stats-badge-label">Visible</div>
             </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgePrograms">0</div>
-                <div class="stats-badge-label">Program Types</div>
+            <div class="stats-badge-item" style="flex: 2; min-width: 200px;">
+                <div class="stats-badge-value" id="statsBadgePrograms" style="font-size: 11px; line-height: 1.2;">Loading...</div>
+                <div class="stats-badge-label">Top Programs</div>
             </div>
         </div>
         <div class="stats-badge-handle">☰</div>
@@ -1961,25 +1947,9 @@
         </div>
         
         <div class="filters">
-            <!-- Data Summary Widget -->
-            <div class="data-summary" id="dataSummary">
-                <div class="data-summary-title">📊 Live Data Overview</div>
-                <div class="data-summary-main" id="summaryMain">989 Schools in 50 States</div>
-                <div class="data-summary-programs" id="summaryPrograms">
-                    <strong>🎓 Top Programs:</strong> Welding (739), Diesel (592), HVAC (576)
-                </div>
-            </div>
-
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
-            </div>
-            <div class="filter-group">
-                <label class="filter-label"><span class="filter-icon">🗺️</span> Viewport Only</label>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <input type="checkbox" id="viewportOnlyToggle">
-                    <label for="viewportOnlyToggle" style="color:#8899a6; font-size:12px;">Limit hex calculations to visible map area</label>
-                </div>
             </div>
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">📍</span> Filter by State</label>
@@ -2218,9 +2188,18 @@
         }
         
         // Email widget functions
+        function showEmailWidget() {
+            const widget = document.getElementById('emailWidget');
+            const button = document.getElementById('emailButton');
+            widget.classList.remove('hidden');
+            button.style.display = 'none';
+        }
+        
         function closeEmailWidget() {
             const widget = document.getElementById('emailWidget');
+            const button = document.getElementById('emailButton');
             widget.classList.add('hidden');
+            button.style.display = 'block';
             localStorage.setItem('emailWidgetClosed', 'true');
         }
         
@@ -2339,7 +2318,7 @@
         let hexLayer = L.layerGroup();
         let selectedMarker = null;
         let currentView = 'markers'; // Default to markers view
-        let viewportOnly = false; // Limit aggregations to visible area
+        let viewportOnly = false; // Always false now, feature removed
         
         // Load geocoded data with improved error handling
         function loadGeocodedData() {
@@ -2675,14 +2654,6 @@
             const stateCount = new Set(usSchools.map(s => s.state)).size;
             const viewportStateCount = new Set(usSchoolsInViewport.map(s => s.state)).size;
             
-            // Calculate unique program types
-            const allProgramTypes = new Set();
-            allSchools.forEach(school => {
-                if (school.programs && Array.isArray(school.programs)) {
-                    school.programs.forEach(program => allProgramTypes.add(program));
-                }
-            });
-            
             // Update sidebar stats
             document.getElementById('totalSchools').textContent = allSchools.length;
             document.getElementById('totalStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
@@ -2692,7 +2663,25 @@
             document.getElementById('statsBadgeSchools').textContent = allSchools.length;
             document.getElementById('statsBadgeStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
             document.getElementById('statsBadgeVisible').textContent = schoolsToShow.length;
-            document.getElementById('statsBadgePrograms').textContent = allProgramTypes.size;
+            
+            // Update program types with counts based on viewport schools
+            const programCounts = {};
+            const schoolsForPrograms = isViewportFiltered ? schoolsToShow : allSchools;
+            schoolsForPrograms.forEach(school => {
+                if (school.programs && Array.isArray(school.programs)) {
+                    school.programs.forEach(program => {
+                        programCounts[program] = (programCounts[program] || 0) + 1;
+                    });
+                }
+            });
+            
+            const topProgramsBadge = Object.entries(programCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([prog, count]) => `${prog.split(' ')[0]} (${count})`)
+                .join(', ');
+            
+            document.getElementById('statsBadgePrograms').textContent = topProgramsBadge || 'No programs';
             
         }
         
@@ -2765,13 +2754,17 @@
                         domain = school.website.replace(/^https?:\/\//, '').split('/')[0];
                     }
                     
-                    // Use Google's favicon service with fallback to emoji
-                    iconHtml = `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=32" 
-                                     onerror="this.style.display='none'; this.parentElement.innerHTML='🎓';" 
-                                     style="width: 24px; height: 24px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">`;
+                    // Use Google's favicon service with better fallback handling
+                    iconHtml = `
+                        <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                            <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=32" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" 
+                                 style="width: 24px; height: 24px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: block;">
+                            <span style="display: none;">🎓</span>
+                        </div>`;
                 } else {
                     // No website, use emoji fallback
-                    iconHtml = '🎓';
+                    iconHtml = '<div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🎓</div>';
                 }
                 
                 const faviconIcon = L.divIcon({
@@ -3579,34 +3572,6 @@
             }
         });
 
-        // Update Data Summary Widget
-        function updateDataSummary() {
-            const schoolsToShow = getViewportSchools();
-            const stateCount = new Set(allSchools.map(s => s.state)).size;
-            
-            // Get top 3 programs
-            const programCounts = {};
-            schoolsToShow.forEach(school => {
-                school.programs.forEach(program => {
-                    programCounts[program] = (programCounts[program] || 0) + 1;
-                });
-            });
-            
-            const topPrograms = Object.entries(programCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3);
-            
-            document.getElementById('summaryMain').textContent = 
-                `${allSchools.length} Schools in ${stateCount} States`;
-            
-            if (topPrograms.length > 0) {
-                document.getElementById('summaryPrograms').innerHTML = 
-                    `<strong>🎓 Top Programs:</strong> ${topPrograms.map(([prog, count]) => 
-                        `${prog.split(' ')[0]} (${count})`
-                    ).join(', ')}`;
-            }
-        }
-
         // localStorage Caching
         function cacheSchoolData() {
             try {
@@ -3646,13 +3611,6 @@
             // Initialize multi-select
             initializeProgramMultiselect();
         });
-
-        // Override the original updateStats to also update summary
-        const originalUpdateStats = updateStats;
-        updateStats = function() {
-            originalUpdateStats();
-            updateDataSummary();
-        };
 
         // Override processData to cache results
         const originalProcessData = processData;
@@ -3857,14 +3815,9 @@
             }
         })();
 
-        // Viewport-only toggle handler
-        const viewportToggleEl = document.getElementById('viewportOnlyToggle');
-        if (viewportToggleEl) {
-            viewportToggleEl.addEventListener('change', function(e) {
-                viewportOnly = !!e.target.checked;
-                updateMapView();
-            });
-        }
+        // Viewport-only feature removed
+        
+        // Sidebar toggle functionality
     </script>
 </body>
 </html>
