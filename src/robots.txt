@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://trade-schools.pages.dev/sitemap.xml
+
+# Crawl-delay for politeness
+Crawl-delay: 1
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# Allow all important pages
+Allow: /index.html
+Allow: /map.html
+Allow: /dashboard.html
+Allow: /about.html
+Allow: /states.html
+Allow: /states/
+Allow: /submit-school.html
+
+# Allow data files for direct access
+Allow: /data/production/
+
+# Future: individual school detail pages
+# Allow: /schools/
+

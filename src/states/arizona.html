@@ -2,28 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Trade Schools Map - 1,031 Technical & Vocational Schools Across America | BOMForge</title>
+    <title>Arizona Trade Schools - 11 Technical & Vocational Schools | BOMForge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Interactive map of 1,031 trade schools and technical colleges across all 50 US states. Find welding, HVAC, manufacturing, electronics, and skilled trades training programs near you.">
-    <meta name="keywords" content="trade schools, technical schools, vocational training, skilled trades, welding schools, HVAC training, manufacturing education, community college, apprenticeship programs, career training">
+    <meta name="description" content="Interactive map of 11 trade schools and technical colleges in Arizona. Find welding, HVAC, manufacturing, electronics, and skilled trades training programs in NC.">
+    <meta name="keywords" content="arizona trade schools, AZ technical schools, vocational training AZ, skilled trades arizona, welding schools AZ, HVAC training, manufacturing education, community college, apprenticeship programs, career training">
     <meta name="author" content="BOMForge">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://trade-schools.pages.dev/">
+    <link rel="canonical" href="https://trade-schools.pages.dev/states/arizona.html">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://trade-schools.pages.dev/">
-    <meta property="og:title" content="Trade Schools Map - 1,031 Technical Schools Across America">
-    <meta property="og:description" content="Interactive map of trade schools and technical colleges. Find welding, HVAC, manufacturing, and skilled trades training programs near you.">
+    <meta property="og:url" content="https://trade-schools.pages.dev/states/arizona.html">
+    <meta property="og:title" content="Arizona Trade Schools - 11 Technical Schools">
+    <meta property="og:description" content="Interactive map of Arizona trade schools and technical colleges. Find welding, HVAC, manufacturing, and skilled trades training programs in AZ.">
     <meta property="og:image" content="https://trade-schools.pages.dev/favicon.svg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://trade-schools.pages.dev/">
-    <meta property="twitter:title" content="Trade Schools Map - 1,031 Technical Schools Across America">
-    <meta property="twitter:description" content="Interactive map of trade schools and technical colleges. Find skilled trades training programs near you.">
+    <meta property="twitter:url" content="https://trade-schools.pages.dev/states/arizona.html">
+    <meta property="twitter:title" content="Arizona Trade Schools - 11 Technical Schools">
+    <meta property="twitter:description" content="Interactive map of Arizona trade schools and technical colleges. Find skilled trades training programs in AZ.">
     <meta property="twitter:image" content="https://trade-schools.pages.dev/favicon.svg">
     
     <!-- Favicon -->
@@ -1350,9 +1350,11 @@
 <body>
     <div class="demo-banner" id="demoBanner">
         <div class="banner-content">
+            <span style="margin-right: 15px;">📍 Arizona Trade Schools</span>
             <div class="banner-links">
-                <a href="states.html" class="banner-link">📍 Browse by State</a>
-                <a href="submit-school.html" class="banner-link">Submit a School</a>
+                <a href="../states.html" class="banner-link">Browse All States</a>
+                <a href="../index.html" class="banner-link">National Map</a>
+                <a href="../submit-school.html" class="banner-link">Submit a School</a>
                 <a href="https://bomforge.com/contact" target="_blank" class="banner-link">BOMForge</a>
                 <a href="https://doss.com" target="_blank" class="banner-link">Doss</a>
             </div>
@@ -1491,7 +1493,7 @@
                 <a href="about.html" class="nav-link">
                     ℹ️ About
                 </a>
-                <a href="submit-school.html" class="nav-link">
+                <a href="../submit-school.html" class="nav-link">
                     ➕ Submit School
                 </a>
                 <a href="https://bomforge.com/contact" target="_blank" class="nav-link">
@@ -1718,27 +1720,16 @@
             }, 300);
         }
         
-        // Attach event listener to toggle button
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggleBtn = document.getElementById('sidebarToggle');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', toggleSidebar);
-                console.log('Toggle button event listener attached');
-            } else {
-                console.error('Toggle button not found on DOMContentLoaded');
-            }
-        });
-        
         // Open submit school modal (redirect to submit page)
         function openSubmitModal() {
-            window.location.href = 'submit-school.html';
+            window.location.href = '../submit-school.html';
         }
         
-        // Initialize map
+        // Initialize map centered on Arizona
         const map = L.map('map', {
-            center: [39.8283, -98.5795],
-            zoom: 4,
-            minZoom: 3,
+            center: [33.7760, -111.7234],
+            zoom: 8,
+            minZoom: 6,
             maxZoom: 18
         });
         
@@ -1807,14 +1798,14 @@
             
             // Try multiple file paths for deployment compatibility
             const csvPaths = [
-                'schools/trade_schools_geocoded_fixed.csv',
-                './schools/trade_schools_geocoded_fixed.csv',
+                '../schools/trade_schools_geocoded_fixed.csv',
+                '../schools/trade_schools_geocoded_fixed.csv',
                 'trade_schools_geocoded_fixed.csv'
             ];
             
             const matchmakingPaths = [
-                'schools/matchmaking_index.csv',
-                './schools/matchmaking_index.csv',
+                '../schools/matchmaking_index.csv',
+                '../schools/matchmaking_index.csv',
                 'matchmaking_index.csv'
             ];
             
@@ -1974,12 +1965,12 @@
                 }
             });
             
-            // Process geocoded schools
+            // Process geocoded schools - FILTER FOR ARIZONA ONLY
             allSchools = [];
             console.log('Processing geoData:', geoData.length, 'rows');
             let processedCount = 0;
             geoData.forEach(row => {
-                if (row.geocoded === 'True' && row.lat && row.lon) {
+                if (row.geocoded === 'True' && row.lat && row.lon && row.State === 'AZ') {
                     processedCount++;
                     const key = `${row['Institution Name']}_${row.State}_${row.City}`;
                     const programData = schoolPrograms[key] || { programs: [], email: '', website: '' };
