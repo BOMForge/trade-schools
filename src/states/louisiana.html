@@ -2021,10 +2021,6 @@
             
             console.log(`📊 Data Status: ${mappedCount}/${totalInFile} schools mapped`);
             
-            // Only show alert if significant number missing
-            if (missingCount > 50) {
-                alert(`📊 Data Status:\n\n✅ ${mappedCount} schools successfully mapped\n⚠️ ${missingCount} schools still missing coordinates\n📊 Total: ${totalInFile} schools in database\n\nWe've recovered many schools but some still need manual geocoding.`);
-            }
             
             // Initialize UI
             filteredSchools = [...allSchools];
@@ -2176,7 +2172,7 @@
                                     `<span class="program-tag" onclick="filterByProgram('${p}')">${p}</span>`
                                 ).join('')}
                                 ${school.programs.length > 4 ? 
-                                    `<span class="program-tag" onclick="showAllPrograms('${school.name}')">+${school.programs.length - 4} more</span>` : ''}
+                                    `<span class="program-tag" >+${school.programs.length - 4} more</span>` : ''}
                             </div>
                         ` : ''}
                         ${websiteUrl ? `
@@ -2934,13 +2930,6 @@
             }
         }
         
-        // Show all programs for a school
-        function showAllPrograms(schoolName) {
-            const school = getViewportSchools().find(s => s.name === schoolName);
-            if (school) {
-                alert(`All programs at ${schoolName}:\n\n${school.programs.join(', ')}`);
-            }
-        }
         
         // Form submission handler removed - form moved to submit-school.html
         
