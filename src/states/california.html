@@ -1345,6 +1345,56 @@
                 height: 50vh;
             }
         }
+        @media (max-width: 768px) {
+            body {
+                display: block;
+                padding-top: 48px;
+            }
+            .demo-banner {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            #map {
+                height: 55vh;
+                min-height: 300px;
+            }
+            #sidebar {
+                width: 100%;
+                max-height: 45vh;
+                border-left: none;
+                border-top: 1px solid #38444d;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+                position: relative;
+                transform: none !important;
+                margin-right: 0 !important;
+            }
+            #sidebar.collapsed {
+                width: 100%;
+                margin-right: 0;
+            }
+            .sidebar-toggle {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+            }
+            .header, .search, .filters, .stats, .tabs, .list, .footer {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .grid, .cards, .schools-grid {
+                grid-template-columns: 1fr !important;
+            }
+            table, .table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            input, select, textarea, button {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1733,12 +1783,49 @@
             maxZoom: 18
         });
         
-        // Add dark tile layer
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OpenStreetMap contributors © CARTO',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }).addTo(map);
+        // Basemap theme (light/dark) with persistence
+        function createBaseLayer(theme) {
+            const url = theme === 'light'
+                ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+            return L.tileLayer(url, {
+                attribution: '© OpenStreetMap contributors © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            });
+        }
+
+        let mapTheme = localStorage.getItem('mapTheme') || 'dark';
+        let baseLayer = createBaseLayer(mapTheme).addTo(map);
+
+        const ThemeToggle = L.Control.extend({
+            onAdd: function(map) {
+                const container = L.DomUtil.create('div', 'map-theme-toggle');
+                container.style.background = 'rgba(0,0,0,0.6)';
+                container.style.color = '#fff';
+                container.style.borderRadius = '6px';
+                container.style.padding = '6px 8px';
+                container.style.cursor = 'pointer';
+                container.style.fontSize = '14px';
+                container.style.userSelect = 'none';
+                container.title = 'Toggle light/dark basemap';
+                function setLabel() {
+                    container.textContent = mapTheme === 'dark' ? 'Dark' : 'Light';
+                }
+                setLabel();
+                L.DomEvent.on(container, 'click', function(e) {
+                    L.DomEvent.stopPropagation(e);
+                    L.DomEvent.preventDefault(e);
+                    map.removeLayer(baseLayer);
+                    mapTheme = mapTheme === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem('mapTheme', mapTheme);
+                    baseLayer = createBaseLayer(mapTheme).addTo(map);
+                    setLabel();
+                });
+                return container;
+            }
+        });
+        map.addControl(new ThemeToggle({ position: 'topleft' }));
         
         // Banner dismissal functionality
         function dismissBanner() {
