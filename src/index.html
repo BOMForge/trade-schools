@@ -1958,17 +1958,40 @@
         
         // Select school
         function selectSchool(schoolName, zoomLevel = 12) {
+            // Decode HTML entities in case of special characters
+            schoolName = schoolName.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+            
             // Try to find school in all schools, not just viewport
-            let school = allSchools.find(s => s.name === schoolName);
+            let school = allSchools.find(s => s.name === schoolName || s.name === decodeURIComponent(schoolName));
             if (!school) {
-                school = getViewportSchools().find(s => s.name === schoolName);
+                school = getViewportSchools().find(s => s.name === schoolName || s.name === decodeURIComponent(schoolName));
             }
-            if (!school || !school.lat || !school.lon) {
-                console.warn(`School ${schoolName} not found or missing coordinates`);
+            
+            // Also try matching by case-insensitive name
+            if (!school) {
+                const nameLower = schoolName.toLowerCase();
+                school = allSchools.find(s => s.name && s.name.toLowerCase() === nameLower);
+            }
+            
+            if (!school) {
+                console.warn(`School "${schoolName}" not found in database`);
                 return;
             }
             
-            // Update marker styles
+            if (!school.lat || !school.lon || isNaN(school.lat) || isNaN(school.lon)) {
+                console.warn(`School "${schoolName}" missing valid coordinates:`, school);
+                return;
+            }
+            
+            console.log(`Zooming to school: ${school.name} at [${school.lat}, ${school.lon}] with zoom level ${zoomLevel}`);
+            
+            // Always zoom to school location first
+            map.flyTo([school.lat, school.lon], zoomLevel, {
+                animate: true,
+                duration: 0.8
+            });
+            
+            // Update marker styles if marker exists
             Object.values(schoolMarkers).forEach(marker => {
                 marker.setStyle({
                     radius: 6,
@@ -1977,32 +2000,56 @@
                 });
             });
             
-            if (schoolMarkers[schoolName]) {
-                schoolMarkers[schoolName].setStyle({
+            // Find marker by school name (try exact match and case-insensitive)
+            let marker = schoolMarkers[schoolName];
+            if (!marker) {
+                marker = Object.keys(schoolMarkers).find(key => 
+                    key === schoolName || 
+                    key.toLowerCase() === schoolName.toLowerCase() ||
+                    key === school.name
+                );
+                if (marker) marker = schoolMarkers[marker];
+            }
+            
+            if (marker) {
+                marker.setStyle({
                     radius: 12,
                     fillColor: '#ff6b6b',
                     color: 'white',
                     weight: 3
                 });
                 
-                // Zoom and center map on school with smooth animation
-                map.flyTo([school.lat, school.lon], zoomLevel, {
-                    animate: true,
-                    duration: 0.8
-                });
-                
                 // Open popup after animation
                 setTimeout(() => {
-                    if (schoolMarkers[schoolName]) {
-                        schoolMarkers[schoolName].openPopup();
+                    if (marker && map.hasLayer(marker)) {
+                        marker.openPopup();
                     }
-                }, 600);
+                }, 900);
             } else {
-                // If marker doesn't exist yet, just zoom to location
-                map.flyTo([school.lat, school.lon], zoomLevel, {
-                    animate: true,
-                    duration: 0.8
-                });
+                // If marker doesn't exist, create a temporary one and show popup
+                setTimeout(() => {
+                    const tempMarker = L.circleMarker([school.lat, school.lon], {
+                        radius: 12,
+                        fillColor: '#ff6b6b',
+                        color: 'white',
+                        weight: 3,
+                        fillOpacity: 1
+                    }).addTo(map);
+                    
+                    // Create and show popup
+                    const popupContent = `
+                        <div style="color: #e1e8ed;">
+                            <strong style="color: #1d9bf0; font-size: 16px;">${school.name}</strong><br>
+                            <span style="color: #8899a6;">📍 ${school.city}, ${school.state}</span>
+                        </div>
+                    `;
+                    tempMarker.bindPopup(popupContent).openPopup();
+                    
+                    // Remove temporary marker after 5 seconds
+                    setTimeout(() => {
+                        map.removeLayer(tempMarker);
+                    }, 5000);
+                }, 900);
             }
             
             // Highlight card
