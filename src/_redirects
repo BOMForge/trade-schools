@@ -1,4 +1,5 @@
-# Trade Schools Map - Main routes
+# Trade Schools Map - Main routes (root goes directly to map)
+/ /trade-schools/index.html 200
 /trade-schools /trade-schools/index.html 200
 /trade-schools/ /trade-schools/index.html 200
 
