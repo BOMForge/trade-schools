@@ -1653,7 +1653,12 @@
             console.log('Processing geoData:', geoData.length, 'rows');
             let processedCount = 0;
             geoData.forEach(row => {
-                if (row.geocoded === 'True' && row.lat && row.lon) {
+                // Check if geocoded (handle both string and boolean values)
+                const isGeocoded = row.geocoded === 'True' || row.geocoded === 'true' || row.geocoded === true || row.geocoded === 1;
+                const hasLat = row.lat && !isNaN(parseFloat(row.lat));
+                const hasLon = row.lon && !isNaN(parseFloat(row.lon));
+                
+                if ((isGeocoded || hasLat && hasLon) && hasLat && hasLon) {
                     processedCount++;
                     const key = `${row['Institution Name']}_${row.State}_${row.City}`;
                     const programData = schoolPrograms[key] || { programs: [], email: '', website: '' };
@@ -1667,15 +1672,21 @@
                         cleanWebsite = cleanWebsite.slice(0, -1);
                     }
                     
-                    allSchools.push({
-                        name: row['Institution Name'],
-                        state: row.State,
-                        city: row.City,
-                        lat: parseFloat(row.lat),
-                        lon: parseFloat(row.lon),
-                        programs: uniquePrograms,
-                        website: cleanWebsite
-                    });
+                    const lat = parseFloat(row.lat);
+                    const lon = parseFloat(row.lon);
+                    
+                    // Only add if coordinates are valid (within US bounds roughly)
+                    if (lat >= 24 && lat <= 50 && lon >= -125 && lon <= -66) {
+                        allSchools.push({
+                            name: row['Institution Name'],
+                            state: row.State,
+                            city: row.City,
+                            lat: lat,
+                            lon: lon,
+                            programs: uniquePrograms,
+                            website: cleanWebsite
+                        });
+                    }
                 }
             });
             
@@ -2616,6 +2627,8 @@
             const zoom = map.getZoom();
             const indicator = document.getElementById('modeIndicator');
             const modeText = document.getElementById('modeText');
+            
+            if (!indicator || !modeText) return;
             
             if (currentView === 'markers' && zoom >= 6) {
                 indicator.style.display = 'block';
