@@ -53,21 +53,7 @@
       statesHtml += '<a href="/states.html" class="footer-states-link">+ ' + (states.length - 10) + ' more</a>';
     }
     
-    footer.innerHTML = '
-      <a href="/index.html">Home</a>
-      <span class="footer-nav-sep"></span>
-      <a href="/states.html">All States</a>
-      <span class="footer-nav-sep footer-states-link"></span>
-      ' + statesHtml + '
-      <span class="footer-nav-sep"></span>
-      <a href="/submit-school.html">Submit School</a>
-      <span class="footer-nav-sep"></span>
-      <a href="/about.html">About</a>
-      <span class="footer-nav-sep"></span>
-      <span class="made-in-usa">🇺🇸 Made in USA</span>
-      <span class="footer-nav-sep"></span>
-      <button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>
-    ';
+    footer.innerHTML = '<a href="/index.html">Home</a><span class="footer-nav-sep"></span><a href="/states.html">All States</a><span class="footer-nav-sep footer-states-link"></span>' + statesHtml + '<span class="footer-nav-sep"></span><a href="/submit-school.html">Submit School</a><span class="footer-nav-sep"></span><a href="/about.html">About</a><span class="footer-nav-sep"></span><span class="made-in-usa">🇺🇸 Made in USA</span><span class="footer-nav-sep"></span><button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>';
     document.body.appendChild(footer);
 
     var theme = localStorage.getItem('mapTheme') || 'dark';
