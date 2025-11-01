@@ -1651,32 +1651,43 @@
             // Process geocoded schools
             allSchools = [];
             console.log('Processing geoData:', geoData.length, 'rows');
+            
+            // Debug: Log first row to see structure
+            if (geoData.length > 0) {
+                console.log('Sample row keys:', Object.keys(geoData[0]));
+                console.log('Sample row:', geoData[0]);
+            }
+            
             let processedCount = 0;
-            geoData.forEach(row => {
-                // Check if geocoded (handle both string and boolean values)
-                const isGeocoded = row.geocoded === 'True' || row.geocoded === 'true' || row.geocoded === true || row.geocoded === 1;
-                const hasLat = row.lat && !isNaN(parseFloat(row.lat));
-                const hasLon = row.lon && !isNaN(parseFloat(row.lon));
+            let skippedCount = 0;
+            geoData.forEach((row, index) => {
+                // Check for lat/lon columns (case-insensitive and handle different column names)
+                const latVal = row.lat || row.Lat || row.latitude || row.Latitude;
+                const lonVal = row.lon || row.Lon || row.longitude || row.Longitude || row.lng || row.Lng;
                 
-                if ((isGeocoded || hasLat && hasLon) && hasLat && hasLon) {
-                    processedCount++;
-                    const key = `${row['Institution Name']}_${row.State}_${row.City}`;
-                    const programData = schoolPrograms[key] || { programs: [], email: '', website: '' };
-                    
-                    // Deduplicate programs
-                    const uniquePrograms = [...new Set(programData.programs)];
-                    
-                    // Clean website URL (remove trailing slash)
-                    let cleanWebsite = programData.website || '';
-                    if (cleanWebsite && cleanWebsite.endsWith('/')) {
-                        cleanWebsite = cleanWebsite.slice(0, -1);
-                    }
-                    
-                    const lat = parseFloat(row.lat);
-                    const lon = parseFloat(row.lon);
+                const hasLat = latVal && latVal.toString().trim() !== '' && !isNaN(parseFloat(latVal));
+                const hasLon = lonVal && lonVal.toString().trim() !== '' && !isNaN(parseFloat(lonVal));
+                
+                // If we have valid coordinates, add the school (don't require geocoded flag)
+                if (hasLat && hasLon) {
+                    const lat = parseFloat(latVal);
+                    const lon = parseFloat(lonVal);
                     
                     // Only add if coordinates are valid (within US bounds roughly)
                     if (lat >= 24 && lat <= 50 && lon >= -125 && lon <= -66) {
+                        processedCount++;
+                        const key = `${row['Institution Name']}_${row.State}_${row.City}`;
+                        const programData = schoolPrograms[key] || { programs: [], email: '', website: '' };
+                        
+                        // Deduplicate programs
+                        const uniquePrograms = [...new Set(programData.programs)];
+                        
+                        // Clean website URL (remove trailing slash)
+                        let cleanWebsite = programData.website || '';
+                        if (cleanWebsite && cleanWebsite.endsWith('/')) {
+                            cleanWebsite = cleanWebsite.slice(0, -1);
+                        }
+                        
                         allSchools.push({
                             name: row['Institution Name'],
                             state: row.State,
@@ -1686,13 +1697,27 @@
                             programs: uniquePrograms,
                             website: cleanWebsite
                         });
+                    } else {
+                        skippedCount++;
+                        if (index < 3) {
+                            console.log(`Skipped school ${index} - coords out of bounds:`, lat, lon, row['Institution Name']);
+                        }
+                    }
+                } else {
+                    skippedCount++;
+                    if (index < 3) {
+                        console.log(`Skipped school ${index} - missing/invalid coords:`, {
+                            lat: latVal,
+                            lon: lonVal,
+                            name: row['Institution Name']
+                        });
                     }
                 }
             });
             
             console.log(`Processed ${processedCount} schools that passed geocoded filter`);
             console.log(`Loaded ${allSchools.length} schools with coordinates`);
-            console.log(`Note: ${geoData.filter(r => r.geocoded === 'False').length} schools failed geocoding and are not displayed`);
+            console.log(`Skipped ${skippedCount} schools (missing/invalid coords or out of bounds)`);
             
             // Debug program data
             const programStats = {};
