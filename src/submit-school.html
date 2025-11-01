@@ -125,6 +125,55 @@
             color: #ef4444;
         }
         
+        .optional-section {
+            margin-top: 30px;
+            border-top: 1px solid #38444d;
+            padding-top: 20px;
+        }
+        
+        .optional-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 15px;
+            background: rgba(29, 155, 240, 0.05);
+            border: 1px solid rgba(29, 155, 240, 0.2);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .optional-toggle:hover {
+            background: rgba(29, 155, 240, 0.1);
+            border-color: rgba(29, 155, 240, 0.4);
+        }
+        
+        .optional-toggle-title {
+            font-weight: 600;
+            color: #1d9bf0;
+            font-size: 16px;
+        }
+        
+        .optional-toggle-icon {
+            color: #1d9bf0;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .optional-toggle.expanded .optional-toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .optional-content {
+            display: none;
+            padding-top: 20px;
+        }
+        
+        .optional-content.expanded {
+            display: block;
+        }
+        
         input, select, textarea {
             width: 100%;
             padding: 10px 12px;
@@ -340,29 +389,17 @@
             <div id="errorMessage" class="error-message"></div>
             
             <form id="schoolSubmissionForm">
-                <h2 class="section-title">School Information</h2>
+                <h2 class="section-title">Basic Information</h2>
                 
                 <div class="form-group">
-                    <label for="schoolName">School or Institution Name <span class="required">*</span></label>
+                    <label for="schoolName">School Name <span class="required">*</span></label>
                     <input type="text" id="schoolName" name="schoolName" required placeholder="e.g., Lincoln Tech, Denver Technical College" maxlength="150">
-                    <div class="field-hint">Official name of the school or training institution</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="schoolAddress">Street Address <span class="required">*</span></label>
-                    <input type="text" id="schoolAddress" name="schoolAddress" required placeholder="e.g., 123 Main Street" maxlength="200">
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="schoolCity">City <span class="required">*</span></label>
-                        <input type="text" id="schoolCity" name="schoolCity" required placeholder="e.g., Denver" maxlength="100">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="schoolState">State <span class="required">*</span></label>
-                        <select id="schoolState" name="schoolState" required>
-                            <option value="">Select State</option>
+                    <label for="schoolState">State <span class="required">*</span></label>
+                    <select id="schoolState" name="schoolState" required>
+                        <option value="">Select State</option>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
                             <option value="AZ">Arizona</option>
@@ -414,39 +451,58 @@
                             <option value="WI">Wisconsin</option>
                             <option value="WY">Wyoming</option>
                         </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="schoolZip">ZIP Code <span class="required">*</span></label>
-                        <input type="text" id="schoolZip" name="schoolZip" required placeholder="e.g., 80202" maxlength="10" pattern="[0-9]{5}(-[0-9]{4})?">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="schoolPhone">Phone Number <span class="required">*</span></label>
-                        <input type="tel" id="schoolPhone" name="schoolPhone" required placeholder="(555) 123-4567" maxlength="14">
-                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="schoolWebsite">School Website</label>
-                    <input type="url" id="schoolWebsite" name="schoolWebsite" placeholder="https://example.edu">
-                    <div class="field-hint">Official website for the institution</div>
+                    <label for="schoolWebsite">Website <span class="required">*</span></label>
+                    <input type="url" id="schoolWebsite" name="schoolWebsite" required placeholder="https://example.edu">
                 </div>
                 
-                <div class="form-group">
-                    <label for="schoolEmail">Contact Email <span class="required">*</span></label>
-                    <input type="email" id="schoolEmail" name="schoolEmail" required placeholder="admissions@school.edu">
-                    <div class="field-hint">Main contact email for the school</div>
-                </div>
+                <button type="submit" id="submitBtn" style="margin-top: 30px;">Submit School</button>
                 
-                <h2 class="section-title">Programs & Training</h2>
-                
-                <div class="form-group">
-                    <label>Programs Offered <span class="required">*</span></label>
-                    <div class="field-hint" style="margin-bottom: 10px;">Select all programs that apply</div>
-                    <div class="checkbox-group">
+                <div class="optional-section">
+                    <div class="optional-toggle" onclick="toggleOptional()">
+                        <span class="optional-toggle-title">Additional Information (Optional)</span>
+                        <span class="optional-toggle-icon">▼</span>
+                    </div>
+                    <div class="optional-content" id="optionalContent">
+                        <h2 class="section-title">Additional Details</h2>
+                        
+                        <div class="form-group">
+                            <label for="schoolAddress">Street Address</label>
+                            <input type="text" id="schoolAddress" name="schoolAddress" placeholder="e.g., 123 Main Street" maxlength="200">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="schoolCity">City</label>
+                                <input type="text" id="schoolCity" name="schoolCity" placeholder="e.g., Denver" maxlength="100">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="schoolZip">ZIP Code</label>
+                                <input type="text" id="schoolZip" name="schoolZip" placeholder="e.g., 80202" maxlength="10" pattern="[0-9]{5}(-[0-9]{4})?">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="schoolPhone">Phone Number</label>
+                                <input type="tel" id="schoolPhone" name="schoolPhone" placeholder="(555) 123-4567" maxlength="14">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="schoolEmail">Contact Email</label>
+                                <input type="email" id="schoolEmail" name="schoolEmail" placeholder="admissions@school.edu">
+                            </div>
+                        </div>
+                        
+                        <h2 class="section-title">Programs & Training</h2>
+                        
+                        <div class="form-group">
+                            <label>Programs Offered</label>
+                            <div class="field-hint" style="margin-bottom: 10px;">Select all programs that apply</div>
+                            <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="programs" value="Welding">
                             <span>Welding</span>
@@ -519,40 +575,38 @@
                     <input type="text" id="programOtherText" name="programOtherText" placeholder="e.g., Industrial Refrigeration, CDL Training" maxlength="200">
                 </div>
                 
-                <div class="form-group">
-                    <label for="programDetails">Additional Program Details</label>
-                    <textarea id="programDetails" name="programDetails" placeholder="Describe specific programs, certifications offered, program duration, etc." maxlength="1000" rows="4"></textarea>
-                    <div class="field-hint"><span id="charCount">0</span>/1000 characters</div>
+                        <div class="form-group">
+                            <label for="programDetails">Additional Program Details</label>
+                            <textarea id="programDetails" name="programDetails" placeholder="Describe specific programs, certifications offered, program duration, etc." maxlength="1000" rows="4"></textarea>
+                            <div class="field-hint"><span id="charCount">0</span>/1000 characters</div>
+                        </div>
+                        
+                        <h2 class="section-title">Your Information</h2>
+                        
+                        <div class="form-group">
+                            <label for="submitterName">Your Name</label>
+                            <input type="text" id="submitterName" name="submitterName" placeholder="John Smith" maxlength="100">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="submitterEmail">Your Email</label>
+                            <input type="email" id="submitterEmail" name="submitterEmail" placeholder="your@email.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="submitterRole">Your Role</label>
+                            <select id="submitterRole" name="submitterRole">
+                                <option value="">Select your role</option>
+                                <option value="School Administrator">School Administrator</option>
+                                <option value="Faculty/Instructor">Faculty/Instructor</option>
+                                <option value="Student/Alumni">Student/Alumni</option>
+                                <option value="Industry Partner">Industry Partner</option>
+                                <option value="Community Member">Community Member</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                
-                <h2 class="section-title">Your Information</h2>
-                
-                <div class="form-group">
-                    <label for="submitterName">Your Name</label>
-                    <input type="text" id="submitterName" name="submitterName" placeholder="John Smith" maxlength="100">
-                    <div class="field-hint">Optional: for follow-up questions</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="submitterEmail">Your Email</label>
-                    <input type="email" id="submitterEmail" name="submitterEmail" placeholder="your@email.com">
-                    <div class="field-hint">Optional: we'll only contact you if we have questions</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="submitterRole">Your Role</label>
-                    <select id="submitterRole" name="submitterRole">
-                        <option value="">Select your role</option>
-                        <option value="School Administrator">School Administrator</option>
-                        <option value="Faculty/Instructor">Faculty/Instructor</option>
-                        <option value="Student/Alumni">Student/Alumni</option>
-                        <option value="Industry Partner">Industry Partner</option>
-                        <option value="Community Member">Community Member</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                
-                <button type="submit" id="submitBtn">Submit School for Review</button>
             </form>
             
             <div class="info-box">
@@ -562,40 +616,60 @@
     </div>
     
     <script>
+        // Toggle optional section
+        function toggleOptional() {
+            const toggle = document.querySelector('.optional-toggle');
+            const content = document.getElementById('optionalContent');
+            toggle.classList.toggle('expanded');
+            content.classList.toggle('expanded');
+        }
+        
         // Show/hide "Other Program" field
         document.getElementById('programOther').addEventListener('change', function(e) {
             const otherField = document.getElementById('otherProgramField');
             otherField.style.display = e.target.checked ? 'block' : 'none';
         });
         
-        // Character counter for program details
-        document.getElementById('programDetails').addEventListener('input', function(e) {
-            document.getElementById('charCount').textContent = e.target.value.length;
-        });
+        // Character counter for program details (only if field exists)
+        const programDetailsField = document.getElementById('programDetails');
+        if (programDetailsField) {
+            programDetailsField.addEventListener('input', function(e) {
+                const charCount = document.getElementById('charCount');
+                if (charCount) {
+                    charCount.textContent = e.target.value.length;
+                }
+            });
+        }
         
-        // Auto-format phone number
-        document.getElementById('schoolPhone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 10) value = value.slice(0, 10);
-            if (value.length >= 6) {
-                e.target.value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6)}`;
-            } else if (value.length >= 3) {
-                e.target.value = `(${value.slice(0,3)}) ${value.slice(3)}`;
-            } else {
-                e.target.value = value;
-            }
-        });
+        // Auto-format phone number (only if field exists)
+        const phoneField = document.getElementById('schoolPhone');
+        if (phoneField) {
+            phoneField.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 10) value = value.slice(0, 10);
+                if (value.length >= 6) {
+                    e.target.value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6)}`;
+                } else if (value.length >= 3) {
+                    e.target.value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+                } else {
+                    e.target.value = value;
+                }
+            });
+        }
         
-        // Auto-format ZIP code
-        document.getElementById('schoolZip').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 9) value = value.slice(0, 9);
-            if (value.length > 5) {
-                e.target.value = `${value.slice(0,5)}-${value.slice(5)}`;
-            } else {
-                e.target.value = value;
-            }
-        });
+        // Auto-format ZIP code (only if field exists)
+        const zipField = document.getElementById('schoolZip');
+        if (zipField) {
+            zipField.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 9) value = value.slice(0, 9);
+                if (value.length > 5) {
+                    e.target.value = `${value.slice(0,5)}-${value.slice(5)}`;
+                } else {
+                    e.target.value = value;
+                }
+            });
+        }
         
         // Form submission
         document.getElementById('schoolSubmissionForm').addEventListener('submit', function(e) {
@@ -610,36 +684,28 @@
             successMsg.style.display = 'none';
             errorMsg.style.display = 'none';
             
-            // Validate at least one program is selected
-            const programsChecked = document.querySelectorAll('input[name="programs"]:checked');
-            if (programsChecked.length === 0) {
-                errorMsg.textContent = 'Please select at least one program offered.';
-                errorMsg.style.display = 'block';
-                errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
-            }
-            
             // Disable button and show loading
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
             
             // Collect form data
+            const programsChecked = document.querySelectorAll('input[name="programs"]:checked');
             const programs = Array.from(programsChecked).map(cb => cb.value);
             const formData = {
                 schoolName: document.getElementById('schoolName').value.trim(),
-                schoolAddress: document.getElementById('schoolAddress').value.trim(),
-                schoolCity: document.getElementById('schoolCity').value.trim(),
                 schoolState: document.getElementById('schoolState').value,
-                schoolZip: document.getElementById('schoolZip').value.trim(),
-                schoolPhone: document.getElementById('schoolPhone').value.trim(),
                 schoolWebsite: document.getElementById('schoolWebsite').value.trim(),
-                schoolEmail: document.getElementById('schoolEmail').value.trim(),
+                schoolAddress: document.getElementById('schoolAddress')?.value.trim() || '',
+                schoolCity: document.getElementById('schoolCity')?.value.trim() || '',
+                schoolZip: document.getElementById('schoolZip')?.value.trim() || '',
+                schoolPhone: document.getElementById('schoolPhone')?.value.trim() || '',
+                schoolEmail: document.getElementById('schoolEmail')?.value.trim() || '',
                 programs: programs,
-                programOther: document.getElementById('programOtherText').value.trim(),
-                programDetails: document.getElementById('programDetails').value.trim(),
-                submitterName: document.getElementById('submitterName').value.trim(),
-                submitterEmail: document.getElementById('submitterEmail').value.trim(),
-                submitterRole: document.getElementById('submitterRole').value,
+                programOther: document.getElementById('programOtherText')?.value.trim() || '',
+                programDetails: document.getElementById('programDetails')?.value.trim() || '',
+                submitterName: document.getElementById('submitterName')?.value.trim() || '',
+                submitterEmail: document.getElementById('submitterEmail')?.value.trim() || '',
+                submitterRole: document.getElementById('submitterRole')?.value || '',
                 timestamp: new Date().toISOString(),
                 userAgent: navigator.userAgent
             };
