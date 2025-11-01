@@ -1491,6 +1491,9 @@
             footerToggle.textContent = mapTheme === 'light' ? 'Dark' : 'Light';
         }
         
+        // Expose toggle function globally for site-nav.js
+        window.toggleMapTheme = toggleMapTheme;
+        
         // Chart instance
         let programChart = null;
         
