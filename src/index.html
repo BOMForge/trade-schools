@@ -1232,7 +1232,6 @@
     <script src="/assets/js/site-nav.js"></script>
     
     <div id="sidebar">
-        <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Close sidebar">×</button>
         <div class="header">
             <div class="header-nav">
                 <a href="about.html" class="nav-link">About</a>
@@ -1461,7 +1460,7 @@
             const toggle = document.getElementById('sidebarToggle');
             const isCollapsed = sidebar.classList.toggle('collapsed');
             
-            toggle.innerHTML = isCollapsed ? '☰' : '×';
+            toggle.innerHTML = isCollapsed ? '☰' : '☰';
             toggle.classList.toggle('collapsed', isCollapsed);
             
             // Save state to localStorage
