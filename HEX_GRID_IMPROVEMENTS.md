@@ -292,3 +292,6 @@ The hex grid now **summarizes data exceptionally well**, answering the original 
 
 
 
+
+
+

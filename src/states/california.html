@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>California Trade Schools - 121 Technical & Vocational Schools | BOMForge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <script src="/assets/js/site-nav.js"></script>
     <!-- SEO Meta Tags -->
     <meta name="description" content="Interactive map of 121 trade schools and technical colleges in California. Find welding, HVAC, manufacturing, electronics, and skilled trades training programs in NC.">
     <meta name="keywords" content="california trade schools, CA technical schools, vocational training CA, skilled trades california, welding schools CA, HVAC training, manufacturing education, community college, apprenticeship programs, career training">
@@ -160,7 +160,10 @@
             color: #e1e8ed;
             height: 100vh;
             display: flex;
+            flex-direction: row;
             padding-top: 40px;
+            margin: 0;
+            overflow: hidden;
         }
         
         #map {
@@ -171,11 +174,15 @@
         
         #sidebar {
             width: 400px;
+            min-width: 400px;
+            max-width: 400px;
+            flex-shrink: 0;
             background: #1e2936;
             display: flex;
             flex-direction: column;
             border-left: 1px solid #38444d;
             overflow: hidden;
+            overflow-y: auto;
             box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
             transition: width 0.3s ease, margin-right 0.3s ease;
             position: relative;
@@ -980,6 +987,31 @@
             letter-spacing: 0.5px;
         }
         
+        /* Program chips inside the stats badge */
+        .program-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(29, 155, 240, 0.15);
+            border: 1px solid rgba(29, 155, 240, 0.35);
+            color: #e1e8ed;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+        }
+
+        .program-chip:hover {
+            background: rgba(29, 155, 240, 0.25);
+            border-color: rgba(29, 155, 240, 0.6);
+        }
+
+        .program-chip:active {
+            transform: translateY(1px);
+        }
+        
         .legend-toggle:hover {
             background: #1d9bf0;
             border-color: #1d9bf0;
@@ -1512,9 +1544,7 @@
     
     <div id="map"></div>
     
-    <!-- Stats Badge -->
-    <div class="stats-badge" id="statsBadge">
-        <div class="stats-badge-handle" onclick="toggleStatsBadge()" title="Toggle stats">☰</div>
+    
         <div class="stats-badge-content">
             <div class="stats-badge-item">
                 <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
@@ -1546,7 +1576,18 @@
                 <a href="../submit-school.html" class="nav-link">
                     ➕ Submit School
                 </a>
-                <a href="https://bomforge.com/contact" target="_blank" class="nav-link">
+                                <a
+                    href="https://twitter.com/messages/compose?recipient_id=1893356274332389376&text=Hi%20BOMForge%20%E2%80%94%20I%27m%20reaching%20out%20from%20your%20website."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="DM BOMForge on X"
+                    class="nav-link"
+                    style="display:inline-flex;align-items:center;gap:.5rem;"
+                    onclick="if(window.gtag){gtag('event','click',{event_category:'engagement',event_label:'dm_bomforge'});}"
+                >
+                    <svg width="18" height="18" viewBox="0 0 1200 1227" aria-hidden="true" style="fill:currentColor;">
+                        <path d="M714 519l451-519H956L600 412 244 0H-1l451 519-450 708h209l356-408 359 408h245L714 519zM305 142l650 742H896L246 142h59z"/>
+                    </svg>
                     📧 Contact Us
                 </a>
             </div>
@@ -1798,34 +1839,7 @@
         let mapTheme = localStorage.getItem('mapTheme') || 'dark';
         let baseLayer = createBaseLayer(mapTheme).addTo(map);
 
-        const ThemeToggle = L.Control.extend({
-            onAdd: function(map) {
-                const container = L.DomUtil.create('div', 'map-theme-toggle');
-                container.style.background = 'rgba(0,0,0,0.6)';
-                container.style.color = '#fff';
-                container.style.borderRadius = '6px';
-                container.style.padding = '6px 8px';
-                container.style.cursor = 'pointer';
-                container.style.fontSize = '14px';
-                container.style.userSelect = 'none';
-                container.title = 'Toggle light/dark basemap';
-                function setLabel() {
-                    container.textContent = mapTheme === 'dark' ? 'Dark' : 'Light';
-                }
-                setLabel();
-                L.DomEvent.on(container, 'click', function(e) {
-                    L.DomEvent.stopPropagation(e);
-                    L.DomEvent.preventDefault(e);
-                    map.removeLayer(baseLayer);
-                    mapTheme = mapTheme === 'dark' ? 'light' : 'dark';
-                    localStorage.setItem('mapTheme', mapTheme);
-                    baseLayer = createBaseLayer(mapTheme).addTo(map);
-                    setLabel();
-                });
-                return container;
-            }
-        });
-        map.addControl(new ThemeToggle({ position: 'topleft' }));
+        // Theme is applied site-wide by site-nav.js via body class and reload
         
         // Banner dismissal functionality
         function dismissBanner() {
@@ -1864,6 +1878,32 @@
                     if (typeof resetFiltersAndZoom === 'function') {
                         resetFiltersAndZoom();
                     }
+                });
+            }
+
+            // Initialize stats badge collapsed state and accessibility
+            const statsBadge = document.getElementById('statsBadge');
+            const statsHandle = statsBadge ? statsBadge.querySelector('.stats-badge-handle') : null;
+            if (statsBadge && statsHandle) {
+                const collapsed = localStorage.getItem('statsBadgeCollapsed') === '1';
+                if (collapsed) statsBadge.classList.add('collapsed');
+                statsHandle.setAttribute('role', 'button');
+                statsHandle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+            }
+
+            // Allow clicking a top-program chip to filter by that program
+            const programsEl = document.getElementById('statsBadgePrograms');
+            if (programsEl) {
+                programsEl.addEventListener('click', function(e) {
+                    const chip = e.target && e.target.closest ? e.target.closest('.program-chip') : null;
+                    if (!chip) return;
+                    e.stopPropagation();
+                    const program = chip.getAttribute('data-program');
+                    const programFilterEl = document.getElementById('programFilter');
+                    if (programFilterEl) {
+                        programFilterEl.value = program;
+                    }
+                    if (typeof applyFilters === 'function') applyFilters();
                 });
             }
         });
@@ -2213,15 +2253,19 @@
                 }
             });
             
-            const topProgramsBadge = Object.entries(programCounts)
+            const topPrograms = Object.entries(programCounts)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
-                .map(([prog, count]) => `${prog.split(' ')[0]} (${count})`)
-                .join(', ');
-            
+                .slice(0, 3);
+
             const programsElement = document.getElementById('statsBadgePrograms');
             if (programsElement) {
-                programsElement.textContent = topProgramsBadge || 'No programs';
+                if (topPrograms.length > 0) {
+                    programsElement.innerHTML = topPrograms
+                        .map(([prog, count]) => `<button class=\"program-chip\" data-program=\"${prog}\">${prog.split(' ')[0]} (${count})</button>`) 
+                        .join(' ');
+                } else {
+                    programsElement.textContent = 'No programs';
+                }
             }
         }
         
@@ -3317,7 +3361,10 @@
             const el = document.getElementById('statsBadge');
             if (!el) return;
             el.classList.toggle('collapsed');
-            localStorage.setItem('statsBadgeCollapsed', el.classList.contains('collapsed') ? '1' : '0');
+            const isCollapsed = el.classList.contains('collapsed');
+            localStorage.setItem('statsBadgeCollapsed', isCollapsed ? '1' : '0');
+            const handle = el.querySelector('.stats-badge-handle');
+            if (handle) handle.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
         }
         
         (function() {

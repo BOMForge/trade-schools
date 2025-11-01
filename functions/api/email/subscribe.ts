@@ -52,6 +52,18 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Check if DB binding is available
+  if (!env.DB) {
+    console.error('Database binding not available');
+    return new Response(
+      JSON.stringify({ 
+        error: 'Database not configured',
+        details: 'Database binding is missing'
+      }),
+      { status: 500, headers: corsHeaders }
+    );
+  }
+
   try {
     // Parse request body
     const body = await request.json() as EmailRequest;
@@ -118,30 +130,58 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const id = generateId();
     const timestamp = new Date().toISOString();
 
-    await env.DB.prepare(
-      `INSERT INTO email_subscribers 
-       (id, email, source, subscribed_at, ip_address, user_agent, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
-    ).bind(id, email, source, timestamp, clientIp, userAgent, timestamp).run();
+    try {
+      const result = await env.DB.prepare(
+        `INSERT INTO email_subscribers 
+         (id, email, source, subscribed_at, ip_address, user_agent, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
+      ).bind(id, email, source, timestamp, clientIp, userAgent, timestamp).run();
 
-    // Log the subscription
-    console.log(`New email subscriber: ${email} from ${source}`);
+      // Log the subscription
+      console.log(`New email subscriber: ${email} from ${source}`, result);
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: 'Successfully subscribed!',
-        id: id 
-      }),
-      { status: 200, headers: corsHeaders }
-    );
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: 'Successfully subscribed!',
+          id: id 
+        }),
+        { status: 200, headers: corsHeaders }
+      );
+    } catch (dbError) {
+      console.error('Database insert error:', dbError);
+      // If it's a unique constraint error, treat as already subscribed
+      if (dbError instanceof Error && dbError.message.includes('UNIQUE constraint')) {
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: 'Email already subscribed',
+            existing: true 
+          }),
+          { status: 200, headers: corsHeaders }
+        );
+      }
+      throw dbError; // Re-throw to be caught by outer catch
+    }
 
   } catch (error) {
     console.error('Email subscription error:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorDetails = error instanceof Error && error.stack ? error.stack : 'Unknown error';
+    
+    // Log full error for debugging
+    console.error('Full error details:', {
+      message: errorMessage,
+      stack: errorDetails,
+      name: error instanceof Error ? error.name : 'Unknown'
+    });
+    
     return new Response(
       JSON.stringify({ 
         error: 'Failed to process subscription',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: errorMessage,
+        // Only include details in development (don't expose stack traces in production)
+        ...(process.env.NODE_ENV === 'development' ? { debug: errorDetails } : {})
       }),
       { status: 500, headers: corsHeaders }
     );
@@ -157,3 +197,5 @@ export const onRequestOptions: PagesFunction<Env> = async () => {
     }
   });
 };
+
+

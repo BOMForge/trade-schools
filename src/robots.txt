@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://trade-schools.pages.dev/sitemap.xml
+Sitemap: https://bomatlas.com/sitemap.xml
 
 # Crawl-delay for politeness
 Crawl-delay: 1

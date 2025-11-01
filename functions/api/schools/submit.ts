@@ -12,7 +12,7 @@ const US_STATES = [
   'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'
 ] as const;
 
-// Relaxed validation schema: only schoolName is required
+// Relaxed validation schema: schoolName and website are required
 export const SchoolSubmissionSchema = z.object({
   schoolName: z.string().min(2, 'School name must be at least 2 characters').max(150).trim(),
 
@@ -31,13 +31,11 @@ export const SchoolSubmissionSchema = z.object({
     .or(z.literal('')),
 
   website: z.string()
+    .min(1, 'Website is required')
     .transform((val) => {
-      if (!val) return '';
       if (!val.startsWith('http://') && !val.startsWith('https://')) return `https://${val}`;
       return val;
-    })
-    .optional()
-    .or(z.literal('')),
+    }),
 
   programs: z.array(z.string()).max(10).default([]),
   programOther: z.string().max(200).optional().or(z.literal('')),
@@ -184,5 +182,8 @@ export async function onRequestPost(context: any): Promise<Response> {
     });
   }
 }
+
+
+
 
 

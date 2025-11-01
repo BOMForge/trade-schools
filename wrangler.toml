@@ -6,7 +6,7 @@ pages_build_output_dir = "src"
 [[d1_databases]]
 binding = "DB"
 database_name = "trade-schools-db"
-database_id = "83c8d9a5-297a-41b4-b260-ea12c53aa050"
+database_id = "3c2873d9-f492-4230-aa2d-4a0d95d84a49"
 
 # Environment variables (set via wrangler secrets)
 # RECAPTCHA_SECRET_KEY - Google reCAPTCHA secret key

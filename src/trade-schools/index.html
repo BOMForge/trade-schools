@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Find Trade Schools Near You | Interactive Map & Programs | BOMAtlas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Discover 1,000+ trade schools across America. Interactive map showing welding, HVAC, manufacturing, electronics, and skilled trades programs. Find your path to a high-paying career.">
+    <meta name="keywords" content="trade schools, technical schools, vocational training, skilled trades, welding schools, HVAC training, manufacturing programs, career training, community college">
+    <meta name="author" content="BOMForge">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://bomatlas.com/trade-schools/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bomatlas.com/trade-schools/">
+    <meta property="og:title" content="Find Trade Schools Near You | Interactive Map">
+    <meta property="og:description" content="Discover 1,000+ trade schools across America. Find welding, HVAC, manufacturing, and skilled trades programs near you.">
+    <meta property="og:image" content="https://bomatlas.com/favicon.svg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bomatlas.com/trade-schools/">
+    <meta property="twitter:title" content="Find Trade Schools Near You | Interactive Map">
+    <meta property="twitter:description" content="Discover 1,000+ trade schools across America. Find skilled trades programs near you.">
+    <meta property="twitter:image" content="https://bomatlas.com/favicon.svg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-460P8JXLJ4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-460P8JXLJ4');
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+
+        .stat {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .email-form {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="email"] {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .cta-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .skip-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: opacity 0.2s;
+        }
+
+        .skip-link:hover {
+            opacity: 0.8;
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            display: none;
+            background: #f44336;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            text-align: left;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .feature {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .feature-text h3 {
+            font-size: 16px;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .feature-text p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏭</div>
+        <h1>Discover Your Path to a Skilled Trade Career</h1>
+        <p class="subtitle">Explore 1,000+ trade schools across America. Find welding, HVAC, manufacturing, and technical programs near you.</p>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-number">1,038</span>
+                <div class="stat-label">Trade Schools</div>
+            </div>
+            <div class="stat">
+                <span class="stat-number">50</span>
+                <div class="stat-label">States</div>
+            </div>
+            <div class="stat">
+                <span class="stat-number">15+</span>
+                <div class="stat-label">Programs</div>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✓ Thanks for subscribing! Redirecting to the map...
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Something went wrong. Please try again.
+        </div>
+
+        <form class="email-form" id="emailForm">
+            <div class="input-group">
+                <input
+                    type="email"
+                    id="emailInput"
+                    placeholder="Enter your email for updates"
+                    required
+                >
+                <button type="submit" class="cta-button" id="submitBtn">
+                    Get Started
+                </button>
+            </div>
+        </form>
+
+        <a href="/trade-schools/map.html" class="skip-link">Skip to Map →</a>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🗺️</div>
+                <div class="feature-text">
+                    <h3>Interactive Map</h3>
+                    <p>Explore schools on an interactive map with filters by program type and location</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎓</div>
+                <div class="feature-text">
+                    <h3>Detailed Programs</h3>
+                    <p>View programs including welding, HVAC, manufacturing, electronics, and more</p>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📍</div>
+                <div class="feature-text">
+                    <h3>State-by-State Guide</h3>
+                    <p>Browse schools by state with comprehensive program listings</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('emailForm');
+        const emailInput = document.getElementById('emailInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            if (!email) return;
+
+            // Disable form
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Subscribing...';
+            errorMessage.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/email/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        source: 'trade-schools-landing'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    form.style.display = 'none';
+
+                    // Track conversion
+                    if (window.gtag) {
+                        gtag('event', 'subscribe', {
+                            'event_category': 'engagement',
+                            'event_label': 'trade-schools-landing'
+                        });
+                    }
+
+                    // Redirect to map after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/trade-schools/map.html';
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Subscription failed');
+                }
+            } catch (error) {
+                console.error('Subscription error:', error);
+                errorMessage.textContent = error.message || 'Something went wrong. Please try again.';
+                errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get Started';
+            }
+        });
+    </script>
+</body>
+</html>

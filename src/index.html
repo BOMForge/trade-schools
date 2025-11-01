@@ -965,68 +965,7 @@
             box-shadow: 0 8px 24px rgba(29, 155, 240, 0.6);
         }
         
-        .stats-badge {
-            position: fixed;
-            top: 60px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 12px;
-            padding: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            cursor: move;
-            user-select: none;
-        }
         
-        .stats-badge.dragging {
-            opacity: 0.8;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        }
-        
-        .stats-badge-handle {
-            background: rgba(29, 155, 240, 0.2);
-            padding: 6px 12px;
-            border-bottom: 1px solid #38444d;
-            border-radius: 12px 12px 0 0;
-            text-align: center;
-            font-size: 14px;
-            color: #8899a6;
-            cursor: move;
-        }
-        
-        .stats-badge-handle:hover {
-            background: rgba(29, 155, 240, 0.3);
-            color: #1d9bf0;
-        }
-        
-        .stats-badge-content {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            font-size: 13px;
-            padding: 12px 16px;
-        }
-        
-        .stats-badge-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .stats-badge-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1d9bf0;
-        }
-        
-        .stats-badge-label {
-            font-size: 11px;
-            color: #8899a6;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
         
         .legend-toggle:hover {
             background: #1d9bf0;
@@ -1421,12 +1360,6 @@
         ☰
     </button>
     
-    <!-- Stats Badge -->
-    <div class="stats-badge" id="statsBadge">
-        <div class="stats-badge-handle">☰</div>
-        <div class="stats-badge-content">
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
                 <div class="stats-badge-label">Schools</div>
             </div>
             <div class="stats-badge-item">
@@ -2101,11 +2034,7 @@
                 totalSchoolsDisplay.textContent = filteredSchools.length;
             }
             
-            // Update stats badge
-            document.getElementById('statsBadgeSchools').textContent = allSchools.length;
-            document.getElementById('statsBadgeStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
-            document.getElementById('statsBadgeVisible').textContent = schoolsToShow.length;
-        }
+            }
         
         // Display schools in sidebar
         function displaySchools() {

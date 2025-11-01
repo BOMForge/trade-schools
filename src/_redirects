@@ -1,3 +1,15 @@
+# Redirect /map to root - main index is the only map page
+/map / 301
+/map.html / 301
+/trade-schools/map.html / 301
+/map-redesign.html / 301
+
+# Redirect to new /trade-schools/ structure
+/school-detail.html /trade-schools/school-detail.html 301
+/submit-school.html /trade-schools/submit-school.html 301
+/states/* /trade-schools/states/:splat 301
+
+# Legacy redirects
 /dashboard / 301
 /clean-map.html / 301
 /clean-map / 301

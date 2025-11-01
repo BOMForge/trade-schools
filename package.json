@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler pages dev src/ --d1 DB=trade-schools-db --port 8080",
-    "deploy": "wrangler pages deploy src/ --project-name=trade-schools",
+    "deploy": "wrangler pages deploy src --project-name=trade-schools --branch=main",
     "build": "echo 'No build step required'"
   },
   "dependencies": {

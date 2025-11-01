@@ -903,82 +903,6 @@
             box-shadow: 0 8px 24px rgba(29, 155, 240, 0.6);
         }
         
-        .stats-badge {
-            position: fixed;
-            top: 60px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 12px;
-            padding: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            cursor: move;
-            user-select: none;
-        }
-        
-        .stats-badge.collapsed {
-            cursor: default;
-        }
-        
-        .stats-badge.dragging {
-            opacity: 0.8;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-        }
-        
-        .stats-badge-handle {
-            background: rgba(29, 155, 240, 0.2);
-            padding: 6px 12px;
-            border-bottom: 1px solid #38444d;
-            border-radius: 12px 12px 0 0;
-            text-align: center;
-            font-size: 14px;
-            color: #8899a6;
-            cursor: move;
-        }
-        
-        .stats-badge.collapsed .stats-badge-handle {
-            border-radius: 12px;
-            border-bottom: none;
-            cursor: pointer;
-        }
-        
-        .stats-badge-handle:hover {
-            background: rgba(29, 155, 240, 0.3);
-            color: #1d9bf0;
-        }
-        
-        .stats-badge-content {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            font-size: 13px;
-            padding: 12px 16px;
-        }
-        
-        .stats-badge.collapsed .stats-badge-content {
-            display: none;
-        }
-        
-        .stats-badge-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .stats-badge-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1d9bf0;
-        }
-        
-        .stats-badge-label {
-            font-size: 11px;
-            color: #8899a6;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
         
         .legend-toggle:hover {
             background: #1d9bf0;
@@ -1462,30 +1386,6 @@
     
     <div id="map"></div>
     
-    <!-- Stats Badge -->
-    <div class="stats-badge" id="statsBadge">
-        <div class="stats-badge-handle" onclick="toggleStatsBadge()" title="Toggle stats">☰</div>
-        <div class="stats-badge-content">
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeSchools">1031</div>
-                <div class="stats-badge-label">Schools</div>
-            </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeStates">50</div>
-                <div class="stats-badge-label">States</div>
-            </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeVisible">1031</div>
-                <div class="stats-badge-label">Visible</div>
-            </div>
-            <div class="stats-badge-item" style="flex: 2; min-width: 200px;">
-                <div class="stats-badge-value" id="statsBadgePrograms" style="font-size: 11px; line-height: 1.2;">Loading...</div>
-                <div class="stats-badge-label">Top Programs</div>
-            </div>
-        </div>
-    </div>
-    
-    
     
     <div id="sidebar" class="collapsed">
         <div class="header">
@@ -1496,7 +1396,18 @@
                 <a href="../submit-school.html" class="nav-link">
                     ➕ Submit School
                 </a>
-                <a href="https://bomforge.com/contact" target="_blank" class="nav-link">
+                                <a
+                    href="https://twitter.com/messages/compose?recipient_id=1893356274332389376&text=Hi%20BOMForge%20%E2%80%94%20I%27m%20reaching%20out%20from%20your%20website."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="DM BOMForge on X"
+                    class="nav-link"
+                    style="display:inline-flex;align-items:center;gap:.5rem;"
+                    onclick="if(window.gtag){gtag('event','click',{event_category:'engagement',event_label:'dm_bomforge'});}"
+                >
+                    <svg width="18" height="18" viewBox="0 0 1200 1227" aria-hidden="true" style="fill:currentColor;">
+                        <path d="M714 519l451-519H956L600 412 244 0H-1l451 519-450 708h209l356-408 359 408h245L714 519zM305 142l650 742H896L246 142h59z"/>
+                    </svg>
                     📧 Contact Us
                 </a>
             </div>
@@ -1768,17 +1679,6 @@
                 toggle.innerHTML = '☰';
             })();
 
-            // Make the floating stats badge a quick reset-and-zoom control
-            const statsBadgeContent = document.querySelector('.stats-badge-content');
-            if (statsBadgeContent) {
-                statsBadgeContent.style.cursor = 'pointer';
-                statsBadgeContent.title = 'Click to show all schools on the map';
-                statsBadgeContent.addEventListener('click', function() {
-                    if (typeof resetFiltersAndZoom === 'function') {
-                        resetFiltersAndZoom();
-                    }
-                });
-            }
         });
         
         // Data storage
@@ -2109,33 +2009,6 @@
             document.getElementById('totalSchools').textContent = allSchools.length;
             document.getElementById('totalStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
             document.getElementById('visibleCount').textContent = schoolsToShow.length;
-            
-            // Update stats badge
-            document.getElementById('statsBadgeSchools').textContent = allSchools.length;
-            document.getElementById('statsBadgeStates').textContent = isViewportFiltered ? viewportStateCount : stateCount;
-            document.getElementById('statsBadgeVisible').textContent = schoolsToShow.length;
-            
-            // Update program types with counts based on viewport schools
-            const programCounts = {};
-            const schoolsForPrograms = isViewportFiltered ? schoolsToShow : allSchools;
-            schoolsForPrograms.forEach(school => {
-                if (school.programs && Array.isArray(school.programs)) {
-                    school.programs.forEach(program => {
-                        programCounts[program] = (programCounts[program] || 0) + 1;
-                    });
-                }
-            });
-            
-            const topProgramsBadge = Object.entries(programCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
-                .map(([prog, count]) => `${prog.split(' ')[0]} (${count})`)
-                .join(', ');
-            
-            const programsElement = document.getElementById('statsBadgePrograms');
-            if (programsElement) {
-                programsElement.textContent = topProgramsBadge || 'No programs';
-            }
         }
         
         // Display schools in sidebar
@@ -3224,110 +3097,6 @@
         // Add viewport change listeners
         map.on('moveend', updateViewportFiltering);
         map.on('zoomend', updateViewportFiltering);
-        
-        // Make stats badge draggable
-        function toggleStatsBadge() {
-            const el = document.getElementById('statsBadge');
-            if (!el) return;
-            el.classList.toggle('collapsed');
-            localStorage.setItem('statsBadgeCollapsed', el.classList.contains('collapsed') ? '1' : '0');
-        }
-        
-        (function() {
-            const statsBadge = document.getElementById('statsBadge');
-            let isDragging = false;
-            let startX, startY, initialLeft, initialTop;
-            let mapState = null;
-            
-            // Load saved position
-            const savedPos = localStorage.getItem('statsBadgePosition');
-            if (savedPos) {
-                try {
-                    const pos = JSON.parse(savedPos);
-                    statsBadge.style.left = pos.x + 'px';
-                    statsBadge.style.top = pos.y + 'px';
-                } catch (_) {}
-            }
-            
-            function getPos(e) {
-                if (e.touches && e.touches.length > 0) {
-                    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-                }
-                return { x: e.clientX, y: e.clientY };
-            }
-            
-            function dragStart(e) {
-                if (!statsBadge || !statsBadge.contains(e.target)) return;
-                if (e.target && e.target.closest && e.target.closest('.stats-badge-handle')) return;
-                isDragging = true;
-                statsBadge.classList.add('dragging');
-                const pos = getPos(e);
-                startX = pos.x;
-                startY = pos.y;
-                const rect = statsBadge.getBoundingClientRect();
-                initialLeft = rect.left;
-                initialTop = rect.top;
-                
-                // Temporarily disable map interactions while dragging
-                if (window.map && map && map.dragging) {
-                    mapState = {
-                        dragging: map.dragging.enabled(),
-                        boxZoom: map.boxZoom && map.boxZoom.enabled ? map.boxZoom.enabled() : false,
-                        doubleClickZoom: map.doubleClickZoom && map.doubleClickZoom.enabled ? map.doubleClickZoom.enabled() : false
-                    };
-                    if (map.dragging.enabled()) map.dragging.disable();
-                    if (map.boxZoom && map.boxZoom.disable) map.boxZoom.disable();
-                    if (map.doubleClickZoom && map.doubleClickZoom.disable) map.doubleClickZoom.disable();
-                }
-                e.preventDefault();
-            }
-            
-            function drag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                const pos = getPos(e);
-                const deltaX = pos.x - startX;
-                const deltaY = pos.y - startY;
-                
-                let newLeft = initialLeft + deltaX;
-                let newTop = initialTop + deltaY;
-                
-                // Constrain within viewport
-                const maxLeft = window.innerWidth - statsBadge.offsetWidth - 4;
-                const maxTop = window.innerHeight - statsBadge.offsetHeight - 4;
-                if (newLeft < 4) newLeft = 4;
-                if (newTop < 4) newTop = 4;
-                if (newLeft > maxLeft) newLeft = maxLeft;
-                if (newTop > maxTop) newTop = maxTop;
-                
-                statsBadge.style.left = newLeft + 'px';
-                statsBadge.style.top = newTop + 'px';
-            }
-            
-            function dragEnd() {
-                if (!isDragging) return;
-                isDragging = false;
-                statsBadge.classList.remove('dragging');
-                
-                // Re-enable map interactions
-                if (mapState && window.map && map) {
-                    if (map.dragging && mapState.dragging) map.dragging.enable();
-                    if (map.boxZoom && mapState.boxZoom && map.boxZoom.enable) map.boxZoom.enable();
-                    if (map.doubleClickZoom && mapState.doubleClickZoom && map.doubleClickZoom.enable) map.doubleClickZoom.enable();
-                    mapState = null;
-                }
-                
-                const rect = statsBadge.getBoundingClientRect();
-                localStorage.setItem('statsBadgePosition', JSON.stringify({ x: rect.left, y: rect.top }));
-            }
-            
-            statsBadge.addEventListener('mousedown', dragStart);
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', dragEnd);
-            statsBadge.addEventListener('touchstart', dragStart, { passive: false });
-            document.addEventListener('touchmove', drag, { passive: false });
-            document.addEventListener('touchend', dragEnd);
-        })();
 
         // Viewport-only feature removed
         

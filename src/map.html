@@ -2,8 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Trade Schools Map | BOMForge</title>
+    <title>America's Trade Schools Map 🇺🇸 | BOMForge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-460P8JXLJ4"></script>
@@ -16,7 +19,10 @@
     </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="https://unpkg.com/h3-js@4.1.0"></script>
     <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
@@ -28,7 +34,12 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+
         .demo-banner {
             position: fixed;
             top: 0;
@@ -115,27 +126,94 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0f1419;
             color: #e1e8ed;
             height: 100vh;
             display: flex;
-            padding-top: 40px;
+            flex-direction: row;
+            overflow: hidden;
+            padding-top: 56px;
+            margin: 0;
+        }
+
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 998;
+            background: rgba(12, 18, 28, 0.85);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #1f2a37;
+        }
+
+        .top-nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-nav-logo {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            font-size: 18px;
+        }
+
+        .top-nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .top-nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .top-nav-link:hover {
+            background: rgba(148, 163, 184, 0.12);
+            color: #f8fafc;
+        }
+
+        .top-nav-link.active {
+            color: #38bdf8;
         }
         
         #map {
             flex: 1;
             height: 100vh;
             background: #1a1f2e;
+            position: relative;
         }
-        
+
+        .leaflet-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
         #sidebar {
             width: 400px;
+            min-width: 400px;
+            max-width: 400px;
+            flex-shrink: 0;
             background: #1e2936;
             display: flex;
             flex-direction: column;
             border-left: 1px solid #38444d;
             overflow: hidden;
+            overflow-y: auto;
             box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease, width 0.3s ease;
             position: relative;
@@ -196,15 +274,16 @@
         }
         
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #1d9bf0;
         }
         
         .stat-label {
-            font-size: 12px;
-            color: #8899a6;
+            font-size: 13px;
+            color: #cbd5e1;
             text-transform: uppercase;
+            font-weight: 500;
         }
         
         .filters {
@@ -218,19 +297,20 @@
         
         .filter-label {
             display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: #8899a6;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #cbd5e1;
+            font-weight: 500;
         }
         
         .filter-select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background: #253341;
-            border: 1px solid #38444d;
+            border: 2px solid #38444d;
             border-radius: 8px;
-            color: #e1e8ed;
-            font-size: 14px;
+            color: #f1f5f9;
+            font-size: 15px;
             cursor: pointer;
         }
         
@@ -246,17 +326,43 @@
         
         .search-input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background: #253341;
-            border: 1px solid #38444d;
+            border: 2px solid #38444d;
             border-radius: 8px;
-            color: #e1e8ed;
-            font-size: 14px;
+            color: #f1f5f9;
+            font-size: 15px;
             margin-bottom: 15px;
         }
         
         .search-input:hover {
             border-color: #1d9bf0;
+        }
+        
+        .geolocation-btn {
+            width: 100%;
+            padding: 10px 16px;
+            background: #4CAF50;
+            border: 1px solid #45a049;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .geolocation-btn:hover {
+            background: #45a049;
+        }
+        
+        .geolocation-btn.loading {
+            opacity: 0.7;
+            cursor: wait;
         }
         
         .search-input:focus {
@@ -648,12 +754,43 @@
             align-items: center;
             height: 200px;
             color: #8899a6;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: loadingDots 1.5s infinite;
+        }
+        
+        @keyframes loadingDots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .user-location-marker {
+            background: none;
+            border: none;
+            font-size: 30px;
+            text-align: center;
+            line-height: 30px;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         
         .no-results {
             text-align: center;
-            padding: 40px;
+            padding: 40px 20px;
             color: #8899a6;
+            background: rgba(29, 155, 240, 0.05);
+            border-radius: 12px;
+            margin: 20px;
+            border: 1px solid rgba(29, 155, 240, 0.2);
         }
         
         /* Map markers */
@@ -766,8 +903,10 @@
             background: rgba(29, 155, 240, 0.95);
             border: none;
             border-radius: 50%;
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
+            min-width: 44px;
+            min-height: 44px;
             z-index: 1001;
             cursor: pointer;
             font-size: 24px;
@@ -789,12 +928,16 @@
         .sidebar-toggle.collapsed {
             right: 20px;
         }
-        
+
+        .sidebar-overlay {
+            display: none;
+        }
+
         .floating-submit {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
+            background: #1d9bf0;
             border: none;
             border-radius: 50px;
             padding: 16px 28px;
@@ -848,10 +991,198 @@
         }
         
         .stats-badge-label {
-            font-size: 11px;
-            color: #8899a6;
+            font-size: 12px;
+            color: #cbd5e1;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        /* Selected School Details Panel */
+        .selected-school-panel {
+            padding: 20px;
+            background: #15202b;
+            border-bottom: 1px solid #38444d;
+            display: none;
+        }
+        
+        .selected-school-panel.visible {
+            display: block;
+        }
+        
+        .selected-school-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .selected-school-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .selected-school-close {
+            background: transparent;
+            border: none;
+            color: #8899a6;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .selected-school-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+        }
+        
+        .selected-school-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .selected-school-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+        
+        .selected-school-programs-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .selected-school-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #38444d;
+        }
+        
+        .selected-school-btn {
+            flex: 1;
+            padding: 10px;
+            background: #1d9bf0;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .selected-school-btn:hover {
+            background: #0d8bd9;
+            transform: translateY(-1px);
+        }
+        
+        .selected-school-btn.secondary {
+            background: #253341;
+            color: #e1e8ed;
+        }
+        
+        .selected-school-btn.secondary:hover {
+            background: #2a3f53;
+        }
+        
+        /* Tooltip styles */
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: rgba(21, 32, 43, 0.98);
+            color: #f1f5f9;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid #38444d;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .tooltip-trigger:hover .tooltip {
+            opacity: 1;
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(21, 32, 43, 0.98);
+        }
+        
+        /* CTA Button Group */
+        .cta-button-group {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1001;
+        }
+        
+        .cta-button {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(29, 155, 240, 0.6);
+        }
+        
+        .cta-button.secondary {
+            background: #6bcf7f;
+            box-shadow: 0 6px 20px rgba(107, 207, 127, 0.4);
+        }
+        
+        .cta-button.secondary:hover {
+            box-shadow: 0 8px 24px rgba(107, 207, 127, 0.6);
         }
         
         .legend-toggle:hover {
@@ -886,9 +1217,9 @@
         }
 
         .data-summary-programs {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
             margin-top: 8px;
             padding-top: 8px;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -896,6 +1227,20 @@
 
         .data-summary-programs strong {
             font-weight: 600;
+        }
+        
+        .data-summary-programs .clickable-program {
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            transition: all 0.2s;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .data-summary-programs .clickable-program:hover {
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration-style: solid;
         }
 
         /* Accordion Form Sections */
@@ -1209,17 +1554,85 @@
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
+                padding-top: 50px;
             }
-            
+
             #sidebar {
+                position: fixed;
+                top: 50px;
+                right: 0;
                 width: 100%;
-                height: 50vh;
+                max-width: 100%;
+                height: calc(100vh - 50px);
+                transform: translateX(100%);
+                z-index: 2000;
+                border-left: none;
+                border-top: 1px solid #38444d;
+            }
+
+            #sidebar.active {
+                transform: translateX(0);
+            }
+
+            #map {
+                width: 100%;
+                height: calc(100vh - 50px);
+                flex: none;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 50px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1999;
+                backdrop-filter: blur(4px);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
             }
             
-            #map {
-                height: 50vh;
+            .geolocation-btn {
+                min-height: 44px;
+                font-size: 16px;
+            }
+            
+            .filter-select,
+            .search-input {
+                min-height: 44px;
+                font-size: 16px;
+            }
+            
+            .stats-badge {
+                top: 50px;
+                left: 10px;
+                padding: 10px 12px;
+            }
+            
+            .stats-badge-content {
+                gap: 12px;
+            }
+            
+            .cta-button-group {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .cta-button {
+                min-width: auto;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .floating-submit {
+                display: none;
             }
         }
+
     </style>
 </head>
 <body>
@@ -1237,8 +1650,39 @@
         </div>
         <button class="banner-close" onclick="dismissBanner()" aria-label="Dismiss banner">×</button>
     </div>
+    <script src="/assets/js/site-nav.js"></script>
+    <!-- Top Header Nav -->
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <a href="index.html" class="top-nav-logo">Trade Schools</a>
+            <div class="top-nav-links">
+                <a href="states.html" class="top-nav-link">States</a>
+                <a href="about.html" class="top-nav-link">About</a>
+                <a href="submit-school.html" class="top-nav-link">Submit</a>
+                <a
+                    href="https://twitter.com/messages/compose?recipient_id=1893356274332389376&text=Hi%20BOMForge%20%E2%80%94%20I%27m%20reaching%20out%20from%20your%20website."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="DM BOMForge on X"
+                    class="top-nav-link"
+                    style="display:inline-flex;align-items:center;gap:.5rem;"
+                    onclick="if(window.gtag){gtag('event','click',{event_category:'engagement',event_label:'dm_bomforge'});}"
+                >
+                    <svg width="18" height="18" viewBox="0 0 1200 1227" aria-hidden="true" style="fill:currentColor;">
+                        <path d="M714 519l451-519H956L600 412 244 0H-1l451 519-450 708h209l356-408 359 408h245L714 519zM305 142l650 742H896L246 142h59z"/>
+                    </svg>
+                    Contact
+                </a>
+            </div>
+        </div>
+    </nav>
     
     <div id="map"></div>
+
+
+    <!-- Sidebar Overlay (for mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
     
     <!-- Sidebar Toggle Button -->
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
@@ -1263,11 +1707,18 @@
         </div>
     </div>
     
-    <!-- Floating Submit Button -->
-    <button class="floating-submit" id="floatingSubmit" onclick="openSubmitModal()">
-        <span>+</span>
-        <span>Submit a School</span>
-    </button>
+    <!-- CTA Button Group -->
+    <div class="cta-button-group">
+        <button class="cta-button" onclick="openSubmitModal()">
+            <span>+</span>
+            <span>Add a School</span>
+        </button>
+        <button class="cta-button secondary" onclick="scrollToSubscribe()">
+            <span>📧</span>
+            <span>Get Updates</span>
+        </button>
+    </div>
+    
     
     
     
@@ -1278,21 +1729,36 @@
                 <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
                 <a href="clean-map.html" class="nav-link active">🗺️ Map</a>
             </div>
-            <h1>🎓 Trade Schools Directory</h1>
+            <h1>🇺🇸 America's Trade Schools</h1>
             <div class="stats">
-                <div class="stat" onclick="zoomToFullMap()" style="cursor: pointer;" title="Click to zoom out to full map">
+                <div class="stat tooltip-trigger" onclick="zoomToFullMap()" style="cursor: pointer;">
                     <div class="stat-value" id="totalSchools">0</div>
                     <div class="stat-label">Schools</div>
+                    <div class="tooltip">Total number of trade schools in the database</div>
                 </div>
-                <div class="stat">
+                <div class="stat tooltip-trigger">
                     <div class="stat-value" id="totalStates">0</div>
                     <div class="stat-label">States</div>
+                    <div class="tooltip">Number of states with trade schools</div>
                 </div>
-                <div class="stat">
+                <div class="stat tooltip-trigger">
                     <div class="stat-value" id="visibleCount">0</div>
                     <div class="stat-label">Visible</div>
+                    <div class="tooltip">Schools currently visible on the map (after filtering)</div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Selected School Details Panel -->
+        <div class="selected-school-panel" id="selectedSchoolPanel">
+            <div class="selected-school-header">
+                <div>
+                    <div class="selected-school-title" id="selectedSchoolTitle"></div>
+                </div>
+                <button class="selected-school-close" onclick="closeSelectedSchool()" aria-label="Close details">×</button>
+            </div>
+            <div class="selected-school-info" id="selectedSchoolInfo"></div>
+            <div class="selected-school-actions" id="selectedSchoolActions"></div>
         </div>
         
         <div class="filters">
@@ -1309,6 +1775,14 @@
                 <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
             </div>
+            
+            <div class="filter-group">
+                <button class="geolocation-btn" id="geolocationBtn" onclick="findNearbySchools()">
+                    <span class="geolocation-icon">📍</span>
+                    <span>Find Schools Near Me</span>
+                </button>
+            </div>
+            
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">👁️</span> Visualization Mode</label>
                 <div class="view-controls">
@@ -1318,6 +1792,20 @@
                 <div class="mode-indicator" id="modeIndicator" style="display: none;">
                     <span id="modeText" class="mode-text"></span>
                     <button class="refresh-btn" id="refreshBtn" onclick="refreshViewportData()" style="display: none;">🔄 Refresh</button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label"><span class="filter-icon">🖼️</span> Marker Display</label>
+                <div class="view-controls">
+                    <button class="view-btn" id="logoViewBtn" onclick="toggleLogoView()" title="Show all school logos individually (may be cluttered when zoomed out)">
+                        🖼️ Logo View
+                    </button>
+                    <button class="view-btn active" id="clusterViewBtn" onclick="toggleLogoView()" title="Use smart clustering - logos when zoomed in, clusters when zoomed out">
+                        ⬡ Cluster View
+                    </button>
+                </div>
+                <div style="color:#8899a6; font-size:11px; margin-top:6px;">
+                    <span id="viewModeHint">Clustering adapts to zoom level</span>
                 </div>
             </div>
             <div class="filter-group">
@@ -1735,14 +2223,24 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.getElementById('sidebarToggle');
-            const isCollapsed = sidebar.classList.toggle('collapsed');
-            
-            toggle.innerHTML = isCollapsed ? '☰' : '×';
-            toggle.classList.toggle('collapsed', isCollapsed);
-            
-            // Save state to localStorage
-            localStorage.setItem('sidebarCollapsed', isCollapsed);
-            
+            const overlay = document.getElementById('sidebarOverlay');
+            const isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile, toggle 'active' class for slide-in animation
+                const isActive = sidebar.classList.toggle('active');
+                overlay.classList.toggle('active', isActive);
+                toggle.innerHTML = isActive ? '×' : '☰';
+            } else {
+                // On desktop, toggle 'collapsed' class
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                toggle.innerHTML = isCollapsed ? '☰' : '×';
+                toggle.classList.toggle('collapsed', isCollapsed);
+
+                // Save state to localStorage
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+            }
+
             // Trigger map resize to adjust to new container size
             setTimeout(() => map.invalidateSize(), 300);
         }
@@ -1765,20 +2263,42 @@
             }, 350);
         }
         
+        // Detect mobile device
+        const isMobile = window.innerWidth <= 768;
+        
         // Initialize map
         const map = L.map('map', {
             center: [39.8283, -98.5795],
-            zoom: 4,
+            zoom: isMobile ? 3 : 4,
             minZoom: 3,
-            maxZoom: 18
+            maxZoom: 18,
+            scrollWheelZoom: !isMobile,
+            tap: isMobile,
+            touchZoom: isMobile
         });
         
-        // Add dark tile layer
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OpenStreetMap contributors © CARTO',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }).addTo(map);
+        // Disable scroll wheel zoom on mobile to prevent gesture conflicts
+        if (isMobile) {
+            map.scrollWheelZoom.disable();
+            console.log('Mobile detected: scroll wheel zoom disabled');
+        }
+        
+        // Basemap theme (light/dark) with persistence
+        function createBaseLayer(theme) {
+            const url = theme === 'light'
+                ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+            return L.tileLayer(url, {
+                attribution: '© OpenStreetMap contributors © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            });
+        }
+
+        let mapTheme = localStorage.getItem('mapTheme') || 'dark';
+        let baseLayer = createBaseLayer(mapTheme).addTo(map);
+
+        
         
         // Chart instance
         let programChart = null;
@@ -1807,6 +2327,25 @@
                 toggle.innerHTML = '☰';
                 toggle.classList.add('collapsed');
             }
+            
+            // Restore clustering preference
+            const savedClustering = localStorage.getItem('useClustering');
+            if (savedClustering !== null) {
+                useClustering = savedClustering === 'true';
+                const logoBtn = document.getElementById('logoViewBtn');
+                const clusterBtn = document.getElementById('clusterViewBtn');
+                const hint = document.getElementById('viewModeHint');
+                if (logoBtn && clusterBtn && hint) {
+                    if (useClustering) {
+                        logoBtn.classList.remove('active');
+                        clusterBtn.classList.add('active');
+                    } else {
+                        logoBtn.classList.add('active');
+                        clusterBtn.classList.remove('active');
+                        hint.textContent = 'Showing all logos';
+                    }
+                }
+            }
         });
         
         // Data storage
@@ -1814,10 +2353,69 @@
         let filteredSchools = [];
         let viewportSchools = []; // Schools visible in current viewport
         let schoolMarkers = {};
-        let markersLayer = L.layerGroup().addTo(map);
+        // Two marker layers: one for clustering, one for individual logos
+        let markersClusterLayer = L.markerClusterGroup({
+            chunkedLoading: true,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            maxClusterRadius: 80, // Larger radius for more aggressive clustering
+            disableClusteringAtZoom: 13, // Show individual markers at zoom 13+
+            iconCreateFunction: function(cluster) {
+                const count = cluster.getChildCount();
+                const markers = cluster.getAllChildMarkers();
+                // Try to get a representative icon from the first marker with a logo
+                let representativeIcon = '';
+                for (let marker of markers.slice(0, 3)) {
+                    const html = marker.options.icon?.options?.html || '';
+                    if (html.includes('<img')) {
+                        representativeIcon = html.match(/<img[^>]+>/)?.[0] || '';
+                        break;
+                    }
+                }
+                
+                let size = 'small';
+                let fontSize = '12px';
+                let width = 40;
+                if (count > 50) {
+                    size = 'large';
+                    fontSize = '16px';
+                    width = 50;
+                } else if (count > 20) {
+                    size = 'medium';
+                    fontSize = '14px';
+                    width = 45;
+                }
+                
+                // If we have a representative icon, show it with count badge
+                if (representativeIcon && count <= 20) {
+                    return L.divIcon({
+                        html: `
+                            <div style="position:relative; display:flex; align-items:center; justify-content:center;">
+                                ${representativeIcon.replace('width: 24px; height: 24px;', 'width: 28px; height: 28px;')}
+                                <div style="position:absolute; top:-6px; right:-6px; background:#1d9bf0; color:white; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:10px; border:2px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);">${count}</div>
+                            </div>
+                        `,
+                        className: 'marker-cluster-' + size,
+                        iconSize: L.point(40, 40)
+                    });
+                }
+                
+                // Default cluster icon with count
+                return L.divIcon({
+                    html: `<div style="background:#1d9bf0; color:white; border-radius:50%; width:${width}px; height:${width}px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:${fontSize}; border:2px solid white; box-shadow:0 2px 8px rgba(0,0,0,0.3);">${count}</div>`,
+                    className: 'marker-cluster-' + size,
+                    iconSize: L.point(width, width)
+                });
+            }
+        });
+        let markersLogoLayer = L.layerGroup(); // For showing all logos without clustering
+        let markersLayer = markersClusterLayer; // Current active layer
+        let useClustering = true; // Toggle for logo view vs cluster view
         let heatmapLayer = null;
         let hexLayer = L.layerGroup();
         let selectedMarker = null;
+        let selectedSchool = null;
         let currentView = 'markers'; // Default to markers view
         let viewportOnly = false; // Limit aggregations to visible area
         
@@ -2133,7 +2731,15 @@
             const schoolsToShow = getViewportSchools();
             
             if (schoolsToShow.length === 0) {
-                container.innerHTML = '<div class="no-results">No schools visible in current map view</div>';
+                container.innerHTML = `
+                    <div class="no-results">
+                        <div style="font-size: 32px; margin-bottom: 12px;">🔍</div>
+                        <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #1d9bf0;">No schools in this area yet</div>
+                        <div style="font-size: 14px; color: #8899a6; line-height: 1.5;">
+                            Zoom out or drag the map to explore trade schools across America 🇺🇸
+                        </div>
+                    </div>
+                `;
                 return;
             }
             
@@ -2178,10 +2784,41 @@
             }).join('');
         }
         
+        // Toggle between logo view and cluster view
+        function toggleLogoView() {
+            useClustering = !useClustering;
+            const logoBtn = document.getElementById('logoViewBtn');
+            const clusterBtn = document.getElementById('clusterViewBtn');
+            const hint = document.getElementById('viewModeHint');
+            
+            if (useClustering) {
+                logoBtn.classList.remove('active');
+                clusterBtn.classList.add('active');
+                hint.textContent = 'Clustering adapts to zoom level';
+                markersLayer = markersClusterLayer;
+            } else {
+                logoBtn.classList.add('active');
+                clusterBtn.classList.remove('active');
+                hint.textContent = 'Showing all logos (may cluster automatically when zoomed out)';
+                markersLayer = markersLogoLayer;
+            }
+            
+            // Update the map view
+            updateMapView();
+            
+            // Save preference
+            localStorage.setItem('useClustering', useClustering.toString());
+        }
+        
         // Add markers to map
         function addMarkersToMap() {
-            markersLayer.clearLayers();
+            // Clear both layers
+            markersClusterLayer.clearLayers();
+            markersLogoLayer.clearLayers();
             schoolMarkers = {};
+            
+            const currentZoom = map.getZoom();
+            const shouldCluster = useClustering && currentZoom < 12; // Cluster when zoom < 12
             
             filteredSchools.forEach(school => {
                 // Create custom favicon icon
@@ -2264,9 +2901,37 @@
                     }
                 });
                 
-                markersLayer.addLayer(marker);
+                // Add to both layers - the active one will be shown
+                markersClusterLayer.addLayer(marker);
+                markersLogoLayer.addLayer(marker);
                 schoolMarkers[school.name] = marker;
             });
+            
+            // Show the appropriate layer based on view preference and zoom
+            updateMarkerLayerVisibility();
+        }
+        
+        // Update which marker layer is visible based on zoom and preference
+        function updateMarkerLayerVisibility() {
+            const currentZoom = map.getZoom();
+            
+            if (currentView !== 'markers') return;
+            
+            if (useClustering) {
+                // Use clustering - it will automatically show individual markers at high zoom
+                if (!map.hasLayer(markersClusterLayer)) {
+                    map.removeLayer(markersLogoLayer);
+                    map.addLayer(markersClusterLayer);
+                }
+                markersLayer = markersClusterLayer;
+            } else {
+                // Logo view - always show individual logos
+                if (!map.hasLayer(markersLogoLayer)) {
+                    map.removeLayer(markersClusterLayer);
+                    map.addLayer(markersLogoLayer);
+                }
+                markersLayer = markersLogoLayer;
+            }
         }
         
         // Select school
@@ -2274,34 +2939,133 @@
             const school = getViewportSchools().find(s => s.name === schoolName);
             if (!school) return;
             
-            // Update marker styles
-            Object.values(schoolMarkers).forEach(marker => {
-                marker.setStyle({
-                    radius: 6,
-                    fillColor: '#1d9bf0',
-                    color: 'white'
-                });
-            });
+            selectedSchool = school;
             
+            // Show selected school panel
+            showSelectedSchoolPanel(school);
+            
+            // Center map on school
             if (schoolMarkers[schoolName]) {
-                schoolMarkers[schoolName].setStyle({
-                    radius: 10,
-                    fillColor: '#ff6b6b',
-                    color: 'white'
-                });
-                
-                // Center map on school
-                map.setView([school.lat, school.lon], 10);
+                map.setView([school.lat, school.lon], Math.max(map.getZoom(), 12));
                 schoolMarkers[schoolName].openPopup();
+            } else {
+                map.setView([school.lat, school.lon], 12);
             }
             
-            // Highlight card
+            // Highlight card in sidebar list
             document.querySelectorAll('.school-card').forEach(card => {
                 card.style.borderColor = '#38444d';
             });
             const selectedCard = document.querySelector(`[data-name="${schoolName}"]`);
             if (selectedCard) {
                 selectedCard.style.borderColor = '#1d9bf0';
+                selectedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        
+        // Show selected school details panel
+        function showSelectedSchoolPanel(school) {
+            const panel = document.getElementById('selectedSchoolPanel');
+            const titleEl = document.getElementById('selectedSchoolTitle');
+            const infoEl = document.getElementById('selectedSchoolInfo');
+            const actionsEl = document.getElementById('selectedSchoolActions');
+            
+            if (!panel || !school) return;
+            
+            titleEl.textContent = school.name;
+            
+            // Build info section
+            let infoHtml = '';
+            
+            // Location
+            infoHtml += `
+                <div class="selected-school-info-item">
+                    <span>📍</span>
+                    <span>${school.city}, ${school.state}</span>
+                </div>
+            `;
+            
+            // Website
+            if (school.website) {
+                const websiteUrl = school.website.startsWith('http') ? school.website : `https://${school.website}`;
+                let websiteDisplay = school.website.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                infoHtml += `
+                    <div class="selected-school-info-item">
+                        <span>🌐</span>
+                        <a href="${websiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #1d9bf0; text-decoration: none;">
+                            ${websiteDisplay}
+                        </a>
+                    </div>
+                `;
+            }
+            
+            // Programs
+            if (school.programs && school.programs.length > 0) {
+                infoHtml += `
+                    <div class="selected-school-info-item">
+                        <span>🎓</span>
+                        <div style="flex: 1;">
+                            <div style="margin-bottom: 6px;">Programs (${school.programs.length}):</div>
+                            <div class="selected-school-programs-list">
+                                ${school.programs.map(p => 
+                                    `<span class="program-tag" onclick="filterByProgram('${p}')">${p}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            infoEl.innerHTML = infoHtml;
+            
+            // Build actions section
+            let actionsHtml = '';
+            if (school.website) {
+                const websiteUrl = school.website.startsWith('http') ? school.website : `https://${school.website}`;
+                actionsHtml += `
+                    <button class="selected-school-btn" onclick="window.open('${websiteUrl}', '_blank')">
+                        🌐 Visit Website
+                    </button>
+                `;
+            }
+            actionsHtml += `
+                <button class="selected-school-btn secondary" onclick="closeSelectedSchool()">
+                    Close
+                </button>
+            `;
+            actionsEl.innerHTML = actionsHtml;
+            
+            // Show panel and scroll to top
+            panel.classList.add('visible');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Close selected school panel
+        function closeSelectedSchool() {
+            const panel = document.getElementById('selectedSchoolPanel');
+            if (panel) {
+                panel.classList.remove('visible');
+            }
+            selectedSchool = null;
+        }
+        
+        // Scroll to subscribe form
+        function scrollToSubscribe() {
+            const subscribeForm = document.getElementById('subscribeForm') || document.querySelector('.submission-form');
+            if (subscribeForm) {
+                subscribeForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // If form is collapsed in sidebar, expand sidebar first
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar && sidebar.classList.contains('collapsed')) {
+                    toggleSidebar();
+                    setTimeout(() => {
+                        const form = document.getElementById('submitForm');
+                        if (form) {
+                            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 350);
+                }
             }
         }
         
@@ -2311,6 +3075,86 @@
                 const bounds = L.latLngBounds(allSchools.map(s => [s.lat, s.lon]));
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
+        }
+        
+        // Find nearby schools using geolocation
+        function findNearbySchools() {
+            const btn = document.getElementById('geolocationBtn');
+            
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser');
+                return;
+            }
+            
+            btn.classList.add('loading');
+            btn.innerHTML = '<span class="geolocation-icon">🔄</span><span>Finding your location...</span>';
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    
+                    // Calculate distances and sort
+                    const schoolsWithDistance = allSchools.map(school => ({
+                        ...school,
+                        distance: calculateDistance(userLat, userLon, school.lat, school.lon)
+                    })).sort((a, b) => a.distance - b.distance);
+                    
+                    // Find nearest 50 schools
+                    const nearbySchools = schoolsWithDistance.slice(0, 50);
+                    
+                    // Update filtered schools to show nearby ones
+                    filteredSchools = nearbySchools;
+                    displaySchools();
+                    updateMapView();
+                    updateStats();
+                    
+                    // Zoom to user location
+                    map.setView([userLat, userLon], 8);
+                    
+                    // Add a marker for user location
+                    L.marker([userLat, userLon], {
+                        icon: L.divIcon({
+                            className: 'user-location-marker',
+                            html: '📍',
+                            iconSize: [30, 30]
+                        })
+                    }).addTo(map).bindPopup('You are here').openPopup();
+                    
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '<span class="geolocation-icon">✅</span><span>Showing Nearby Schools</span>';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = '<span class="geolocation-icon">📍</span><span>Find Schools Near Me</span>';
+                    }, 3000);
+                },
+                function(error) {
+                    console.error('Geolocation error:', error);
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '<span class="geolocation-icon">❌</span><span>Location Access Denied</span>';
+                    setTimeout(() => {
+                        btn.innerHTML = '<span class="geolocation-icon">📍</span><span>Find Schools Near Me</span>';
+                    }, 3000);
+                    alert('Unable to access your location. Please enable location services.');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        // Calculate distance between two coordinates (Haversine formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 3959; // Radius of Earth in miles
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
         
         // Filter handlers
@@ -2360,9 +3204,11 @@
             console.log(`Switching to view: ${currentView}`);
             
             // Clear all layers first
-            markersLayer.clearLayers();
-            if (map.hasLayer(markersLayer)) {
-                map.removeLayer(markersLayer);
+            if (map.hasLayer(markersClusterLayer)) {
+                map.removeLayer(markersClusterLayer);
+            }
+            if (map.hasLayer(markersLogoLayer)) {
+                map.removeLayer(markersLogoLayer);
             }
             if (heatmapLayer) {
                 map.removeLayer(heatmapLayer);
@@ -2375,8 +3221,8 @@
             // Add the appropriate layer based on current view
             if (currentView === 'markers') {
                 console.log('Adding markers layer');
-                map.addLayer(markersLayer);
                 addMarkersToMap();
+                updateMarkerLayerVisibility();
             } else if (currentView === 'heatmap') {
                 console.log('Adding heatmap layer');
                 addHeatmapToMap();
@@ -2385,6 +3231,24 @@
                 addHexGridToMap();
             }
         }
+        
+        // Listen to zoom changes to adapt clustering
+        map.on('zoomend', function() {
+            if (currentView === 'markers') {
+                updateMarkerLayerVisibility();
+                const hint = document.getElementById('viewModeHint');
+                if (hint) {
+                    const zoom = map.getZoom();
+                    if (useClustering) {
+                        if (zoom >= 12) {
+                            hint.textContent = 'Zoomed in: showing individual logos';
+                        } else {
+                            hint.textContent = 'Zoomed out: using smart clustering';
+                        }
+                    }
+                }
+            }
+        });
         
         // Get optimal H3 resolution based on zoom level - Optimized for data clarity
         function getH3Resolution() {
@@ -3225,7 +4089,7 @@
             if (topPrograms.length > 0) {
                 document.getElementById('summaryPrograms').innerHTML = 
                     `<strong>🎓 Top Programs:</strong> ${topPrograms.map(([prog, count]) => 
-                        `${prog.split(' ')[0]} (${count})`
+                        `<span class="clickable-program" onclick="filterByProgram('${prog}')" title="Click to filter by ${prog}">${prog.split(' ')[0]} (${count})</span>`
                     ).join(', ')}`;
             }
         }
@@ -3327,3 +4191,4 @@
     </script>
 </body>
 </html>
+

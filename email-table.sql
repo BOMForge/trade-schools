@@ -14,3 +14,6 @@ CREATE TABLE IF NOT EXISTS email_subscribers (
 CREATE INDEX IF NOT EXISTS idx_email_subscribers_email ON email_subscribers(email);
 CREATE INDEX IF NOT EXISTS idx_email_subscribers_subscribed ON email_subscribers(unsubscribed);
 CREATE INDEX IF NOT EXISTS idx_email_subscribers_created ON email_subscribers(created_at DESC);
+
+
+
