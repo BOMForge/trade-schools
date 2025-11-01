@@ -1488,13 +1488,18 @@
             console.log('Starting to load geocoded data...');
             
             // Try multiple file paths for deployment compatibility
+            // From /trade-schools/, need to go up to src/ then into schools/ or data/production/
             const csvPaths = [
+                '../schools/trade_schools_geocoded_fixed.csv',
+                '../data/production/trade_schools_geocoded_fixed.csv',
                 'schools/trade_schools_geocoded_fixed.csv',
                 './schools/trade_schools_geocoded_fixed.csv',
                 'trade_schools_geocoded_fixed.csv'
             ];
             
             const matchmakingPaths = [
+                '../schools/matchmaking_index.csv',
+                '../data/production/matchmaking_index.csv',
                 'schools/matchmaking_index.csv',
                 './schools/matchmaking_index.csv',
                 'matchmaking_index.csv'
