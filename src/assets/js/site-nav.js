@@ -11,10 +11,10 @@
 
   // Theme class removed - theme only affects map basemap, not page styles
 
-  function ensureFooter() {
-    if (document.querySelector('.footer-nav-overlay')) return;
-    var footer = document.createElement('div');
-    footer.className = 'footer-nav-overlay';
+  function ensureHeader() {
+    if (document.querySelector('.header-nav-overlay')) return;
+    var headerNav = document.createElement('div');
+    headerNav.className = 'header-nav-overlay';
     
     // Top states by school count (plus North Carolina explicitly requested)
     var topStates = [
@@ -37,8 +37,8 @@
       return '<a href="/trade-schools/states/' + s.slug + '.html" class="header-states-link">' + s.name + '</a>';
     }).join('');
     
-    footer.innerHTML = '<a href="/index.html">Home</a><span class="footer-nav-sep"></span><a href="/trade-schools/states.html">All States</a><span class="footer-nav-sep"></span>' + statesHtml + '<span class="footer-nav-sep"></span><a href="/trade-schools/submit-school.html">Submit School</a><span class="footer-nav-sep"></span><a href="/trade-schools/about.html">About</a><span class="footer-nav-sep"></span><span class="made-in-usa">🇺🇸 Made in USA</span><span class="footer-nav-sep"></span><button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>';
-    document.body.insertBefore(footer, document.body.firstChild);
+    headerNav.innerHTML = '<a href="/index.html">Home</a><span class="header-nav-sep"></span><a href="/trade-schools/states.html">All States</a><span class="header-nav-sep"></span>' + statesHtml + '<span class="header-nav-sep"></span><a href="/trade-schools/submit-school.html">Submit School</a><span class="header-nav-sep"></span><a href="/trade-schools/about.html">About</a><span class="header-nav-sep"></span><span class="made-in-usa">🇺🇸 Made in USA</span><span class="header-nav-sep"></span><button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>';
+    document.body.insertBefore(headerNav, document.body.firstChild);
 
     var theme = localStorage.getItem('mapTheme') || 'dark';
     var btn = document.getElementById('footerThemeToggle');
@@ -51,7 +51,7 @@
 
   function init() {
     injectStyles();
-    ensureFooter();
+    ensureHeader();
   }
 
   if (document.readyState === 'loading') {
