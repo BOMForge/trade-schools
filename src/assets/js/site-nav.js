@@ -16,39 +16,29 @@
     var footer = document.createElement('div');
     footer.className = 'footer-nav-overlay';
     
-    // Get all 50 states with proper slugs
-    var states = [
-      {name: 'Alabama', slug: 'alabama'}, {name: 'Alaska', slug: 'alaska'}, {name: 'Arizona', slug: 'arizona'},
-      {name: 'Arkansas', slug: 'arkansas'}, {name: 'California', slug: 'california'}, {name: 'Colorado', slug: 'colorado'},
-      {name: 'Connecticut', slug: 'connecticut'}, {name: 'Delaware', slug: 'delaware'}, {name: 'Florida', slug: 'florida'},
-      {name: 'Georgia', slug: 'georgia'}, {name: 'Hawaii', slug: 'hawaii'}, {name: 'Idaho', slug: 'idaho'},
-      {name: 'Illinois', slug: 'illinois'}, {name: 'Indiana', slug: 'indiana'}, {name: 'Iowa', slug: 'iowa'},
-      {name: 'Kansas', slug: 'kansas'}, {name: 'Kentucky', slug: 'kentucky'}, {name: 'Louisiana', slug: 'louisiana'},
-      {name: 'Maine', slug: 'maine'}, {name: 'Maryland', slug: 'maryland'}, {name: 'Massachusetts', slug: 'massachusetts'},
-      {name: 'Michigan', slug: 'michigan'}, {name: 'Minnesota', slug: 'minnesota'}, {name: 'Mississippi', slug: 'mississippi'},
-      {name: 'Missouri', slug: 'missouri'}, {name: 'Montana', slug: 'montana'}, {name: 'Nebraska', slug: 'nebraska'},
-      {name: 'Nevada', slug: 'nevada'}, {name: 'New Hampshire', slug: 'new-hampshire'}, {name: 'New Jersey', slug: 'new-jersey'},
-      {name: 'New Mexico', slug: 'new-mexico'}, {name: 'New York', slug: 'new-york'}, {name: 'North Carolina', slug: 'north-carolina'},
-      {name: 'North Dakota', slug: 'north-dakota'}, {name: 'Ohio', slug: 'ohio'}, {name: 'Oklahoma', slug: 'oklahoma'},
-      {name: 'Oregon', slug: 'oregon'}, {name: 'Pennsylvania', slug: 'pennsylvania'}, {name: 'Rhode Island', slug: 'rhode-island'},
-      {name: 'South Carolina', slug: 'south-carolina'}, {name: 'South Dakota', slug: 'south-dakota'}, {name: 'Tennessee', slug: 'tennessee'},
-      {name: 'Texas', slug: 'texas'}, {name: 'Utah', slug: 'utah'}, {name: 'Vermont', slug: 'vermont'},
-      {name: 'Virginia', slug: 'virginia'}, {name: 'Washington', slug: 'washington'}, {name: 'West Virginia', slug: 'west-virginia'},
-      {name: 'Wisconsin', slug: 'wisconsin'}, {name: 'Wyoming', slug: 'wyoming'}
+    // Top states by school count (plus North Carolina explicitly requested)
+    var topStates = [
+      {name: 'Texas', slug: 'texas'},
+      {name: 'California', slug: 'california'},
+      {name: 'Florida', slug: 'florida'},
+      {name: 'North Carolina', slug: 'north-carolina'},
+      {name: 'Pennsylvania', slug: 'pennsylvania'},
+      {name: 'New York', slug: 'new-york'},
+      {name: 'Illinois', slug: 'illinois'},
+      {name: 'Ohio', slug: 'ohio'},
+      {name: 'Michigan', slug: 'michigan'},
+      {name: 'Georgia', slug: 'georgia'},
+      {name: 'Virginia', slug: 'virginia'},
+      {name: 'Tennessee', slug: 'tennessee'}
     ];
     
-    // Build states dropdown HTML (show first few, rest in dropdown)
-    var statesHtml = states.slice(0, 10).map(function(s) {
-      return '<a href="/states/' + s.slug + '.html" class="footer-states-link">' + s.name + '</a>';
+    // Build states HTML for header
+    var statesHtml = topStates.map(function(s) {
+      return '<a href="/trade-schools/states/' + s.slug + '.html" class="header-states-link">' + s.name + '</a>';
     }).join('');
     
-    // If more than 10 states, add "..." and link to states page
-    if (states.length > 10) {
-      statesHtml += '<a href="/states.html" class="footer-states-link">+ ' + (states.length - 10) + ' more</a>';
-    }
-    
-    footer.innerHTML = '<a href="/index.html">Home</a><span class="footer-nav-sep"></span><a href="/states.html">All States</a><span class="footer-nav-sep footer-states-link"></span>' + statesHtml + '<span class="footer-nav-sep"></span><a href="/submit-school.html">Submit School</a><span class="footer-nav-sep"></span><a href="/about.html">About</a><span class="footer-nav-sep"></span><span class="made-in-usa">🇺🇸 Made in USA</span><span class="footer-nav-sep"></span><button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>';
-    document.body.appendChild(footer);
+    footer.innerHTML = '<a href="/index.html">Home</a><span class="footer-nav-sep"></span><a href="/trade-schools/states.html">All States</a><span class="footer-nav-sep"></span>' + statesHtml + '<span class="footer-nav-sep"></span><a href="/trade-schools/submit-school.html">Submit School</a><span class="footer-nav-sep"></span><a href="/trade-schools/about.html">About</a><span class="footer-nav-sep"></span><span class="made-in-usa">🇺🇸 Made in USA</span><span class="footer-nav-sep"></span><button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>';
+    document.body.insertBefore(footer, document.body.firstChild);
 
     var theme = localStorage.getItem('mapTheme') || 'dark';
     var btn = document.getElementById('footerThemeToggle');
