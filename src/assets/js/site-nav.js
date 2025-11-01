@@ -12,9 +12,13 @@
   // Theme class removed - theme only affects map basemap, not page styles
 
   function ensureHeader() {
-    if (document.querySelector('.header-nav-overlay')) return;
-    var headerNav = document.createElement('div');
-    headerNav.className = 'header-nav-overlay';
+    // Find the existing header-nav in the sidebar
+    var existingNav = document.querySelector('.header-nav');
+    if (!existingNav) return;
+    
+    // If already enhanced, skip
+    if (existingNav.classList.contains('enhanced-nav')) return;
+    existingNav.classList.add('enhanced-nav');
     
     // Top states by school count (plus North Carolina explicitly requested)
     var topStates = [
@@ -32,21 +36,36 @@
       {name: 'Tennessee', slug: 'tennessee'}
     ];
     
-    // Build states HTML for header
+    // Build states HTML
     var statesHtml = topStates.map(function(s) {
-      return '<a href="/trade-schools/states/' + s.slug + '.html" class="header-states-link">' + s.name + '</a>';
+      return '<a href="states/' + s.slug + '.html" class="nav-link">' + s.name + '</a>';
     }).join('');
     
-    headerNav.innerHTML = '<a href="/index.html">Home</a><span class="header-nav-sep"></span><a href="/trade-schools/states.html">All States</a><span class="header-nav-sep"></span>' + statesHtml + '<span class="header-nav-sep"></span><a href="/trade-schools/submit-school.html">Submit School</a><span class="header-nav-sep"></span><a href="/trade-schools/about.html">About</a><span class="header-nav-sep"></span><span class="made-in-usa">🇺🇸 Made in USA</span><span class="header-nav-sep"></span><button id="footerThemeToggle" aria-label="Toggle light mode">Light</button>';
-    document.body.insertBefore(headerNav, document.body.firstChild);
-
-    var theme = localStorage.getItem('mapTheme') || 'dark';
-    var btn = document.getElementById('footerThemeToggle');
-    if (btn) {
-      btn.textContent = theme === 'light' ? 'Dark' : 'Light';
-      // Note: Theme toggle is handled by map page itself, not here
-      // This ensures only the map basemap changes, not the page styles
-    }
+    // Update the existing header-nav with all navigation
+    existingNav.innerHTML = '<a href="../index.html" class="nav-link">Home</a><a href="states.html" class="nav-link">All States</a>' + statesHtml + '<a href="submit-school.html" class="nav-link">Submit School</a><a href="about.html" class="nav-link">About</a><span class="made-in-usa-nav">🇺🇸 Made in USA</span><button id="footerThemeToggle" class="nav-link theme-toggle-btn" aria-label="Toggle light mode">Light</button>';
+    
+    // Wire up theme toggle button - wait a bit for map to initialize
+    setTimeout(function() {
+      var theme = localStorage.getItem('mapTheme') || 'dark';
+      var btn = document.getElementById('footerThemeToggle');
+      if (btn) {
+        btn.textContent = theme === 'light' ? 'Dark' : 'Light';
+        
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Use global toggle function if available (from map page)
+          if (window.toggleMapTheme) {
+            window.toggleMapTheme();
+          } else {
+            // Fallback: toggle and reload
+            var current = localStorage.getItem('mapTheme') || 'dark';
+            var next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('mapTheme', next);
+            window.location.reload();
+          }
+        });
+      }
+    }, 500);
   }
 
   function init() {
