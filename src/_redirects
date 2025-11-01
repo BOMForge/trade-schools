@@ -1,8 +1,4 @@
-# Homepage redirect
-/index.html /home.html 301
-
 # Trade Schools Map - Main routes
-/ /home.html 200
 /trade-schools /trade-schools/index.html 200
 /trade-schools/ /trade-schools/index.html 200
 
