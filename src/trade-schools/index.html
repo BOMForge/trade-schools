@@ -1704,11 +1704,6 @@
             
             console.log(`📊 Data Status: ${mappedCount}/${totalInFile} schools mapped`);
             
-            // Only show alert if significant number missing
-            if (missingCount > 50) {
-                alert(`📊 Data Status:\n\n✅ ${mappedCount} schools successfully mapped\n⚠️ ${missingCount} schools still missing coordinates\n📊 Total: ${totalInFile} schools in database\n\nWe've recovered many schools but some still need manual geocoding.`);
-            }
-            
             // Initialize UI
             filteredSchools = [...allSchools];
             populateFilters();
@@ -2249,7 +2244,7 @@
             // Verify H3 library is loaded
             if (typeof h3 === 'undefined') {
                 console.error('H3 library not loaded! Cannot render hex grid.');
-                alert('Hex grid failed to render. Please reload the page.');
+                console.error('Hex grid failed to render. Please reload the page.');
                 return;
             }
             hexLayer.clearLayers();
@@ -2587,7 +2582,7 @@
             
             if (!L.heatLayer) {
                 console.error('Leaflet.heat not available');
-                alert('Heat map failed to render. Please reload the page.');
+                console.error('Heat map failed to render. Please reload the page.');
                 return;
             }
             const heatPoints = [];
@@ -2612,7 +2607,7 @@
                 });
                 map.addLayer(heatmapLayer);
             } else {
-                alert('No data in current view to render a heat map.');
+                console.warn('No data in current view to render a heat map.');
             }
         }
         
@@ -2776,7 +2771,7 @@
         function showAllPrograms(schoolName) {
             const school = getViewportSchools().find(s => s.name === schoolName);
             if (school) {
-                alert(`All programs at ${schoolName}:\n\n${school.programs.join(', ')}`);
+                console.log(`All programs at ${schoolName}: ${school.programs.join(', ')}`);
             }
         }
         
@@ -2842,7 +2837,7 @@
                 document.getElementById('schoolSubmissionForm').reset();
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
-                alert('Thank you! Your email client should open with the submission details. Please send the email to complete the submission.');
+                console.log('Thank you! Your email client should open with the submission details. Please send the email to complete the submission.');
             }, 1000);
         });
         }
