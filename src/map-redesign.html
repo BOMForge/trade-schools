@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Trade Schools Directory | Find Technical Training Near You</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-460P8JXLJ4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-460P8JXLJ4');
+    </script>
+
+    <!-- Leaflet + Plugins -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/papaparse@5.3.0/papaparse.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Light Theme (Default) */
+            --bg-primary: #f9fafb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body.dark-mode {
+            --bg-primary: #0e1726;
+            --bg-secondary: #1a202e;
+            --bg-tertiary: #242d3f;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --border-color: #374151;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Bar - Sticky */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 40px 0 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 16px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-item {
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .filter-btn {
+            height: 40px;
+            padding: 0 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-primary);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 64px);
+            margin-top: 64px;
+        }
+
+        /* Map Panel - Left */
+        .map-panel {
+            flex: 3;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-tertiary);
+        }
+
+        /* Directory Panel - Right */
+        .directory-panel {
+            flex: 2;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .directory-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            z-index: 10;
+        }
+
+        .directory-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sort-btn {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sort-btn:hover,
+        .sort-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .directory-list {
+            padding: 24px;
+        }
+
+        /* School Card - Zillow Style */
+        .school-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .school-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .school-card.active {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-lg);
+            background: var(--bg-tertiary);
+        }
+
+        .school-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .school-location {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .school-programs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .program-tag {
+            padding: 4px 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            font-weight: 500;
+        }
+
+        .school-website {
+            font-size: 13px;
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .school-website:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        /* Filter Drawer */
+        .filter-drawer {
+            position: fixed;
+            top: 64px;
+            right: 0;
+            bottom: 0;
+            width: 350px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            overflow-y: auto;
+        }
+
+        .filter-drawer.open {
+            transform: translateX(0);
+        }
+
+        .filter-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        .filter-section {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filter-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .filter-checkbox:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .filter-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .filter-checkbox label {
+            flex: 1;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .no-results {
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        /* Marker Cluster Styling */
+        .marker-cluster-small,
+        .marker-cluster-medium,
+        .marker-cluster-large {
+            background-color: rgba(37, 99, 235, 0.2);
+        }
+
+        .marker-cluster-small div,
+        .marker-cluster-medium div,
+        .marker-cluster-large div {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .map-panel {
+                flex: 1;
+                height: 40vh;
+            }
+
+            .directory-panel {
+                flex: 1;
+                height: 60vh;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .stats-bar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0 12px;
+                gap: 8px;
+            }
+
+            .logo {
+                font-size: 14px;
+            }
+
+            .search-bar {
+                max-width: none;
+            }
+
+            .filter-drawer {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="logo">🎓 Trade Schools</div>
+
+        <div class="search-bar">
+            <input
+                type="text"
+                class="search-input"
+                id="searchInput"
+                placeholder="Search by school name, city, or program..."
+                autocomplete="off"
+            >
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-value" id="visibleCount">0</span> Schools
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="stateCount">0</span> States
+            </div>
+        </div>
+
+        <button class="filter-btn" onclick="toggleFilters()">
+            ⚙️ Filters
+        </button>
+
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+            <span id="themeIcon">🌙</span>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Map Panel -->
+        <div class="map-panel">
+            <div id="map"></div>
+        </div>
+
+        <!-- Directory Panel -->
+        <div class="directory-panel">
+            <div class="directory-header">
+                <div class="directory-title">
+                    <span id="resultsCount">Loading...</span>
+                </div>
+                <div class="sort-controls">
+                    <button class="sort-btn active" onclick="sortBy('name')">A-Z</button>
+                    <button class="sort-btn" onclick="sortBy('state')">By State</button>
+                </div>
+            </div>
+            <div class="directory-list" id="schoolList">
+                <div class="loading">Loading schools...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Drawer -->
+    <div class="filter-drawer" id="filterDrawer">
+        <div class="filter-header">
+            <div class="filter-title">Filters</div>
+            <button class="close-btn" onclick="toggleFilters()">✕</button>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">States</div>
+            <div class="filter-options" id="stateFilters"></div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Programs</div>
+            <div class="filter-options" id="programFilters"></div>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn" style="width: 100%;" onclick="clearFilters()">
+                Clear All Filters
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let allSchools = [];
+        let filteredSchools = [];
+        let selectedFilters = { states: new Set(), programs: new Set() };
+        let currentSort = 'name';
+        let selectedSchool = null;
+        let schoolMarkers = new Map();
+        let markerClusterGroup = null;
+
+        // Initialize map
+        const map = L.map('map', {
+            center: [39.8283, -98.5795],
+            zoom: 4,
+            zoomControl: true
+        });
+
+        // Add basemap
+        const isDark = localStorage.getItem('theme') === 'dark';
+        if (isDark) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+
+        const tileUrl = isDark
+            ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+        L.tileLayer(tileUrl, {
+            attribution: '© OpenStreetMap contributors © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Initialize marker cluster
+        markerClusterGroup = L.markerClusterGroup({
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true
+        });
+        map.addLayer(markerClusterGroup);
+
+        // Theme toggle
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+
+            // Reload map tiles
+            map.eachLayer(layer => {
+                if (layer instanceof L.TileLayer) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            const newTileUrl = isDark
+                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+            L.tileLayer(newTileUrl, {
+                attribution: '© OpenStreetMap contributors © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        // Filter drawer
+        function toggleFilters() {
+            document.getElementById('filterDrawer').classList.toggle('open');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            applyFilters(query);
+        });
+
+        // Load data
+        function loadData() {
+            console.log('🔄 Starting data load...');
+
+            const csvPaths = [
+                'schools/trade_schools_geocoded_fixed.csv',
+                './schools/trade_schools_geocoded_fixed.csv',
+                'trade_schools_geocoded_fixed.csv'
+            ];
+
+            const matchmakingPaths = [
+                'schools/matchmaking_index.csv',
+                './schools/matchmaking_index.csv',
+                'matchmaking_index.csv'
+            ];
+
+            // Set timeout fallback to sample data
+            const timeoutId = setTimeout(() => {
+                console.warn('⚠️ Data load timeout, using sample data');
+                loadSampleData();
+            }, 3000);
+
+            function tryLoadData(csvIndex = 0) {
+                if (csvIndex >= csvPaths.length) {
+                    console.error('❌ Failed to load CSV, using sample data');
+                    clearTimeout(timeoutId);
+                    loadSampleData();
+                    return;
+                }
+
+                console.log(`📥 Trying to load: ${csvPaths[csvIndex]}`);
+
+                Papa.parse(csvPaths[csvIndex], {
+                    download: true,
+                    header: true,
+                    complete: function(geoResults) {
+                        console.log(`✅ Loaded ${geoResults.data.length} rows from CSV`);
+                        clearTimeout(timeoutId);
+                        tryLoadMatchmakingData(geoResults.data, 0);
+                    },
+                    error: function(error) {
+                        console.warn(`❌ Failed to load ${csvPaths[csvIndex]}:`, error);
+                        tryLoadData(csvIndex + 1);
+                    }
+                });
+            }
+
+            function tryLoadMatchmakingData(geoData, matchIndex = 0) {
+                if (matchIndex >= matchmakingPaths.length) {
+                    console.log('📊 Processing data without matchmaking info');
+                    processData(geoData, []);
+                    return;
+                }
+
+                console.log(`📥 Trying to load matchmaking: ${matchmakingPaths[matchIndex]}`);
+
+                Papa.parse(matchmakingPaths[matchIndex], {
+                    download: true,
+                    header: true,
+                    complete: function(matchResults) {
+                        console.log(`✅ Loaded ${matchResults.data.length} matchmaking rows`);
+                        processData(geoData, matchResults.data);
+                    },
+                    error: function(error) {
+                        console.warn(`❌ Failed to load matchmaking ${matchmakingPaths[matchIndex]}`);
+                        tryLoadMatchmakingData(geoData, matchIndex + 1);
+                    }
+                });
+            }
+
+            tryLoadData();
+        }
+
+        // Process data
+        function processData(geoData, matchData) {
+            // Group matchmaking data
+            const schoolPrograms = {};
+            matchData.forEach(row => {
+                const key = `${row['Institution Name']}_${row.State}_${row.City}`;
+                if (!schoolPrograms[key]) {
+                    schoolPrograms[key] = { programs: [], website: row.Website || '' };
+                }
+                if (row.program) {
+                    schoolPrograms[key].programs.push(row.program);
+                }
+            });
+
+            // Process schools
+            allSchools = [];
+            geoData.forEach(row => {
+                if (row.geocoded === 'True' && row.lat && row.lon) {
+                    const key = `${row['Institution Name']}_${row.State}_${row.City}`;
+                    const programData = schoolPrograms[key] || { programs: [], website: '' };
+
+                    allSchools.push({
+                        name: row['Institution Name'],
+                        state: row.State,
+                        city: row.City,
+                        lat: parseFloat(row.lat),
+                        lon: parseFloat(row.lon),
+                        programs: [...new Set(programData.programs)],
+                        website: programData.website
+                    });
+                }
+            });
+
+            console.log(`Loaded ${allSchools.length} schools`);
+            filteredSchools = [...allSchools];
+
+            initializeFilters();
+            updateStats();
+            renderSchools();
+            renderMarkers();
+        }
+
+        // Sample data fallback
+        function loadSampleData() {
+            console.log('📦 Loading sample data...');
+
+            allSchools = [
+                { name: "Los Angeles Trade School", state: "CA", city: "Los Angeles", lat: 34.0522, lon: -118.2437, programs: ["Welding", "HVAC"], website: "https://example.com" },
+                { name: "San Francisco Technical Institute", state: "CA", city: "San Francisco", lat: 37.7749, lon: -122.4194, programs: ["Construction", "Electronics"], website: "https://example.com" },
+                { name: "Houston Trade Institute", state: "TX", city: "Houston", lat: 29.7604, lon: -95.3698, programs: ["Construction", "Electronics"], website: "https://example.com" },
+                { name: "Dallas Technical College", state: "TX", city: "Dallas", lat: 32.7767, lon: -96.7970, programs: ["HVAC", "Welding"], website: "https://example.com" },
+                { name: "New York Trade School", state: "NY", city: "New York", lat: 40.7128, lon: -74.0060, programs: ["HVAC", "Plumbing"], website: "https://example.com" },
+                { name: "Chicago Trade School", state: "IL", city: "Chicago", lat: 41.8781, lon: -87.6298, programs: ["Construction", "HVAC"], website: "https://example.com" },
+                { name: "Phoenix Technical Center", state: "AZ", city: "Phoenix", lat: 33.4484, lon: -112.0740, programs: ["HVAC", "Electronics"], website: "https://example.com" },
+                { name: "Miami Technical School", state: "FL", city: "Miami", lat: 25.7617, lon: -80.1918, programs: ["HVAC", "Electronics"], website: "https://example.com" },
+                { name: "Seattle Trade Institute", state: "WA", city: "Seattle", lat: 47.6062, lon: -122.3321, programs: ["Welding", "Construction"], website: "https://example.com" },
+                { name: "Denver Vocational College", state: "CO", city: "Denver", lat: 39.7392, lon: -104.9903, programs: ["Plumbing", "HVAC"], website: "https://example.com" }
+            ];
+
+            console.log(`✅ Sample data loaded: ${allSchools.length} schools`);
+
+            filteredSchools = [...allSchools];
+            initializeFilters();
+            updateStats();
+            renderSchools();
+            renderMarkers();
+
+            // Fit map to show all markers
+            if (filteredSchools.length > 0) {
+                const bounds = L.latLngBounds(filteredSchools.map(s => [s.lat, s.lon]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+
+        // Initialize filters
+        function initializeFilters() {
+            const states = new Set();
+            const programs = new Set();
+
+            allSchools.forEach(school => {
+                states.add(school.state);
+                school.programs.forEach(p => programs.add(p));
+            });
+
+            // State filters
+            const stateFiltersEl = document.getElementById('stateFilters');
+            stateFiltersEl.innerHTML = [...states].sort().map(state => `
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="state-${state}" value="${state}" onchange="filterChanged('state', '${state}')">
+                    <label for="state-${state}">${state}</label>
+                </div>
+            `).join('');
+
+            // Program filters
+            const programFiltersEl = document.getElementById('programFilters');
+            programFiltersEl.innerHTML = [...programs].sort().map(program => `
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="program-${program}" value="${program}" onchange="filterChanged('program', '${program}')">
+                    <label for="program-${program}">${program}</label>
+                </div>
+            `).join('');
+        }
+
+        // Filter changed
+        function filterChanged(type, value) {
+            const checkbox = document.getElementById(`${type}-${value}`);
+            if (checkbox.checked) {
+                selectedFilters[type === 'state' ? 'states' : 'programs'].add(value);
+            } else {
+                selectedFilters[type === 'state' ? 'states' : 'programs'].delete(value);
+            }
+            applyFilters();
+        }
+
+        // Apply filters
+        function applyFilters(searchQuery = '') {
+            const query = searchQuery || document.getElementById('searchInput').value.toLowerCase().trim();
+
+            filteredSchools = allSchools.filter(school => {
+                // Search filter
+                if (query) {
+                    const matchesSearch =
+                        school.name.toLowerCase().includes(query) ||
+                        school.city.toLowerCase().includes(query) ||
+                        school.state.toLowerCase().includes(query) ||
+                        school.programs.some(p => p.toLowerCase().includes(query));
+                    if (!matchesSearch) return false;
+                }
+
+                // State filter
+                if (selectedFilters.states.size > 0 && !selectedFilters.states.has(school.state)) {
+                    return false;
+                }
+
+                // Program filter
+                if (selectedFilters.programs.size > 0) {
+                    const hasProgram = school.programs.some(p => selectedFilters.programs.has(p));
+                    if (!hasProgram) return false;
+                }
+
+                return true;
+            });
+
+            updateStats();
+            renderSchools();
+            renderMarkers();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            selectedFilters = { states: new Set(), programs: new Set() };
+            document.querySelectorAll('.filter-checkbox input').forEach(cb => cb.checked = false);
+            document.getElementById('searchInput').value = '';
+            applyFilters();
+        }
+
+        // Update stats
+        function updateStats() {
+            const uniqueStates = new Set(filteredSchools.map(s => s.state)).size;
+            document.getElementById('visibleCount').textContent = filteredSchools.length;
+            document.getElementById('stateCount').textContent = uniqueStates;
+            document.getElementById('resultsCount').textContent = `${filteredSchools.length} Schools Found`;
+        }
+
+        // Sort
+        function sortBy(type) {
+            currentSort = type;
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (type === 'name') {
+                filteredSchools.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (type === 'state') {
+                filteredSchools.sort((a, b) => {
+                    if (a.state === b.state) return a.name.localeCompare(b.name);
+                    return a.state.localeCompare(b.state);
+                });
+            }
+
+            renderSchools();
+        }
+
+        // Render schools list
+        function renderSchools() {
+            const listEl = document.getElementById('schoolList');
+
+            if (filteredSchools.length === 0) {
+                listEl.innerHTML = '<div class="no-results">No schools found matching your criteria.</div>';
+                return;
+            }
+
+            listEl.innerHTML = filteredSchools.map(school => `
+                <div class="school-card" onclick="selectSchool('${school.name}')" id="card-${school.name.replace(/[^a-zA-Z0-9]/g, '')}">
+                    <div class="school-name">${school.name}</div>
+                    <div class="school-location">
+                        📍 ${school.city}, ${school.state}
+                    </div>
+                    ${school.programs.length > 0 ? `
+                        <div class="school-programs">
+                            ${school.programs.slice(0, 3).map(p => `
+                                <span class="program-tag">${p}</span>
+                            `).join('')}
+                            ${school.programs.length > 3 ? `<span class="program-tag">+${school.programs.length - 3} more</span>` : ''}
+                        </div>
+                    ` : ''}
+                    ${school.website ? `
+                        <a href="${school.website}" target="_blank" class="school-website" onclick="event.stopPropagation()">
+                            🔗 Visit Website →
+                        </a>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Render markers
+        function renderMarkers() {
+            markerClusterGroup.clearLayers();
+            schoolMarkers.clear();
+
+            filteredSchools.forEach(school => {
+                const marker = L.marker([school.lat, school.lon])
+                    .bindPopup(`
+                        <strong>${school.name}</strong><br>
+                        ${school.city}, ${school.state}<br>
+                        ${school.programs.length > 0 ? `<small>${school.programs.join(', ')}</small>` : ''}
+                    `);
+
+                marker.on('click', () => selectSchool(school.name));
+                schoolMarkers.set(school.name, marker);
+                markerClusterGroup.addLayer(marker);
+            });
+        }
+
+        // Select school
+        function selectSchool(schoolName) {
+            const school = filteredSchools.find(s => s.name === schoolName);
+            if (!school) return;
+
+            // Update card highlight
+            document.querySelectorAll('.school-card').forEach(card => card.classList.remove('active'));
+            const cardId = `card-${schoolName.replace(/[^a-zA-Z0-9]/g, '')}`;
+            const cardEl = document.getElementById(cardId);
+            if (cardEl) {
+                cardEl.classList.add('active');
+                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // Pulse marker
+            const marker = schoolMarkers.get(schoolName);
+            if (marker) {
+                map.setView([school.lat, school.lon], 12, { animate: true });
+                marker.openPopup();
+            }
+
+            selectedSchool = schoolName;
+        }
+
+        // Initialize - wrap in DOMContentLoaded for safety
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadData);
+        } else {
+            loadData();
+        }
+
+        // Also catch any errors
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.message, e.error);
+        });
+    </script>
+</body>
+</html>
