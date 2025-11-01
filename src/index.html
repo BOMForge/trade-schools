@@ -809,71 +809,6 @@
             border: 2px solid #1d9bf0;
         }
         
-        /* Program Legend */
-        .program-legend {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 12px;
-            padding: 15px;
-            z-index: 1000;
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-        
-        .program-legend.active {
-            display: block;
-        }
-        
-        .legend-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e1e8ed;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .legend-items {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #8899a6;
-        }
-        
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid #38444d;
-        }
-        
-        .legend-toggle {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(21, 32, 43, 0.95);
-            border: 1px solid #38444d;
-            border-radius: 8px;
-            padding: 8px 12px;
-            z-index: 999;
-            cursor: pointer;
-            font-size: 12px;
-            color: #e1e8ed;
-            transition: all 0.2s;
-        }
-        
         .sidebar-toggle {
             position: fixed;
             top: 60px;
@@ -930,13 +865,6 @@
             box-shadow: 0 8px 24px rgba(29, 155, 240, 0.6);
         }
         
-        
-        
-        .legend-toggle:hover {
-            background: #1d9bf0;
-            border-color: #1d9bf0;
-        }
-
         /* Data Summary Widget */
         .data-summary {
             padding: 15px;
@@ -1344,17 +1272,7 @@
         <span>Submit a School</span>
     </button>
     
-    <!-- Program Legend -->
-    <div class="legend-toggle" id="legendToggle" onclick="toggleLegend()">
-        🎨 Show Legend
-    </div>
-    <div class="program-legend" id="programLegend">
-        <div class="legend-title">
-            <span>🎨</span>
-            <span>Program Colors</span>
-        </div>
-        <div class="legend-items" id="legendItems"></div>
-    </div>
+    <script src="/assets/js/site-nav.js"></script>
     
     <div id="sidebar">
         <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Close sidebar">×</button>
@@ -1580,29 +1498,6 @@
                 .slice(0, n);
         }
         
-        // Initialize legend
-        function initializeLegend() {
-            const topPrograms = getTopPrograms(allSchools, 12);
-            const legendItems = document.getElementById('legendItems');
-            legendItems.innerHTML = topPrograms.map(([program, count]) => {
-                const shortName = program.length > 20 ? program.substring(0, 17) + '...' : program;
-                return `
-                    <div class="legend-item" title="${program}">
-                        <div class="legend-color" style="background: ${getProgramColor(program)}"></div>
-                        <span>${shortName}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        // Toggle legend visibility
-        function toggleLegend() {
-            const legend = document.getElementById('programLegend');
-            const toggle = document.getElementById('legendToggle');
-            legend.classList.toggle('active');
-            toggle.textContent = legend.classList.contains('active') ? '🎨 Hide Legend' : '🎨 Show Legend';
-        }
-        
         // Toggle sidebar visibility
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -1811,7 +1706,6 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
-            initializeLegend();
             
             // Ensure hex grid shows with sample data
             console.log(`Sample data loaded: ${allSchools.length} schools, rendering initial view...`);
@@ -1910,7 +1804,6 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
-            initializeLegend();
             
             // Ensure initial view is rendered
             console.log(`Initializing with ${allSchools.length} schools, default view: ${currentView}`);
@@ -3232,7 +3125,6 @@
             displaySchools();
             updateMapView();
             updateProgramChart();
-            initializeLegend();
             
             // Still load fresh data in background
             setTimeout(() => loadGeocodedData(), 100);
