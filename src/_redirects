@@ -1,8 +1,16 @@
-# Redirect /map to root - main index is the only map page
-/map / 301
-/map.html / 301
-/trade-schools/map.html / 301
-/map-redesign.html / 301
+# Homepage redirect
+/index.html /home.html 301
+
+# Trade Schools Map - Main routes
+/ /home.html 200
+/trade-schools /trade-schools/index.html 200
+/trade-schools/ /trade-schools/index.html 200
+
+# Redirect old map routes to trade-schools
+/map /trade-schools/ 301
+/map.html /trade-schools/ 301
+/trade-schools/map.html /trade-schools/ 301
+/map-redesign.html /trade-schools/ 301
 
 # Redirect to new /trade-schools/ structure
 /school-detail.html /trade-schools/school-detail.html 301
@@ -10,11 +18,11 @@
 /states/* /trade-schools/states/:splat 301
 
 # Legacy redirects
-/dashboard / 301
-/clean-map.html / 301
-/clean-map / 301
-/archive/* /index.html 301
-/state /?state=:state 301
+/dashboard /trade-schools/ 301
+/clean-map.html /trade-schools/ 301
+/clean-map /trade-schools/ 301
+/archive/* /trade-schools/ 301
+/state /trade-schools/?state=:state 301
 
 
 

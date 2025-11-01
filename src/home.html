@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>BOMAtlas - Discover Interactive Maps | Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="BOMAtlas - Discover interactive maps and data visualizations. Enter your email to access our collection of specialized maps.">
+    <meta name="keywords" content="interactive maps, data visualization, BOMAtlas, maps">
+    <meta name="author" content="BOMForge">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bomatlas.com/">
+    <meta property="og:title" content="BOMAtlas - Discover Interactive Maps">
+    <meta property="og:description" content="Access our collection of specialized interactive maps. Enter your email to get started.">
+    <meta property="og:image" content="https://bomatlas.com/favicon.svg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://bomatlas.com/">
+    <meta name="twitter:title" content="BOMAtlas - Discover Interactive Maps">
+    <meta name="twitter:description" content="Access our collection of specialized interactive maps.">
+    <meta name="twitter:image" content="https://bomatlas.com/favicon.svg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+    <meta name="theme-color" content="#1d9bf0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2632 100%);
+            color: #e1e8ed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-bottom: 16px;
+            color: #e1e8ed;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #8899a6;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .email-form {
+            background: rgba(21, 32, 43, 0.8);
+            border: 1px solid #38444d;
+            border-radius: 16px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #15202b;
+            border: 2px solid #38444d;
+            border-radius: 12px;
+            color: #e1e8ed;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #8899a6;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1d9bf0, #0d8bd9);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(29, 155, 240, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .message.success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+        
+        .message.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .maps-container {
+            margin-top: 40px;
+            display: none;
+        }
+        
+        .maps-container.active {
+            display: block;
+        }
+        
+        .maps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .map-card {
+            background: rgba(21, 32, 43, 0.8);
+            border: 1px solid #38444d;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .map-card:hover {
+            border-color: #1d9bf0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(29, 155, 240, 0.2);
+        }
+        
+        .map-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #1d9bf0;
+        }
+        
+        .map-card p {
+            color: #8899a6;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .privacy-note {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #8899a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🗺️ BOMAtlas</div>
+        <h1>Discover Interactive Maps</h1>
+        <p class="subtitle">Enter your email to access our collection of specialized maps and data visualizations</p>
+        
+        <div class="email-form">
+            <form id="emailForm" onsubmit="submitEmail(event)">
+                <div class="form-group">
+                    <input 
+                        type="email" 
+                        id="emailInput" 
+                        class="form-input" 
+                        placeholder="Enter your email address" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Get Access
+                </button>
+            </form>
+            
+            <div id="message" class="message" style="display: none;"></div>
+        </div>
+        
+        <div class="maps-container" id="mapsContainer">
+            <h2 style="margin-bottom: 10px; color: #e1e8ed;">Available Maps</h2>
+            <p style="color: #8899a6; margin-bottom: 20px;">Choose a map to explore:</p>
+            
+            <div class="maps-grid">
+                <a href="/trade-schools/" class="map-card" style="text-decoration: none; color: inherit;">
+                    <h3>🎓 Trade Schools</h3>
+                    <p>Explore 1,000+ trade schools across America. Find welding, HVAC, manufacturing, and skilled trades programs.</p>
+                </a>
+            </div>
+        </div>
+        
+        <p class="privacy-note">We respect your privacy. Your email is only used to provide access to our maps.</p>
+    </div>
+
+    <script>
+        async function submitEmail(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('emailInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            const mapsContainer = document.getElementById('mapsContainer');
+            
+            const email = emailInput.value.trim();
+            
+            // Validate email
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            messageDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/email/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        source: 'homepage'
+                    });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showMessage(result.message || 'Success! Check out our available maps below.', 'success');
+                    emailInput.disabled = true;
+                    submitBtn.style.display = 'none';
+                    mapsContainer.classList.add('active');
+                    
+                    // Track success
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'email_subscribed', {
+                            event_category: 'engagement',
+                            event_label: 'homepage'
+                        });
+                    }
+                } else {
+                    showMessage(result.error || 'Something went wrong. Please try again.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Get Access';
+                }
+            } catch (error) {
+                console.error('Email submission error:', error);
+                showMessage('Network error. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get Access';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+        }
+        
+        // Check if email was already submitted (in localStorage)
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedEmail = localStorage.getItem('bomatlas_email');
+            if (savedEmail) {
+                document.getElementById('emailInput').value = savedEmail;
+                document.getElementById('emailInput').disabled = true;
+                document.getElementById('submitBtn').style.display = 'none';
+                document.getElementById('mapsContainer').classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
+
