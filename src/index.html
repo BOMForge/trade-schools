@@ -264,51 +264,6 @@
             border-bottom: 1px solid #38444d;
         }
         
-        .top-programs-section {
-            background: rgba(29, 155, 240, 0.1);
-            border: 1px solid rgba(29, 155, 240, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .top-programs-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1d9bf0;
-            margin-bottom: 12px;
-        }
-        
-        .top-programs-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .top-program-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            color: #e1e8ed;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(56, 68, 77, 0.5);
-        }
-        
-        .top-program-item:last-child {
-            border-bottom: none;
-        }
-        
-        .top-program-name {
-            flex: 1;
-        }
-        
-        .top-program-count {
-            color: #1d9bf0;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        
         .filter-group {
             margin-bottom: 15px;
         }
@@ -1444,14 +1399,6 @@
         </div>
         
         <div class="filters">
-            <!-- Top Programs Section -->
-            <div class="top-programs-section">
-                <div class="top-programs-title">Top Programs</div>
-                <div class="top-programs-list" id="topProgramsList">
-                    <!-- Programs will be populated by JavaScript -->
-                </div>
-            </div>
-
             <div class="filter-group">
                 <label class="filter-label"><span class="filter-icon">🔍</span> Search Schools</label>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search by name, city, or program...">
@@ -1959,7 +1906,6 @@
             // Initialize UI
             filteredSchools = [...allSchools];
             populateFilters();
-            updateTopPrograms();
             updateStats();
             displaySchools();
             updateMapView();
@@ -2011,29 +1957,6 @@
                     option.textContent = `${program} (${count})`;
                     programFilter.appendChild(option);
                 });
-        }
-        
-        // Update Top Programs section
-        function updateTopPrograms() {
-            const programs = {};
-            
-            allSchools.forEach(school => {
-                school.programs.forEach(program => {
-                    programs[program] = (programs[program] || 0) + 1;
-                });
-            });
-            
-            const topPrograms = Object.entries(programs)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 12);
-            
-            const topProgramsList = document.getElementById('topProgramsList');
-            topProgramsList.innerHTML = topPrograms.map(([program, count]) => {
-                return `<div class="top-program-item">
-                    <span class="top-program-name">${program}</span>
-                    <span class="top-program-count">(${count})</span>
-                </div>`;
-            }).join('');
         }
         
         // Update statistics - real-time updates based on filtered schools
