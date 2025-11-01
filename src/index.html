@@ -228,25 +228,35 @@
         }
         
         .stats {
-            display: flex;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
             margin-top: 15px;
         }
         
         .stat {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 0;
         }
         
         .stat-value {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             color: #1d9bf0;
+            line-height: 1.2;
+            margin-bottom: 4px;
         }
         
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #8899a6;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            word-break: break-word;
         }
         
         .filters {
@@ -1359,19 +1369,6 @@
     <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
         ☰
     </button>
-    
-                <div class="stats-badge-label">Schools</div>
-            </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeStates">50</div>
-                <div class="stats-badge-label">States</div>
-            </div>
-            <div class="stats-badge-item">
-                <div class="stats-badge-value" id="statsBadgeVisible">1031</div>
-                <div class="stats-badge-label">Visible</div>
-            </div>
-        </div>
-    </div>
     
     <!-- Floating Submit Button -->
     <button class="floating-submit" id="floatingSubmit" onclick="window.location.href='submit-school.html'">
@@ -3305,9 +3302,10 @@
             updateStats();
         });
         
-        // Make stats badge draggable
+        // Stats badge removed - code kept for potential future use
         (function() {
             const statsBadge = document.getElementById('statsBadge');
+            if (!statsBadge) return; // Skip if stats badge doesn't exist
             let isDragging = false;
             let currentX;
             let currentY;
