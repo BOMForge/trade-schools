@@ -1448,12 +1448,48 @@
             maxZoom: 18
         });
         
-        // Add dark tile layer
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OpenStreetMap contributors © CARTO',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }).addTo(map);
+        // Basemap theme (light/dark) with persistence - ONLY affects map, not page
+        function createBaseLayer(theme) {
+            const url = theme === 'light'
+                ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+            return L.tileLayer(url, {
+                attribution: '© OpenStreetMap contributors © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            });
+        }
+
+        let mapTheme = localStorage.getItem('mapTheme') || 'dark';
+        let baseLayer = createBaseLayer(mapTheme).addTo(map);
+        
+        // Footer theme toggle - only changes map basemap
+        function toggleMapTheme() {
+            map.removeLayer(baseLayer);
+            mapTheme = mapTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('mapTheme', mapTheme);
+            baseLayer = createBaseLayer(mapTheme).addTo(map);
+            
+            // Update button text only
+            const btn = document.getElementById('footerThemeToggle');
+            if (btn) {
+                btn.textContent = mapTheme === 'light' ? 'Dark' : 'Light';
+            }
+        }
+        
+        // Wire up footer toggle button (if it exists)
+        const footerToggle = document.getElementById('footerThemeToggle');
+        if (footerToggle) {
+            // Remove the reload behavior and use direct toggle
+            footerToggle.removeEventListener('click', function() {}); // Clear any existing listeners
+            footerToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleMapTheme();
+            });
+            
+            // Set initial button text
+            footerToggle.textContent = mapTheme === 'light' ? 'Dark' : 'Light';
+        }
         
         // Chart instance
         let programChart = null;
