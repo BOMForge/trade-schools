@@ -1714,8 +1714,15 @@
                     const lat = parseFloat(latVal);
                     const lon = parseFloat(lonVal);
                     
-                    // Only add if coordinates are valid (within US bounds roughly)
-                    if (lat >= 24 && lat <= 50 && lon >= -125 && lon <= -66) {
+                    // Only add if coordinates are valid (within US bounds including Alaska and Hawaii)
+                    // Continental US: lat 24-50, lon -125 to -66
+                    // Alaska: lat ~51-71, lon ~-179 to -130 (some overlap with -125)
+                    // Hawaii: lat ~18-22, lon ~-160 to -154
+                    const isContinentalUS = (lat >= 24 && lat <= 50 && lon >= -125 && lon <= -66);
+                    const isAlaska = (lat >= 51 && lat <= 72 && lon >= -180 && lon <= -130);
+                    const isHawaii = (lat >= 18 && lat <= 23 && lon >= -161 && lon <= -154);
+                    
+                    if (isContinentalUS || isAlaska || isHawaii) {
                         processedCount++;
                         const key = `${row['Institution Name']}_${row.State}_${row.City}`;
                         const programData = schoolPrograms[key] || { programs: [], email: '', website: '' };
