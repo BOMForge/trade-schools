@@ -324,7 +324,7 @@
         <div class="logo">BOMATLAS</div>
         <h1>DISCOVER CONNECTIONS.<br>VISUALIZE IMPACT.</h1>
         <p class="subtitle">FROM INDUSTRIES TO INSTITUTIONS, BOMATLAS REVEALS HOW ORGANIZATIONS SHAPE THE WORLD AROUND THEM.</p>
-        <p class="subtitle" style="margin-top: 10px; margin-bottom: 30px;">ENTER YOUR EMAIL TO ACCESS OUR COLLECTION OF SPECIALIZED MAPS AND DATA VISUALIZATIONS.</p>
+        <p class="subtitle" style="margin-top: 20px; margin-bottom: 30px; font-size: 13px;">ENTER YOUR EMAIL TO ACCESS SPECIALIZED MAPS AND DATA VISUALIZATIONS.</p>
         
         <div class="email-form">
             <form id="emailForm" onsubmit="submitEmail(event)">
@@ -374,13 +374,13 @@
             
             // Validate email
             if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showMessage('Please enter a valid email address', 'error');
+                showMessage('ERROR: INVALID EMAIL ADDRESS', 'error');
                 return;
             }
             
             // Disable submit button
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            submitBtn.textContent = 'PROCESSING...';
             messageDiv.style.display = 'none';
             
             try {
@@ -393,14 +393,16 @@
                         email: email,
                         source: 'homepage'
                     })
+                });
                 
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showMessage(result.message || 'Success! Check out our available maps below.', 'success');
+                    showMessage(result.message || 'ACCESS GRANTED. MAPS AVAILABLE BELOW.', 'success');
                     emailInput.disabled = true;
                     submitBtn.style.display = 'none';
                     mapsContainer.classList.add('active');
+                    localStorage.setItem('bomatlas_email', email);
                     
                     // Track success
                     if (typeof gtag !== 'undefined') {
@@ -410,15 +412,15 @@
                         });
                     }
                 } else {
-                    showMessage(result.error || 'Something went wrong. Please try again.', 'error');
+                    showMessage(result.error || 'ERROR: UNABLE TO PROCESS REQUEST. TRY AGAIN.', 'error');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Get Access';
+                    submitBtn.textContent = 'GET ACCESS';
                 }
             } catch (error) {
                 console.error('Email submission error:', error);
-                showMessage('Network error. Please try again.', 'error');
+                showMessage('ERROR: NETWORK FAILURE. TRY AGAIN.', 'error');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Get Access';
+                submitBtn.textContent = 'GET ACCESS';
             }
         }
         
