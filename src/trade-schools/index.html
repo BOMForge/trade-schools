@@ -1470,9 +1470,11 @@
             localStorage.setItem('mapTheme', mapTheme);
             baseLayer = createBaseLayer(mapTheme).addTo(map);
             
-            // Update button text only
+            // Update button text to show what clicking will do
             const btn = document.getElementById('footerThemeToggle');
             if (btn) {
+                // If map is now light, button should say "Dark" (to switch to dark)
+                // If map is now dark, button should say "Light" (to switch to light)
                 btn.textContent = mapTheme === 'light' ? 'Dark' : 'Light';
             }
         }

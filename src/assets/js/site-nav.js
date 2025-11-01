@@ -49,6 +49,9 @@
       var theme = localStorage.getItem('mapTheme') || 'dark';
       var btn = document.getElementById('footerThemeToggle');
       if (btn) {
+        // Set initial button text based on current theme
+        // If dark, show "Light" (clicking will switch to light)
+        // If light, show "Dark" (clicking will switch to dark)
         btn.textContent = theme === 'light' ? 'Dark' : 'Light';
         
         btn.addEventListener('click', function(e) {
@@ -56,6 +59,11 @@
           // Use global toggle function if available (from map page)
           if (window.toggleMapTheme) {
             window.toggleMapTheme();
+            // Update button text after toggle
+            setTimeout(function() {
+              var newTheme = localStorage.getItem('mapTheme') || 'dark';
+              btn.textContent = newTheme === 'light' ? 'Dark' : 'Light';
+            }, 100);
           } else {
             // Fallback: toggle and reload
             var current = localStorage.getItem('mapTheme') || 'dark';
